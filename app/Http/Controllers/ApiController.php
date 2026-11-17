@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Category;
+use App\Models\ChickenCut;
+use App\Models\DrinkOption;
+use App\Models\StoreSetting;
+use Illuminate\Http\JsonResponse;
+
+class ApiController extends Controller
+{
+    /**
+     * Return menu JSON per PRD Section 4 interface contract.
+     */
+    public function menu(): JsonResponse
+    {
+        $categories = Category::with(['menuItems' => function ($q) {
+            $q->orderBy('sort_order')->orderBy('id');
+        }])->orderBy('sort_order')->get();
+
+        $chickenCuts = ChickenCut::orderBy('sort_order')->get();
+        $drinkOptions = DrinkOption::orderBy('sort_order')->get();
+
+        $formattedCategories = $categories->map(function ($cat) {
+            return [
+                'id' => $cat->id,
+                'name' => $cat->name,
+                'slug' => $cat->slug,
+                'items' => $cat->menuItems->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'description' => $item->description,
+                        'price' => $item->price,
+                        'formatted_price' => $item->formatted_price,
+                        'image' => $item->image_url,
+                        'is_available' => (bool) $item->is_available,
+                        'is_best_seller' => (bool) $item->is_best_seller,
+                        'is_package' => (bool) $item->is_package,
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json([
+            'categories' => $formattedCategories,
+            'chicken_cuts' => $chickenCuts->map(fn($c) => [
+                'id' => $c->id,
+                'name' => $c->name,
+                'is_available' => (bool) $c->is_available,
+            ]),
+            'drink_options' => $drinkOptions->map(fn($d) => [
+                'id' => $d->id,
+                'name' => $d->name,
+                'is_available' => (bool) $d->is_available,
+            ]),
+        ]);
+    }
+
+    /**
+     * Return store settings JSON per PRD Section 4 interface contract.
+     */
+    public function settings(): JsonResponse
+    {
+        $s = StoreSetting::current();
+
+        return response()->json([
+            'is_open' => (bool) $s->is_open,
+            'wa_number' => $s->wa_number,
+            'address' => $s->address,
+            'opening_hours' => $s->opening_hours,
+            'packaging_fee' => (int) $s->packaging_fee,
+            'maps_url' => $s->maps_url,
+            'review_url' => $s->review_url,
+            'store_lat' => (float) $s->store_lat,
+            'store_lng' => (float) $s->store_lng,
+            'delivery_enabled' => (bool) $s->delivery_enabled,
+            'delivery_radius_m' => (int) $s->delivery_radius_m,
+        ]);
+    }
+}

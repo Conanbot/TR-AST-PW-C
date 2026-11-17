@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        // Auto-create database geprek_glo if not exists in local Laragon environment
+        if (app()->environment('local') && config('database.default') === 'mysql') {
+            try {
+                $host = config('database.connections.mysql.host', '127.0.0.1');
+                $port = config('database.connections.mysql.port', 3306);
+                $dbName = config('database.connections.mysql.database', 'geprek_glo');
+                $user = config('database.connections.mysql.username', 'root');
+                $pass = config('database.connections.mysql.password', '');
+
+                $pdo = new \PDO("mysql:host={$host};port={$port}", $user, $pass, [
+                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_SILENT,
+                    \PDO::ATTR_TIMEOUT => 2,
+                ]);
+                $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;");
+            } catch (\Throwable $e) {
+                // Silently skip if MySQL is not running yet
+            }
+        }
+    }
+}
