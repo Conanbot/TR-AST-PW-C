@@ -92,5 +92,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Store Settings
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+        // Change Password (FR-25)
+        Route::get('/password', [AuthController::class, 'showChangePassword'])->name('password.edit');
+        Route::put('/password', [AuthController::class, 'updatePassword'])->name('password.update');
     });
 });

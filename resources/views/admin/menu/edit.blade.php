@@ -72,7 +72,11 @@
             </div>
 
             <label for="image" class="form-label text-sm">Unggah / Ganti Foto Baru</label>
-            <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/jpg" style="padding: 6px;">
+            <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/jpg" style="padding: 6px;" onchange="previewEditImage(this)">
+            <div id="image-edit-preview-wrapper" style="display: none; margin-top: 10px; align-items: center; gap: 12px;">
+                <img id="image-edit-preview" src="#" alt="Preview Foto Baru" style="width: 100px; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span class="text-xs text-ok">Pratinjau calon foto pengganti</span>
+            </div>
             <p class="text-xs text-muted" style="margin-top: 6px;">
                 Format: JPG, JPEG, PNG. Maksimal 2 MB.
             </p>
@@ -108,3 +112,23 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function previewEditImage(input) {
+    const wrapper = document.getElementById('image-edit-preview-wrapper');
+    const preview = document.getElementById('image-edit-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            wrapper.style.display = 'flex';
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        wrapper.style.display = 'none';
+        preview.src = '#';
+    }
+}
+</script>
+@endpush

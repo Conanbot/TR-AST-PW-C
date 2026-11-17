@@ -103,8 +103,8 @@
 
         <div class="form-group" style="max-width: 300px;">
             <label for="delivery_radius_m" class="form-label">Batas Radius Maksimal Antar (Meter) <span class="text-primary">*</span></label>
-            <input type="number" id="delivery_radius_m" name="delivery_radius_m" class="form-control" value="{{ old('delivery_radius_m', $settings->delivery_radius_m ?? 800) }}" min="100" max="10000" required>
-            <span class="text-xs text-dim">Standar PRD: 800 meter dari kedai Blotongan.</span>
+            <input type="number" id="delivery_radius_m" name="delivery_radius_m" class="form-control" value="{{ old('delivery_radius_m', $settings->delivery_radius_m ?? 800) }}" min="100" max="800" required>
+            <span class="text-xs text-dim">Standar PRD: maksimal 800 meter dari kedai Blotongan.</span>
         </div>
 
         <div class="flex gap-md justify-end" style="margin-top: var(--space-xl); border-top: 1px solid var(--border); padding-top: var(--space-md);">

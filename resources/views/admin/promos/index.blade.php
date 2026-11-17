@@ -17,6 +17,7 @@
     <table class="admin-table">
         <thead>
             <tr>
+                <th style="width: 70px;">Banner</th>
                 <th>Judul Promo</th>
                 <th>Keterangan / Subtitle</th>
                 <th>Status</th>
@@ -27,6 +28,15 @@
         <tbody>
             @forelse($promos as $promo)
             <tr>
+                <td>
+                    <div style="width: 60px; height: 38px; border-radius: var(--radius-sm); overflow: hidden; background: #171719; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: var(--text-dim); text-align: center;">
+                        @if($promo->image_url)
+                            <img src="{{ $promo->image_url }}" alt="{{ $promo->title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        @else
+                            <span>No Banner</span>
+                        @endif
+                    </div>
+                </td>
                 <td>
                     <strong style="color: var(--text);">{{ $promo->title }}</strong>
                 </td>
@@ -64,7 +74,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
                     Belum ada banner promo yang dibuat.
                 </td>
             </tr>

@@ -317,4 +317,87 @@ class GeprekGloTest extends TestCase
             'packaging_fee' => 1500,
         ]);
     }
+
+    /**
+     * FR-25: Ubah kata sandi admin
+     */
+    public function test_admin_can_change_password(): void
+    {
+        $admin = User::where('username', 'admin')->first();
+
+        // 1. Password lama salah
+        $resWrong = $this->actingAs($admin)->put('/admin/password', [
+            'current_password' => 'wrongpassword',
+            'password' => 'newadmin123',
+            'password_confirmation' => 'newadmin123',
+        ]);
+        $resWrong->assertSessionHasErrors('current_password');
+
+        // 2. Password baru konfirmasi tidak cocok
+        $resMismatch = $this->actingAs($admin)->put('/admin/password', [
+            'current_password' => 'admin123',
+            'password' => 'newadmin123',
+            'password_confirmation' => 'different123',
+        ]);
+        $resMismatch->assertSessionHasErrors('password');
+
+        // 3. Password berhasil diubah
+        $resSuccess = $this->actingAs($admin)->put('/admin/password', [
+            'current_password' => 'admin123',
+            'password' => 'newadmin123',
+            'password_confirmation' => 'newadmin123',
+        ]);
+        $resSuccess->assertRedirect(route('admin.password.edit'))
+            ->assertSessionHas('success');
+
+        $admin->refresh();
+        $this->assertTrue(Hash::check('newadmin123', $admin->password));
+    }
+
+    /**
+     * FR-24: Validasi radius pengiriman maksimal 800 meter
+     */
+    public function test_delivery_radius_cannot_exceed_800m(): void
+    {
+        $admin = User::where('username', 'admin')->first();
+
+        $res = $this->actingAs($admin)->put('/admin/settings', [
+            'is_open' => 1,
+            'wa_number' => '6281234567890',
+            'address' => 'Blotongan Baru No. 12',
+            'opening_hours' => 'Setiap Hari: 08:00 - 22:00 WIB',
+            'packaging_fee' => 1000,
+            'delivery_radius_m' => 1200, // melebihi 800 meter
+        ]);
+
+        $res->assertSessionHasErrors('delivery_radius_m');
+    }
+
+    /**
+     * FR-18: Dashboard menghitung promo aktif berdasarkan rentang tanggal
+     */
+    public function test_dashboard_counts_only_currently_active_promos(): void
+    {
+        $admin = User::where('username', 'admin')->first();
+
+        // Promo aktif hari ini
+        Promo::create([
+            'title' => 'Promo Hari Ini',
+            'is_active' => true,
+            'start_date' => now()->subDay(),
+            'end_date' => now()->addDay(),
+        ]);
+
+        // Promo sudah kedaluwarsa (kemarin)
+        Promo::create([
+            'title' => 'Promo Kedaluwarsa',
+            'is_active' => true,
+            'start_date' => now()->subDays(5),
+            'end_date' => now()->subDay(),
+        ]);
+
+        $res = $this->actingAs($admin)->get('/admin');
+        $res->assertStatus(200);
+        $res->assertViewHas('activePromos', 1);
+    }
 }

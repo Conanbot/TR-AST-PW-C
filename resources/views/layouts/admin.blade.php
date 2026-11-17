@@ -50,6 +50,7 @@
             <a href="{{ route('admin.promos.index') }}" class="admin-nav-item {{ request()->routeIs('admin.promos.*') ? 'active' : '' }}">Promo</a>
             <a href="{{ route('admin.cashiers.index') }}" class="admin-nav-item {{ request()->routeIs('admin.cashiers.*') ? 'active' : '' }}">Akun kasir</a>
             <a href="{{ route('admin.settings.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">Pengaturan kedai</a>
+            <a href="{{ route('admin.password.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.password.*') ? 'active' : '' }}">Ubah password</a>
         </nav>
     </div>
 
@@ -63,6 +64,7 @@
                 <a href="{{ route('admin.promos.index') }}" class="admin-nav-item {{ request()->routeIs('admin.promos.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">✦</span>Promo</a>
                 <a href="{{ route('admin.cashiers.index') }}" class="admin-nav-item {{ request()->routeIs('admin.cashiers.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">♙</span>Akun kasir</a>
                 <a href="{{ route('admin.settings.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Pengaturan kedai</a>
+                <a href="{{ route('admin.password.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.password.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">🔒</span>Ubah password</a>
             </nav>
             <div class="admin-sidebar-bottom">
                 <span class="sidebar-note">Panel pengelola Geprek GLO</span>
@@ -92,6 +94,11 @@
         toggle.addEventListener('click', () => setOpen(true));
         close.addEventListener('click', () => setOpen(false));
         document.addEventListener('keydown', event => { if (event.key === 'Escape') setOpen(false); });
+        document.addEventListener('click', event => {
+            if (drawer.classList.contains('open') && !drawer.contains(event.target) && !toggle.contains(event.target)) {
+                setOpen(false);
+            }
+        });
     });
 
     async function toggleStoreStatus() {

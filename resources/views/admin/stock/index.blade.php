@@ -75,6 +75,9 @@
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     async function toggleItemStatus(id, badge) {
+        if (badge.disabled) return;
+        badge.disabled = true;
+        badge.style.opacity = '0.6';
         try {
             const res = await fetch(`{{ url('/admin/items') }}/${id}/availability`, {
                 method: 'PATCH',
@@ -84,19 +87,30 @@
                     'Accept': 'application/json'
                 }
             });
+            if (!res.ok) {
+                throw new Error(`HTTP Error: ${res.status}`);
+            }
             const data = await res.json();
             if (data.success) {
                 badge.className = data.is_available ? 'badge badge-open' : 'badge badge-closed';
                 badge.textContent = data.is_available ? 'Tersedia' : 'Habis';
                 window.showToast(data.message, 'success');
+            } else {
+                throw new Error(data.message || 'Gagal mengubah status.');
             }
         } catch (e) {
             console.error(e);
-            window.showToast('Gagal mengubah status menu.', 'error');
+            window.showToast('Gagal mengubah status menu. Terjadi gangguan server.', 'error');
+        } finally {
+            badge.disabled = false;
+            badge.style.opacity = '1';
         }
     }
 
     async function toggleCutStatus(id, badge) {
+        if (badge.disabled) return;
+        badge.disabled = true;
+        badge.style.opacity = '0.6';
         try {
             const res = await fetch(`{{ url('/admin/cuts') }}/${id}/availability`, {
                 method: 'PATCH',
@@ -106,19 +120,30 @@
                     'Accept': 'application/json'
                 }
             });
+            if (!res.ok) {
+                throw new Error(`HTTP Error: ${res.status}`);
+            }
             const data = await res.json();
             if (data.success) {
                 badge.className = data.is_available ? 'badge badge-open' : 'badge badge-closed';
                 badge.textContent = data.is_available ? 'Tersedia' : 'Habis';
                 window.showToast(data.message, 'success');
+            } else {
+                throw new Error(data.message || 'Gagal mengubah status.');
             }
         } catch (e) {
             console.error(e);
             window.showToast('Gagal mengubah status potongan.', 'error');
+        } finally {
+            badge.disabled = false;
+            badge.style.opacity = '1';
         }
     }
 
     async function toggleDrinkStatus(id, badge) {
+        if (badge.disabled) return;
+        badge.disabled = true;
+        badge.style.opacity = '0.6';
         try {
             const res = await fetch(`{{ url('/admin/drinks') }}/${id}/availability`, {
                 method: 'PATCH',
@@ -128,15 +153,23 @@
                     'Accept': 'application/json'
                 }
             });
+            if (!res.ok) {
+                throw new Error(`HTTP Error: ${res.status}`);
+            }
             const data = await res.json();
             if (data.success) {
                 badge.className = data.is_available ? 'badge badge-open' : 'badge badge-closed';
                 badge.textContent = data.is_available ? 'Tersedia' : 'Habis';
                 window.showToast(data.message, 'success');
+            } else {
+                throw new Error(data.message || 'Gagal mengubah status.');
             }
         } catch (e) {
             console.error(e);
             window.showToast('Gagal mengubah status minuman.', 'error');
+        } finally {
+            badge.disabled = false;
+            badge.style.opacity = '1';
         }
     }
 </script>

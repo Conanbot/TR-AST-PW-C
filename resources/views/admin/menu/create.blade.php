@@ -44,7 +44,11 @@
         <!-- Foto Produk Upload (Section 5) -->
         <div class="form-group" style="padding: var(--space-md); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-md);">
             <label for="image" class="form-label">Foto Produk (Opsional)</label>
-            <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/jpg" style="padding: 6px;">
+            <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/jpg" style="padding: 6px;" onchange="previewMenuImage(this)">
+            <div id="image-preview-wrapper" style="display: none; margin-top: 12px; align-items: center; gap: 12px;">
+                <img id="image-preview" src="#" alt="Preview Foto Menu" style="width: 100px; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span class="text-xs text-ok">Pratinjau gambar baru</span>
+            </div>
             <p class="text-xs text-muted" style="margin-top: 6px; line-height: 1.4;">
                 *Jika foto belum tersedia, biarkan kosong. Sistem akan otomatis menampilkan <strong>placeholder netral 4:3</strong> yang rapi. Format: JPG, JPEG, PNG. Ukuran maksimal 2 MB.
             </p>
@@ -80,3 +84,23 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function previewMenuImage(input) {
+    const wrapper = document.getElementById('image-preview-wrapper');
+    const preview = document.getElementById('image-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            wrapper.style.display = 'flex';
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        wrapper.style.display = 'none';
+        preview.src = '#';
+    }
+}
+</script>
+@endpush

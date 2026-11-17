@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $totalMenu = MenuItem::count();
         $availableMenu = MenuItem::where('is_available', true)->count();
         $outOfStockMenu = MenuItem::where('is_available', false)->count();
-        $activePromos = Promo::where('is_active', true)->count();
+        $activePromos = Promo::active()->count();
 
         $outOfStockItems = MenuItem::where('is_available', false)
             ->with('category')

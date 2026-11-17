@@ -34,6 +34,19 @@
             </div>
         </div>
 
+        <!-- Banner Image Upload with Preview -->
+        <div class="form-group" style="padding: var(--space-md); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-md);">
+            <label for="image" class="form-label">Gambar Banner Promo (Opsional)</label>
+            <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/jpg" style="padding: 6px;" onchange="previewPromoImage(this)">
+            <div id="promo-preview-wrapper" style="display: none; margin-top: 12px; align-items: center; gap: 12px;">
+                <img id="promo-preview" src="#" alt="Preview Banner Promo" style="width: 140px; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <span class="text-xs text-ok">Pratinjau banner promo</span>
+            </div>
+            <p class="text-xs text-muted" style="margin-top: 6px; line-height: 1.4;">
+                Format: JPG, JPEG, PNG. Ukuran maksimal 2 MB. Direkomendasikan rasio memanjang (16:9).
+            </p>
+        </div>
+
         <div class="form-group">
             <label class="form-check" style="background: var(--surface); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                 <input type="checkbox" name="is_active" value="1" {{ old('is_active', 1) ? 'checked' : '' }}>
@@ -48,3 +61,23 @@
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function previewPromoImage(input) {
+    const wrapper = document.getElementById('promo-preview-wrapper');
+    const preview = document.getElementById('promo-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            wrapper.style.display = 'flex';
+        }
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        wrapper.style.display = 'none';
+        preview.src = '#';
+    }
+}
+</script>
+@endpush

@@ -111,7 +111,7 @@
     </table>
 
     <div style="margin-top: 16px;">
-        {{ $menuItems->links() }}
+        {{ $menuItems->appends(request()->query())->links() }}
     </div>
 </div>
 @endsection

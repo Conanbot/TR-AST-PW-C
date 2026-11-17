@@ -58,4 +58,32 @@ class AuthController extends Controller
         return redirect()->route('admin.login')
             ->with('info', 'Anda telah berhasil logout.');
     }
+
+    public function showChangePassword(): View
+    {
+        return view('admin.password');
+    }
+
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ], [
+            'current_password.required' => 'Password saat ini wajib diisi.',
+            'current_password.current_password' => 'Password saat ini yang Anda masukkan salah.',
+            'password.required' => 'Password baru wajib diisi.',
+            'password.min' => 'Password baru minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+        ]);
+
+        return redirect()->route('admin.password.edit')
+            ->with('success', 'Password admin berhasil diperbarui.');
+    }
 }

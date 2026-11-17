@@ -199,8 +199,9 @@
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     async function quickToggleItemStock(id, btn) {
+        if (btn.disabled) return;
+        btn.disabled = true;
         try {
-            btn.disabled = true;
             const res = await fetch(`{{ url('/admin/items') }}/${id}/availability`, {
                 method: 'PATCH',
                 headers: {
@@ -209,10 +210,13 @@
                     'Accept': 'application/json'
                 }
             });
+            if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
             const data = await res.json();
             if (data.success) {
                 window.showToast(data.message, 'success');
                 setTimeout(() => window.location.reload(), 600);
+            } else {
+                throw new Error(data.message || 'Gagal mengubah status stok.');
             }
         } catch (e) {
             console.error(e);
@@ -222,6 +226,8 @@
     }
 
     async function quickToggleCut(id, badge) {
+        if (badge.disabled) return;
+        badge.disabled = true;
         try {
             const res = await fetch(`{{ url('/admin/cuts') }}/${id}/availability`, {
                 method: 'PATCH',
@@ -231,6 +237,7 @@
                     'Accept': 'application/json'
                 }
             });
+            if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
             const data = await res.json();
             if (data.success) {
                 if (data.is_available) {
@@ -241,14 +248,20 @@
                     badge.textContent = 'Habis';
                 }
                 window.showToast(data.message, 'success');
+            } else {
+                throw new Error(data.message || 'Gagal mengubah status.');
             }
         } catch (e) {
             console.error(e);
             window.showToast('Gagal mengubah status potongan.', 'error');
+        } finally {
+            badge.disabled = false;
         }
     }
 
     async function quickToggleDrink(id, badge) {
+        if (badge.disabled) return;
+        badge.disabled = true;
         try {
             const res = await fetch(`{{ url('/admin/drinks') }}/${id}/availability`, {
                 method: 'PATCH',
@@ -258,6 +271,7 @@
                     'Accept': 'application/json'
                 }
             });
+            if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
             const data = await res.json();
             if (data.success) {
                 if (data.is_available) {
@@ -268,10 +282,14 @@
                     badge.textContent = 'Habis';
                 }
                 window.showToast(data.message, 'success');
+            } else {
+                throw new Error(data.message || 'Gagal mengubah status.');
             }
         } catch (e) {
             console.error(e);
             window.showToast('Gagal mengubah status minuman.', 'error');
+        } finally {
+            badge.disabled = false;
         }
     }
 </script>
