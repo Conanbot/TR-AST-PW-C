@@ -259,7 +259,7 @@ const Cart = {
   },
 
   // WhatsApp Message Composer (FR-10, BR-01)
-  checkoutWhatsApp() {
+  async checkoutWhatsApp() {
     const items = this.getItems();
     if (items.length === 0) {
       window.showToast('Keranjang Anda masih kosong!', 'error');
@@ -280,14 +280,7 @@ const Cart = {
     const serviceSelect = document.querySelector('input[name="service_method"]:checked');
     const serviceMethod = serviceSelect ? serviceSelect.value : 'dine_in';
 
-    let serviceLabel = 'Dine-In (Makan di Tempat)';
-    let packagingFee = 0;
-
-    if (serviceMethod === 'takeaway') {
-      packagingFee = this.settings.packagingFee;
-      serviceLabel = `Takeaway (Bungkus / Bawa Pulang) (+${window.formatRupiah(packagingFee)} kemasan)`;
-    } else if (serviceMethod === 'delivery') {
-      serviceLabel = 'Pesan Antar (Delivery Kedai)';
+    if (serviceMethod === 'delivery') {
       if (!customerAddress) {
         window.showToast('Harap cantumkan alamat lengkap untuk pengantaran.', 'error');
         if (customerAddressInput) customerAddressInput.focus();
@@ -295,45 +288,55 @@ const Cart = {
       }
     }
 
-    const subtotal = this.getSubtotal();
-    const total = subtotal + packagingFee;
+    const checkoutWindow = window.open('about:blank', '_blank');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    const ordersUrl = document.querySelector('meta[name="orders-url"]')?.content;
 
-    // Compose formatted text according to PRD Bab 12
-    let message = `Halo Geprek GLO, saya ingin memesan:\n\n`;
-
-    items.forEach((item, index) => {
-      let line = `${index + 1}. ${item.name} x${item.qty}`;
-      const details = [];
-      if (item.cut) details.push(`Potongan: ${item.cut}`);
-      if (item.drink) details.push(`Minuman: ${item.drink}`);
-      if (details.length > 0) {
-        line += ` (${details.join('; ')})`;
+    try {
+      if (!csrfToken || !ordersUrl) {
+        throw new Error('Informasi checkout belum tersedia. Muat ulang halaman lalu coba lagi.');
       }
-      line += ` – ${window.formatRupiah(item.price * item.qty)}`;
-      message += line + `\n`;
 
-      if (item.note) {
-        message += `   Catatan: ${item.note}\n`;
+      const response = await fetch(ordersUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          customer_name: customerName,
+          service_method: serviceMethod,
+          customer_address: customerAddress || null,
+          items: items.map(item => ({
+            id: item.id,
+            qty: item.qty,
+            cut: item.cut,
+            drink: item.drink,
+            note: item.note
+          }))
+        })
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        const firstError = result.errors ? Object.values(result.errors)[0]?.[0] : null;
+        throw new Error(firstError || result.message || 'Pesanan belum dapat disimpan.');
       }
-    });
 
-    message += `\nLayanan: ${serviceLabel}\n`;
-    message += `Subtotal: ${window.formatRupiah(subtotal)}\n`;
-    if (packagingFee > 0) {
-      message += `Biaya Kemasan: ${window.formatRupiah(packagingFee)}\n`;
+      const waUrl = result.whatsapp_url;
+      if (checkoutWindow) {
+        checkoutWindow.location = waUrl;
+      } else {
+        window.location.assign(waUrl);
+      }
+      this.clearCart();
+      window.showToast(`Pesanan ${result.order_number} tersimpan. Lanjutkan konfirmasi di WhatsApp.`, 'success');
+    } catch (error) {
+      if (checkoutWindow) checkoutWindow.close();
+      console.error('Order checkout failed.', error);
+      window.showToast(error.message || 'Pesanan gagal disimpan. Coba lagi.', 'error');
     }
-    message += `Total Pembayaran: ${window.formatRupiah(total)}\n\n`;
-    message += `Nama Pemesan: ${customerName}\n`;
-    if (serviceMethod === 'delivery' && customerAddress) {
-      message += `Alamat Pengantaran: ${customerAddress}\n`;
-    }
-    message += `\nMohon konfirmasi pesanan saya. Terima kasih!`;
-
-    const encoded = encodeURIComponent(message);
-    const waUrl = `https://wa.me/${this.settings.waNumber}?text=${encoded}`;
-
-    // Open WhatsApp in new tab
-    window.open(waUrl, '_blank');
   }
 };
 

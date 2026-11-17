@@ -108,6 +108,14 @@ Untuk mengakses panel admin:
 * **Username:** `admin`
 * **Password:** `admin123`
 
+### Area Login Berdasarkan Peran
+
+* **Admin:** `/admin/login` — mengelola menu, pengaturan kedai, dan akun kasir.
+* **Kasir:** `/kasir/login` — akun kasir dibuat oleh admin dari panel pengelolaan kasir; kasir menggunakan dashboard POS di `/kasir`.
+* **Pelanggan:** `/akun/login` — pelanggan dapat membuat akun di `/akun/daftar` dan melihat riwayat pesanan di `/akun`.
+
+Pesanan pelanggan maupun kasir disimpan pada tabel `orders` dan `order_items`. Jika menyiapkan database melalui phpMyAdmin, impor `database/geprek_glo.sql`; dump tersebut menyertakan skema peran dan pesanan, tanpa data pesanan contoh. Jika memakai migrasi, jalankan `php artisan migrate --seed`.
+
 ---
 
 ## 6. Struktur Folder Proyek

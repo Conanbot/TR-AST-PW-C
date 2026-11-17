@@ -7,7 +7,7 @@
 <div class="card" style="padding: var(--space-lg); margin-bottom: var(--space-xl); background: var(--surface-card); border-left: 4px solid var(--primary);">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
         <div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 4px;">Selamat Datang, Ibu Catur!</h2>
+            <h2 style="font-size: 1.5rem; margin-bottom: 4px;">Halo, {{ auth()->user()->name }}!</h2>
             <p class="text-sm text-muted">
                 Kelola status kedai, ketersediaan stok, harga, dan banner promo dengan mudah dari perangkat ponsel atau komputer Anda.
             </p>
@@ -56,6 +56,37 @@
         <div class="text-xs text-dim" style="margin-top: 2px;">Tampil di halaman beranda</div>
     </div>
 </div>
+
+<section class="surface-panel admin-orders-panel" style="margin-bottom: var(--space-xl);">
+    <div class="panel-heading" style="margin-bottom: 14px;">
+        <div>
+            <span class="eyebrow">Aktivitas terbaru</span>
+            <h2>Pesanan masuk</h2>
+        </div>
+        <a href="{{ route('admin.cashiers.index') }}" class="btn btn-secondary btn-sm">Kelola {{ $cashierCount }} akun kasir</a>
+    </div>
+    @if($recentOrders->isEmpty())
+        <div class="empty-state"><span class="empty-state-mark" aria-hidden="true">＋</span><h3>Belum ada pesanan tercatat</h3><p>Pesanan online dan pesanan kasir akan muncul di sini.</p></div>
+    @else
+        <div style="overflow-x: auto;">
+            <table class="admin-table">
+                <thead><tr><th>Nomor</th><th>Pelanggan</th><th>Jenis layanan</th><th>Menu</th><th>Status</th><th>Total</th></tr></thead>
+                <tbody>
+                    @foreach($recentOrders as $order)
+                        <tr>
+                            <td><strong>{{ $order->order_number }}</strong><div class="text-xs text-muted">{{ $order->created_at->format('d M, H:i') }}</div></td>
+                            <td>{{ $order->customer_name }}</td>
+                            <td>{{ $order->service_method === 'dine_in' ? 'Makan di tempat' : ($order->service_method === 'takeaway' ? 'Bawa pulang' : 'Pesan antar') }}</td>
+                            <td>{{ $order->items->sum('quantity') }} item</td>
+                            <td><span class="order-status status-{{ $order->status }}">{{ str_replace('_', ' ', $order->status) }}</span></td>
+                            <td><strong>{{ $order->formatted_total }}</strong></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+</section>
 
 <!-- Out of Stock Alert & Management Section (FR-20) -->
 <div class="card" style="padding: var(--space-lg); margin-bottom: var(--space-xl);">

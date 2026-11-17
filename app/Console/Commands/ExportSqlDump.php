@@ -23,6 +23,8 @@ class ExportSqlDump extends Command
             'chicken_cuts',
             'drink_options',
             'promos',
+            'orders',
+            'order_items',
         ];
 
         $sql = "-- Dump Database Geprek GLO Salatiga\n";
@@ -30,6 +32,8 @@ class ExportSqlDump extends Command
         $sql .= "-- Waktu: " . date('Y-m-d H:i:s') . "\n\n";
         $sql .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
 
+        $sql .= "DROP TABLE IF EXISTS `order_items`;\n";
+        $sql .= "DROP TABLE IF EXISTS `orders`;\n";
         // Users schema
         $sql .= "DROP TABLE IF EXISTS `users`;\n";
         $sql .= "CREATE TABLE `users` (\n"
@@ -38,6 +42,7 @@ class ExportSqlDump extends Command
               . "  `username` varchar(255) NOT NULL UNIQUE,\n"
               . "  `email` varchar(255) DEFAULT NULL UNIQUE,\n"
               . "  `password` varchar(255) NOT NULL,\n"
+              . "  `role` varchar(255) NOT NULL DEFAULT 'admin',\n"
               . "  `remember_token` varchar(100) DEFAULT NULL,\n"
               . "  `created_at` timestamp NULL DEFAULT NULL,\n"
               . "  `updated_at` timestamp NULL DEFAULT NULL,\n"
@@ -94,6 +99,51 @@ class ExportSqlDump extends Command
               . "  PRIMARY KEY (`id`),\n"
               . "  KEY `menu_items_category_id_foreign` (`category_id`),\n"
               . "  CONSTRAINT `menu_items_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE\n"
+              . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n\n";
+
+        // Orders and immutable menu snapshots
+        $sql .= "CREATE TABLE `orders` (\n"
+              . "  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n"
+              . "  `order_number` varchar(255) DEFAULT NULL UNIQUE,\n"
+              . "  `user_id` bigint unsigned DEFAULT NULL,\n"
+              . "  `cashier_id` bigint unsigned DEFAULT NULL,\n"
+              . "  `customer_name` varchar(255) NOT NULL,\n"
+              . "  `customer_phone` varchar(30) DEFAULT NULL,\n"
+              . "  `service_method` varchar(20) NOT NULL,\n"
+              . "  `table_number` varchar(20) DEFAULT NULL,\n"
+              . "  `customer_address` text DEFAULT NULL,\n"
+              . "  `subtotal` int unsigned NOT NULL,\n"
+              . "  `packaging_fee` int unsigned NOT NULL DEFAULT '0',\n"
+              . "  `total` int unsigned NOT NULL,\n"
+              . "  `status` varchar(20) NOT NULL DEFAULT 'pending',\n"
+              . "  `source` varchar(20) NOT NULL DEFAULT 'online',\n"
+              . "  `created_at` timestamp NULL DEFAULT NULL,\n"
+              . "  `updated_at` timestamp NULL DEFAULT NULL,\n"
+              . "  PRIMARY KEY (`id`),\n"
+              . "  KEY `orders_status_created_at_index` (`status`, `created_at`),\n"
+              . "  KEY `orders_user_id_foreign` (`user_id`),\n"
+              . "  KEY `orders_cashier_id_foreign` (`cashier_id`),\n"
+              . "  CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,\n"
+              . "  CONSTRAINT `orders_cashier_id_foreign` FOREIGN KEY (`cashier_id`) REFERENCES `users` (`id`) ON DELETE SET NULL\n"
+              . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n\n";
+        $sql .= "CREATE TABLE `order_items` (\n"
+              . "  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n"
+              . "  `order_id` bigint unsigned NOT NULL,\n"
+              . "  `menu_item_id` bigint unsigned DEFAULT NULL,\n"
+              . "  `item_name` varchar(255) NOT NULL,\n"
+              . "  `quantity` smallint unsigned NOT NULL,\n"
+              . "  `unit_price` int unsigned NOT NULL,\n"
+              . "  `line_total` int unsigned NOT NULL,\n"
+              . "  `chicken_cut` varchar(255) DEFAULT NULL,\n"
+              . "  `drink_option` varchar(255) DEFAULT NULL,\n"
+              . "  `note` varchar(255) DEFAULT NULL,\n"
+              . "  `created_at` timestamp NULL DEFAULT NULL,\n"
+              . "  `updated_at` timestamp NULL DEFAULT NULL,\n"
+              . "  PRIMARY KEY (`id`),\n"
+              . "  KEY `order_items_order_id_foreign` (`order_id`),\n"
+              . "  KEY `order_items_menu_item_id_foreign` (`menu_item_id`),\n"
+              . "  CONSTRAINT `order_items_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,\n"
+              . "  CONSTRAINT `order_items_menu_item_id_foreign` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_items` (`id`) ON DELETE SET NULL\n"
               . ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;\n\n";
 
         // Chicken cuts schema

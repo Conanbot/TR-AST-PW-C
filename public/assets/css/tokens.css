@@ -4,25 +4,37 @@
  */
 
 :root {
-  /* Color Palette */
-  --bg: #0F0F10;
-  --bg-elevated: #151517;
-  --surface: #1A1A1C;
-  --surface-card: #222226;
-  --surface-hover: #2A2A30;
-  --border: #2E2E33;
-  --border-light: #3D3D45;
+  color-scheme: light;
+  --red-700: #B91C2B;
+  --red-600: #D91F32;
+  --red-100: #FCE7E8;
+  --yellow-500: #F4BC36;
+  --yellow-100: #FFF2C7;
+  --ink-900: #29211F;
+  --ink-700: #514542;
+  --ink-500: #746863;
+  --paper-50: #FFF9F1;
+  --paper-100: #FFFDF9;
+  --paper-200: #F3E9DC;
 
-  /* Brand Accents */
-  --primary: #D7263D;       /* Merah Cabai Utama */
-  --primary-hover: #A01B2D; /* Merah Gelap Aktif */
-  --primary-glow: rgba(215, 38, 61, 0.25);
+  --bg: var(--paper-50);
+  --bg-elevated: var(--paper-100);
+  --surface: #FFFFFF;
+  --surface-card: #FFFFFF;
+  --surface-hover: #FFF3E7;
+  --border: var(--paper-200);
+  --border-light: #E5D6C6;
+  --primary: var(--red-700);
+  --primary-hover: #951525;
+  --primary-glow: rgba(185, 28, 43, 0.14);
+  --accent: var(--yellow-500);
+  --accent-soft: var(--yellow-100);
   
   /* Status Colors */
-  --ok: #2ECC71;            /* Buka / Tersedia */
+  --ok: #187847;
   --ok-glow: rgba(46, 204, 113, 0.2);
   --off: #7A7A80;           /* Tutup / Habis */
-  --warning: #F39C12;
+  --warning: #9A5A00;
   --info: #3498DB;
 
   /* WhatsApp Official */
@@ -31,9 +43,9 @@
   --wa-glow: rgba(37, 211, 102, 0.3);
 
   /* Typography Colors */
-  --text: #F5F5F5;
-  --text-muted: #A8A8AD;
-  --text-dim: #707075;
+  --text: var(--ink-900);
+  --text-muted: var(--ink-700);
+  --text-dim: var(--ink-500);
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -46,9 +58,9 @@
   --radius-pill: 9999px;
 
   /* Elevation & Shadows */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 2px 5px rgba(67, 45, 28, 0.06);
+  --shadow-md: 0 8px 22px rgba(67, 45, 28, 0.09);
+  --shadow-lg: 0 18px 48px rgba(67, 45, 28, 0.12);
   --shadow-glow: 0 0 20px var(--primary-glow);
 
   /* Spacing Scale */
@@ -62,6 +74,34 @@
   /* Layout */
   --container-max: 1200px;
   --header-height: 70px;
+  --focus-ring: 0 0 0 3px rgba(185, 28, 43, 0.24);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #171513;
+  --bg-elevated: #201D1A;
+  --surface: #24211E;
+  --surface-card: #2D2925;
+  --surface-hover: #39332D;
+  --border: #423A33;
+  --border-light: #594D43;
+  --primary: #FF625C;
+  --primary-hover: #E74742;
+  --primary-glow: rgba(255, 98, 92, 0.2);
+  --accent: #F4BC36;
+  --accent-soft: #47391C;
+  --ok: #75D5A1;
+  --off: #AAA19A;
+  --warning: #F4BC36;
+  --info: #79B8EB;
+  --text: #FFF8EF;
+  --text-muted: #D0C4B9;
+  --text-dim: #A99C91;
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.16);
+  --shadow-md: 0 8px 22px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --focus-ring: 0 0 0 3px rgba(255, 98, 92, 0.32);
 }
 
 /* Base Reset */

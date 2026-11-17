@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="orders-url" content="{{ route('orders.store') }}">
     <meta name="description" content="Website Resmi UMKM Geprek GLO Salatiga. Profil kedai, katalog aneka ayam crispy & geprek pedas, dan pemesanan cepat via WhatsApp.">
-    <meta name="theme-color" content="#0F0F10">
+    <meta name="theme-color" content="#FFF9F1">
     <title>@yield('title', 'Geprek GLO Salatiga — Cita Rasa Ayam Crispy & Geprek Pedas Nikmat')</title>
 
-    <!-- Google Fonts -->
+    <script>try { document.documentElement.dataset.theme = localStorage.getItem('glo-theme') || 'light'; } catch (error) { document.documentElement.dataset.theme = 'light'; }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Design Tokens & CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/tokens.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pos.css') }}">
     @stack('styles')
 </head>
 <body>
@@ -23,9 +26,7 @@
             <!-- Brand Logo & Status -->
             <div class="flex items-center gap-md">
                 <a href="{{ route('home') }}" class="flex items-center gap-sm" style="text-decoration: none;">
-                    <span style="font-family: var(--font-heading); font-size: 1.35rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.5px;">
-                        GEPREK <span style="color: var(--primary);">GLO</span>
-                    </span>
+                    <span class="brand-lockup"><span class="brand-mark">G</span><span>Geprek <b>GLO</b></span></span>
                 </a>
 
                 <!-- Live Store Status Badge (FR-06) -->
@@ -44,6 +45,9 @@
                 <a href="{{ route('profil') }}" class="nav-link {{ request()->routeIs('profil') ? 'active' : '' }}">Profil</a>
                 <a href="{{ route('menu') }}" class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Katalog Menu</a>
                 <a href="{{ route('kontak') }}" class="nav-link {{ request()->routeIs('kontak') ? 'active' : '' }}">Lokasi & Kontak</a>
+                @if(auth()->check() && auth()->user()->role === 'customer')
+                    <a href="{{ route('account.dashboard') }}" class="nav-link">Akun saya</a>
+                @endif
             </nav>
 
             <style>
@@ -55,6 +59,12 @@
 
             <!-- Actions (Cart Button & Mobile Hamburger) -->
             <div class="flex items-center gap-sm">
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema"><span aria-hidden="true">◐</span><span class="theme-toggle-label">Tema</span></button>
+                @if(!auth()->check() || auth()->user()->role === 'customer')
+                    <a href="{{ auth()->check() ? route('account.dashboard') : route('account.login') }}" class="btn btn-secondary btn-sm account-shortcut">
+                        {{ auth()->check() ? 'Akun' : 'Masuk' }}
+                    </a>
+                @endif
                 <!-- Cart Button -->
                 <button type="button" class="btn btn-secondary btn-sm" onclick="openCartModal()" aria-label="Buka Keranjang Pesanan" style="position: relative;">
                     <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,6 +97,9 @@
             <a href="{{ route('profil') }}" class="nav-link {{ request()->routeIs('profil') ? 'active' : '' }}">Profil Usaha</a>
             <a href="{{ route('menu') }}" class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Katalog Menu</a>
             <a href="{{ route('kontak') }}" class="nav-link {{ request()->routeIs('kontak') ? 'active' : '' }}">Lokasi & Kontak</a>
+            <a href="{{ route('account.login') }}" class="nav-link">Masuk pelanggan</a>
+            <a href="{{ route('cashier.login') }}" class="nav-link">Portal kasir</a>
+            <a href="{{ route('admin.login') }}" class="nav-link">Portal admin</a>
         </div>
         <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);">
             <div class="text-sm text-muted" style="margin-bottom: 8px;">Status Kedai Hari Ini:</div>

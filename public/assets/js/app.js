@@ -14,9 +14,9 @@ window.showToast = function(message, type = 'info') {
 
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  toast.innerHTML = `
-    <span>${message}</span>
-  `;
+  const label = document.createElement('span');
+  label.textContent = message;
+  toast.appendChild(label);
 
   container.appendChild(toast);
 
@@ -30,6 +30,25 @@ window.showToast = function(message, type = 'info') {
 
 // Mobile Nav Toggle
 document.addEventListener('DOMContentLoaded', () => {
+  const themeButtons = document.querySelectorAll('[data-theme-toggle]');
+  const applyTheme = theme => {
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem('glo-theme', theme);
+    } catch (error) {
+      console.error('Theme preference could not be saved.', error);
+    }
+    themeButtons.forEach(button => {
+      button.setAttribute('aria-pressed', String(theme === 'dark'));
+      button.setAttribute('aria-label', theme === 'dark' ? 'Gunakan tema terang' : 'Gunakan tema gelap');
+      button.title = theme === 'dark' ? 'Gunakan tema terang' : 'Gunakan tema gelap';
+    });
+  };
+  applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  themeButtons.forEach(button => button.addEventListener('click', () => {
+    applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+  }));
+
   const navToggleBtn = document.getElementById('nav-toggle-btn');
   const mobileNav = document.getElementById('mobile-nav');
   const mobileNavClose = document.getElementById('mobile-nav-close');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ChickenCut;
 use App\Models\DrinkOption;
 use App\Models\MenuItem;
+use App\Models\Order;
 use App\Models\Promo;
 use App\Models\StoreSetting;
 use Illuminate\Http\JsonResponse;
@@ -30,6 +31,8 @@ class DashboardController extends Controller
 
         $chickenCuts = ChickenCut::orderBy('sort_order')->get();
         $drinkOptions = DrinkOption::orderBy('sort_order')->get();
+        $recentOrders = Order::with('items')->latest()->take(8)->get();
+        $cashierCount = \App\Models\User::where('role', 'cashier')->count();
 
         return view('admin.dashboard', compact(
             'settings',
@@ -39,7 +42,9 @@ class DashboardController extends Controller
             'activePromos',
             'outOfStockItems',
             'chickenCuts',
-            'drinkOptions'
+            'drinkOptions',
+            'recentOrders',
+            'cashierCount'
         ));
     }
 

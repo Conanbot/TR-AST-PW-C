@@ -1,15 +1,19 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CashierController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\AccessController;
+use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +26,27 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/profil', [ProfileController::class, 'index'])->name('profil');
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
+Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1')->name('orders.store');
+
+Route::prefix('akun')->name('account.')->group(function () {
+    Route::get('/login', [AccessController::class, 'showCustomerLogin'])->name('login');
+    Route::post('/login', [AccessController::class, 'loginCustomer'])->middleware('throttle:6,1')->name('login.submit');
+    Route::get('/daftar', [AccessController::class, 'showCustomerRegister'])->name('register');
+    Route::post('/daftar', [AccessController::class, 'registerCustomer'])->middleware('throttle:6,1')->name('register.submit');
+    Route::post('/logout', [AccessController::class, 'logout'])->name('logout');
+    Route::get('/', [AccessController::class, 'dashboardCustomer'])->middleware(['auth', 'role:customer'])->name('dashboard');
+});
+
+Route::prefix('kasir')->name('cashier.')->group(function () {
+    Route::get('/login', [AccessController::class, 'showCashierLogin'])->name('login');
+    Route::post('/login', [AccessController::class, 'loginCashier'])->middleware('throttle:6,1')->name('login.submit');
+    Route::post('/logout', [AccessController::class, 'logout'])->name('logout');
+    Route::middleware(['auth', 'role:cashier'])->group(function () {
+        Route::get('/', [CashierDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/orders', [CashierDashboardController::class, 'storeOrder'])->name('orders.store');
+        Route::patch('/orders/{order}/status', [CashierDashboardController::class, 'updateStatus'])->name('orders.status');
+    });
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -46,9 +71,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     | Admin Protected Routes (Middleware Auth)
     |--------------------------------------------------------------------------
     */
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::patch('/store/toggle', [DashboardController::class, 'toggleStore'])->name('store.toggle');
+        Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
+        Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
 
         // Stock quick toggles
         Route::get('/stock', [StockController::class, 'index'])->name('stock.index');

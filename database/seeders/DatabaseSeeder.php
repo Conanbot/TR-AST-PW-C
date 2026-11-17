@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin Geprek GLO',
                 'email' => 'admin@geprekglo.com',
                 'password' => Hash::make('admin123'),
+                'role' => 'admin',
             ]
         );
 

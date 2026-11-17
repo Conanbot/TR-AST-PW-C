@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
+
+class CashierController extends Controller
+{
+    public function index(): View
+    {
+        $cashiers = User::where('role', 'cashier')->orderBy('name')->get();
+
+        return view('admin.cashiers.index', compact('cashiers'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'username' => ['required', 'alpha_dash', 'min:3', 'max:40', 'unique:users,username'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        User::create([
+            'name' => $data['name'],
+            'username' => $data['username'],
+            'password' => Hash::make($data['password']),
+            'role' => 'cashier',
+        ]);
+
+        return redirect()->route('admin.cashiers.index')->with('success', 'Akun kasir berhasil dibuat.');
+    }
+}

@@ -14,7 +14,11 @@ class AuthController extends Controller
     public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route(match (Auth::user()->role) {
+                'admin' => 'admin.dashboard',
+                'cashier' => 'cashier.dashboard',
+                default => 'account.dashboard',
+            });
         }
 
         return view('admin.login');
@@ -32,7 +36,7 @@ class AuthController extends Controller
 
         $remember = $request->boolean('remember');
 
-        if (Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials + ['role' => 'admin'], $remember)) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('admin.dashboard'))

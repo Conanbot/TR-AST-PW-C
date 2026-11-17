@@ -4,6 +4,8 @@
 
 SET FOREIGN_KEY_CHECKS=0;
 
+DROP TABLE IF EXISTS `order_items`;
+DROP TABLE IF EXISTS `orders`;
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -11,6 +13,7 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL UNIQUE,
   `email` varchar(255) DEFAULT NULL UNIQUE,
   `password` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL DEFAULT 'admin',
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -66,6 +69,51 @@ CREATE TABLE `menu_items` (
   CONSTRAINT `menu_items_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `orders` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_number` varchar(255) DEFAULT NULL UNIQUE,
+  `user_id` bigint unsigned DEFAULT NULL,
+  `cashier_id` bigint unsigned DEFAULT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `customer_phone` varchar(30) DEFAULT NULL,
+  `service_method` varchar(20) NOT NULL,
+  `table_number` varchar(20) DEFAULT NULL,
+  `customer_address` text DEFAULT NULL,
+  `subtotal` int unsigned NOT NULL,
+  `packaging_fee` int unsigned NOT NULL DEFAULT '0',
+  `total` int unsigned NOT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `source` varchar(20) NOT NULL DEFAULT 'online',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `orders_status_created_at_index` (`status`, `created_at`),
+  KEY `orders_user_id_foreign` (`user_id`),
+  KEY `orders_cashier_id_foreign` (`cashier_id`),
+  CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `orders_cashier_id_foreign` FOREIGN KEY (`cashier_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `order_items` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint unsigned NOT NULL,
+  `menu_item_id` bigint unsigned DEFAULT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `quantity` smallint unsigned NOT NULL,
+  `unit_price` int unsigned NOT NULL,
+  `line_total` int unsigned NOT NULL,
+  `chicken_cut` varchar(255) DEFAULT NULL,
+  `drink_option` varchar(255) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_items_order_id_foreign` (`order_id`),
+  KEY `order_items_menu_item_id_foreign` (`menu_item_id`),
+  CONSTRAINT `order_items_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `order_items_menu_item_id_foreign` FOREIGN KEY (`menu_item_id`) REFERENCES `menu_items` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `chicken_cuts`;
 CREATE TABLE `chicken_cuts` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -103,7 +151,7 @@ CREATE TABLE `promos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `users`
-INSERT INTO `users` (`id`, `name`, `username`, `email`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES (1, 'Admin Geprek GLO', 'admin', 'admin@geprekglo.com', '$2y$12$hPrQIGnJGiXJXKc2PCksYu7RQ3S/vzhGkg2afC/xemY1z4s6uoP.2', NULL, '2026-11-17 10:24:22', '2026-11-17 10:24:22');
+INSERT INTO `users` (`id`, `name`, `username`, `email`, `password`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES (1, 'Admin Geprek GLO', 'admin', 'admin@geprekglo.com', '$2y$12$hPrQIGnJGiXJXKc2PCksYu7RQ3S/vzhGkg2afC/xemY1z4s6uoP.2', 'admin', NULL, '2026-11-17 10:24:22', '2026-11-17 10:24:22');
 
 -- Dumping data for table `store_settings`
 INSERT INTO `store_settings` (`id`, `is_open`, `wa_number`, `address`, `opening_hours`, `packaging_fee`, `maps_url`, `review_url`, `store_lat`, `store_lng`, `delivery_enabled`, `delivery_radius_m`, `created_at`, `updated_at`) VALUES (1, 1, 6281268177729, 'Jl. Fatmawati, Blotongan, Kec. Sidorejo, Kota Salatiga, Jawa Tengah 50715', 'Senin - Minggu: 10:00 - 21:00 WIB', 1000, 'https://maps.google.com/?q=Blotongan+Salatiga', 'https://maps.google.com/?q=Blotongan+Salatiga', -7.3117469, 110.4851234, 0, 800, '2026-11-17 10:24:22', '2026-11-17 10:24:22');
