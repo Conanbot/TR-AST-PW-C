@@ -67,6 +67,10 @@ const Cart = {
 
     this.saveItems(items);
     window.showToast(`${item.name} berhasil ditambahkan ke keranjang!`, 'success');
+
+    if (this.getTotalQty() >= 20) {
+      window.showToast('Pemesanan ≥ 20 porsi diarahkan untuk negosiasi jadwal melalui chat WA', 'warning');
+    }
   },
 
   updateQty(key, delta) {
@@ -78,6 +82,9 @@ const Cart = {
         items.splice(index, 1);
       }
       this.saveItems(items);
+      if (delta > 0 && this.getTotalQty() >= 20) {
+        window.showToast('Pemesanan ≥ 20 porsi diarahkan untuk negosiasi jadwal melalui chat WA', 'warning');
+      }
     }
   },
 
@@ -232,8 +239,8 @@ const Cart = {
       if (totalQty >= 20) {
         warningEl.style.display = 'block';
         warningEl.innerHTML = `
-          <strong>Pesanan Rombongan (${totalQty} porsi):</strong> 
-          Pemesanan 20 kotak atau lebih akan diarahkan ke WhatsApp untuk konfirmasi ketersediaan dan jadwal masak langsung dengan Ibu Catur.
+          <strong>Peringatan Pemesanan Rombongan (${totalQty} porsi):</strong><br>
+          Pemesanan &ge; 20 porsi diarahkan untuk negosiasi jadwal melalui chat WA.
         `;
       } else {
         warningEl.style.display = 'none';

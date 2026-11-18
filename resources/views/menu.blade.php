@@ -128,7 +128,7 @@
                             </button>
                         @else
                             <button type="button" class="btn btn-primary btn-sm" 
-                                    onclick='openProductModal(@json($item), @json($category->slug))'>
+                                    onclick='openProductModal(@json($item->toArray() + ["image_url" => $item->image_url]), @json($category->slug))'>
                                 {{ $item->is_package || in_array($category->slug, ['paket-hemat', 'aneka-ayam']) ? 'Pilih Varian' : '+ Tambah' }}
                             </button>
                         @endif

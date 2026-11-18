@@ -12,7 +12,7 @@
             if (file_exists(public_path('assets/img/' . $src))) {
                 $imageUrl = asset('assets/img/' . $src);
             } elseif (\Illuminate\Support\Facades\Storage::disk('public')->exists($src)) {
-                $imageUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($src);
+                $imageUrl = asset('storage/' . $src);
             } elseif (file_exists(public_path('storage/' . $src))) {
                 $imageUrl = asset('storage/' . $src);
             } elseif (file_exists(public_path($src))) {

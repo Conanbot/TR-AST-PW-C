@@ -62,7 +62,7 @@ class MenuItem extends Model
         }
 
         if ($this->image && Storage::disk('public')->exists($this->image)) {
-            return Storage::disk('public')->url($this->image);
+            return asset('storage/' . $this->image);
         }
 
         return null;

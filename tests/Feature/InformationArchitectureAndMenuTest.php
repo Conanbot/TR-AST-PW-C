@@ -9,6 +9,7 @@ use App\Models\StoreSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class InformationArchitectureAndMenuTest extends TestCase
@@ -111,6 +112,28 @@ class InformationArchitectureAndMenuTest extends TestCase
             'order_notes' => 'Priority Service, Add Cutlery',
             'kitchen_status' => 'queued',
         ]);
+    }
+
+    public function test_menu_api_returns_uploaded_image_url_on_the_current_host(): void
+    {
+        config(['filesystems.disks.public.url' => 'http://wrong.test/storage']);
+        Storage::fake('public');
+        Storage::disk('public')->put('menu/ayam.jpg', 'image');
+
+        $category = Category::create(['name' => 'Paket Hemat', 'slug' => 'paket-hemat']);
+        MenuItem::create([
+            'category_id' => $category->id,
+            'name' => 'Paket Hemat Ayam Crispy',
+            'price' => 11000,
+            'image' => 'menu/ayam.jpg',
+            'is_available' => true,
+        ]);
+
+        $response = $this->getJson('/api/menu')->assertOk();
+        $imageUrl = $response->json('categories.0.items.0.image');
+
+        $this->assertSame(asset('storage/menu/ayam.jpg'), $imageUrl);
+        $this->assertStringNotContainsString('wrong.test', $imageUrl);
     }
 
     public function test_admin_can_update_kitchen_status_flow(): void
