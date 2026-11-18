@@ -5,7 +5,7 @@
 @section('content')
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: var(--space-lg);">
     <div>
-        <h2 style="font-size: 1.4rem; margin-bottom: 4px;">🍗 Manajemen Menu</h2>
+        <h2 style="font-size: 1.4rem; margin-bottom: 4px;">Manajemen Menu</h2>
         <p class="text-sm text-muted">Tambah, ubah, perbarui harga, ganti foto, dan atur ketersediaan menu.</p>
     </div>
     <a href="{{ route('admin.items.create') }}" class="btn btn-primary">

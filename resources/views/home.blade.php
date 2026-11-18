@@ -3,57 +3,45 @@
 @section('title', 'Geprek GLO Salatiga — Cita Rasa Ayam Crispy & Geprek Pedas Nikmat')
 
 @section('content')
-<!-- Hero Section -->
-<section style="background: radial-gradient(circle at 50% 20%, rgba(215, 38, 61, 0.12), transparent 70%); padding: var(--space-2xl) 0 var(--space-xl) 0; border-bottom: 1px solid var(--border);">
-    <div class="container text-center">
-        <!-- Brand Tagline Badge -->
-        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(215, 38, 61, 0.15); border: 1px solid rgba(215, 38, 61, 0.35); padding: 6px 16px; border-radius: var(--radius-pill); margin-bottom: var(--space-md);">
-            <span style="color: var(--primary); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">
-                🔥 KULINER AYAM CRISPY & GEPREK BLOTONGAN
-            </span>
-        </div>
-
-        <h1 style="max-width: 840px; margin: 0 auto; letter-spacing: -0.5px;">
-            Sensasi Renyah Gurih &amp; <span class="text-primary">Pedas Cabai Segar</span> yang Menggugah Selera
-        </h1>
-
-        <p class="text-muted text-lg" style="max-width: 650px; margin: var(--space-md) auto var(--space-xl) auto; line-height: 1.6;">
-            Ayam goreng tepung keemasan dengan tekstur krispi renyah, dipadukan ulekan cabai rawit segar khas kedai <strong>Geprek GLO Salatiga</strong>. Nikmati santap hemat, puas, dan higienis setiap hari.
-        </p>
-
-        <!-- CTA Action Buttons -->
-        <div class="flex items-center justify-center gap-md flex-wrap">
-            <a href="{{ route('menu') }}" class="btn btn-primary btn-lg">
-                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                </svg>
-                Pesan Menu Sekarang
-            </a>
-            <a href="{{ route('kontak') }}" class="btn btn-secondary btn-lg">
-                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                Lihat Lokasi Kedai
-            </a>
-        </div>
-
-        <!-- Store Status Notice in Hero -->
-        <div style="margin-top: var(--space-lg); display: flex; justify-content: center;">
-            <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-muted); background: var(--surface); padding: 8px 16px; border-radius: var(--radius-pill); border: 1px solid var(--border);">
+<section class="home-hero">
+    <div class="container home-hero-grid">
+        <div class="home-hero-copy">
+            <span class="home-kicker">Ayam crispy &amp; geprek Blotongan</span>
+            <h1>Ayam geprek, <span>hari jadi seru.</span></h1>
+            <p>Ayam krispi panas, sambal cabai segar, dan pilihan paket hemat untuk makan bersama di kampus maupun di rumah.</p>
+            <div class="home-hero-actions">
+                <a href="{{ route('menu') }}" class="btn btn-primary btn-lg">
+                    <svg aria-hidden="true" style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    Pesan menu sekarang
+                </a>
+                <a href="{{ route('kontak') }}" class="btn btn-secondary btn-lg">
+                    <svg aria-hidden="true" style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Lihat lokasi kedai
+                </a>
+            </div>
+            <div class="home-store-status">
                 @if($settings->is_open ?? true)
                     <span class="pulse-dot"></span>
-                    <span>Kedai saat ini <strong class="text-ok">BUKA</strong> — Siap menerima pesanan langsung &amp; takeaway</span>
+                    <span>Kedai <strong class="text-ok">buka</strong> dan siap menerima pesanan</span>
                 @else
                     <span class="pulse-dot closed"></span>
-                    <span>Kedai saat ini <strong class="text-off">TUTUP</strong> — Pemesanan online dapat dijadwalkan via WhatsApp</span>
+                    <span>Kedai <strong class="text-off">tutup</strong> untuk sementara</span>
                 @endif
             </div>
+        </div>
+        <div class="home-hero-art" aria-label="Ilustrasi menu Geprek GLO">
+            <div class="hero-orbit"></div>
+            <div class="hero-plate"><span>GLO</span></div>
+            <div class="hero-price-tag">Menu mulai<br><strong>Rp3.000</strong></div>
         </div>
     </div>
 </section>
 
-<!-- Active Promos Banner Section (FR-01, FR-23) -->
 @if(isset($promos) && $promos->count() > 0)
 <section style="padding: var(--space-xl) 0; background: var(--bg-elevated); border-bottom: 1px solid var(--border);">
     <div class="container">
@@ -83,7 +71,6 @@
 </section>
 @endif
 
-<!-- Menu Unggulan (Best Seller) Section (FR-01) -->
 <section style="padding: var(--space-2xl) 0;">
     <div class="container">
         <div class="text-center" style="max-width: 600px; margin: 0 auto var(--space-xl) auto;">
@@ -98,7 +85,6 @@
             @forelse($featuredItems as $item)
             <div class="card flex flex-col justify-between">
                 <div>
-                    <!-- Product Image Placeholder Component (Section 5) -->
                     <x-product-image :src="$item->image" :alt="$item->name" />
                     
                     <div style="padding: var(--space-md);">
@@ -140,34 +126,40 @@
     </div>
 </section>
 
-<!-- Kategori Menu Ringkasan -->
-<section style="padding: var(--space-xl) 0; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+<section class="home-section" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
     <div class="container">
-        <h3 class="text-center" style="margin-bottom: var(--space-lg); font-size: 1.35rem;">Kategori Pilihan Kami</h3>
-        
-        <div class="grid grid-cols-2 grid-cols-4 gap-md">
+        <div class="home-section-heading">
+            <div>
+                <span class="home-kicker">Pilih sesuai selera</span>
+                <h2>Kategori favorit</h2>
+            </div>
+            <a href="{{ route('menu') }}" class="text-sm text-primary font-semibold">Lihat semua menu &rarr;</a>
+        </div>
+        <div class="home-category-grid">
             @foreach($categories as $cat)
-            <a href="{{ route('menu', ['category' => $cat->slug]) }}" class="card text-center" style="padding: var(--space-lg); text-decoration: none;">
-                <div style="font-size: 2rem; margin-bottom: 8px;">
-                    @if($cat->slug === 'paket-hemat') 🍱
-                    @elseif($cat->slug === 'aneka-ayam') 🍗
-                    @elseif($cat->slug === 'sup') 🍲
-                    @else 🥤
+            <a href="{{ route('menu', ['category' => $cat->slug]) }}" class="home-category-card">
+                <span class="home-category-icon" aria-hidden="true">
+                    @if($cat->slug === 'paket-hemat')
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 7h16v12H4zM8 7V5h8v2M4 11h16"/></svg>
+                    @elseif($cat->slug === 'aneka-ayam')
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3c4 0 7 3 7 7 0 5-3 8-7 8a7 7 0 01-7-7c0-4 3-8 7-8zm-3 13l-3 3m11-3l3 3"/></svg>
+                    @elseif($cat->slug === 'sup')
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 11h14c0 5-3 8-7 8s-7-3-7-8zm2 2h10M8 8c0-1 1-2 1-3m4 3c0-1 1-2 1-3"/></svg>
+                    @else
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 3h10l-1 18H8L7 3zm1 5h8M10 3l1-2m4 2l-1-2"/></svg>
                     @endif
-                </div>
-                <h4 style="font-size: 1rem; color: var(--text);">{{ $cat->name }}</h4>
-                <span class="text-xs text-muted" style="margin-top: 4px; display: block;">{{ $cat->menu_items_count }} Menu Pilihan</span>
+                </span>
+                <h3>{{ $cat->name }}</h3>
+                <span>{{ $cat->menu_items_count }} menu tersedia</span>
             </a>
             @endforeach
         </div>
     </div>
 </section>
 
-<!-- Informasi Layanan & Profil Singkat -->
 <section style="padding: var(--space-2xl) 0;">
     <div class="container">
         <div class="grid grid-cols-1 grid-cols-2 gap-xl items-center">
-            <!-- Cerita Singkat Usaha -->
             <div>
                 <span class="badge badge-promo" style="margin-bottom: 10px;">Tentang Kami</span>
                 <h2 style="margin-bottom: 14px;">Ayam Goreng Tepung Renyah Buatan Ibu Catur</h2>
@@ -182,36 +174,33 @@
                 </a>
             </div>
 
-            <!-- Kartu Layanan Dine-in & Takeaway (FR-11, BR-01) -->
-            <div style="display: flex; flex-direction: column; gap: 14px;">
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid var(--ok);">
-                    <div class="flex items-center gap-sm" style="margin-bottom: 6px;">
-                        <span style="font-size: 1.4rem;">🍽️</span>
-                        <h4 style="font-size: 1.05rem;">Makan di Tempat (Dine-In)</h4>
-                    </div>
+            <div class="grid grid-cols-1 gap-md">
+                <div class="home-service-card">
+                    <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 3v8m-3-8v5a3 3 0 006 0V3m-3 8v10M17 3v18m0-18c3 2 3 7 0 9"/></svg>
+                    <div>
+                        <h3>Makan di Tempat</h3>
                     <p class="text-sm text-muted" style="line-height: 1.5;">
                         Nikmati ayam panas baru selesai digoreng bersama sambal geprek hangat langsung di kedai. Tanpa biaya tambahan apa pun.
                     </p>
-                </div>
-
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid var(--primary);">
-                    <div class="flex items-center gap-sm" style="margin-bottom: 6px;">
-                        <span style="font-size: 1.4rem;">🛍️</span>
-                        <h4 style="font-size: 1.05rem;">Bawa Pulang (Takeaway)</h4>
                     </div>
+                </div>
+                <div class="home-service-card">
+                    <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 8h14l-1 13H6L5 8zm3 0a4 4 0 018 0"/></svg>
+                    <div>
+                        <h3>Bawa Pulang</h3>
                     <p class="text-sm text-muted" style="line-height: 1.5;">
                         Dikemas higienis dengan kertas kotak kokoh dan kantong bersih. Dikenakan biaya kemasan tetap sebesar Rp{{ number_format($settings->packaging_fee ?? 1000, 0, ',', '.') }} per pesanan.
                     </p>
-                </div>
-
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid var(--wa-green);">
-                    <div class="flex items-center gap-sm" style="margin-bottom: 6px;">
-                        <span style="font-size: 1.4rem;">📦</span>
-                        <h4 style="font-size: 1.05rem;">Pesanan Kotak &amp; Rombongan</h4>
                     </div>
+                </div>
+                <div class="home-service-card">
+                    <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 6l9-3 9 3-9 3-9-3zm0 0v12l9 3 9-3V6M12 9v12"/></svg>
+                    <div>
+                        <h3>Pesanan Rombongan</h3>
                     <p class="text-sm text-muted" style="line-height: 1.5;">
                         Menerima pesanan nasi kotak untuk acara keluarga, arisan, rapat kampus, atau Jumat Berkah (minimal 20 porsi). Hubungi kami melalui WhatsApp untuk konfirmasi waktu dan harga spesial.
                     </p>
+                    </div>
                 </div>
             </div>
         </div>

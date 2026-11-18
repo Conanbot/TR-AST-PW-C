@@ -1,8 +1,3 @@
-/**
- * Geprek GLO Salatiga - Core Frontend App Script
- */
-
-// Toast notification utility
 window.showToast = function(message, type = 'info') {
   let container = document.getElementById('toast-container');
   if (!container) {
@@ -28,7 +23,6 @@ window.showToast = function(message, type = 'info') {
   }, 3500);
 };
 
-// Mobile Nav Toggle
 document.addEventListener('DOMContentLoaded', () => {
   const themeButtons = document.querySelectorAll('[data-theme-toggle]');
   const applyTheme = theme => {
@@ -68,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Format Rupiah Helper
 window.formatRupiah = function(number) {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',

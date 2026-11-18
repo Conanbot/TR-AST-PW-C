@@ -13,7 +13,7 @@
 <!-- Potongan Ayam & Minuman Grid -->
 <div class="grid grid-cols-1 grid-cols-2 gap-md" style="margin-bottom: var(--space-xl);">
     <div class="card" style="padding: var(--space-md);">
-        <h4 style="margin-bottom: 10px;">🍗 Potongan Ayam</h4>
+        <h4 style="margin-bottom: 10px;">Potongan Ayam</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
             @foreach($chickenCuts as $cut)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md);">
@@ -29,7 +29,7 @@
     </div>
 
     <div class="card" style="padding: var(--space-md);">
-        <h4 style="margin-bottom: 10px;">🥤 Pilihan Minuman</h4>
+        <h4 style="margin-bottom: 10px;">Pilihan Minuman</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
             @foreach($drinkOptions as $drink)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md);">

@@ -127,7 +127,7 @@
 
             <div class="grid grid-cols-1 grid-cols-2 grid-cols-4 gap-md">
                 <div class="card" style="padding: var(--space-md);">
-                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🍗</div>
+                    <div class="home-category-icon" style="margin-bottom: 8px;" aria-hidden="true"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3c4 0 7 3 7 7 0 5-3 8-7 8a7 7 0 01-7-7c0-4 3-8 7-8zm-3 13l-3 3m11-3l3 3"/></svg></div>
                     <h4 style="margin-bottom: 6px; font-size: 1rem;">Ayam Crispy Original</h4>
                     <p class="text-xs text-muted" style="line-height: 1.5;">
                         Tepung berbumbu rempah dengan teknik penggorengan suhu presisi menghasilkan lapisan krispi keriting yang tahan renyah dan gurih alami.
@@ -135,7 +135,7 @@
                 </div>
 
                 <div class="card" style="padding: var(--space-md);">
-                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🌶️</div>
+                    <div class="home-category-icon" style="margin-bottom: 8px;" aria-hidden="true"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14 4c3 4 1 8-3 11-3 2-6 1-7-1 4 0 6-2 7-5 1-2 2-4 3-5zm-1 1c2-1 4-1 5 0"/></svg></div>
                     <h4 style="margin-bottom: 6px; font-size: 1rem;">Ayam Geprek Cabai Segar</h4>
                     <p class="text-xs text-muted" style="line-height: 1.5;">
                         Ayam crispy panas diulek langsung bersama cabai rawit merah segar dan bawang putih tanpa pengawet. Pedas segar nendang.
@@ -143,7 +143,7 @@
                 </div>
 
                 <div class="card" style="padding: var(--space-md);">
-                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🔥</div>
+                    <div class="home-category-icon" style="margin-bottom: 8px;" aria-hidden="true"><svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 3c2 4-1 6 2 9 2-2 2-4 2-4 3 4 2 9-2 11H8c-4-2-5-7-2-10 1 3 3 3 4 2-1-4 1-6 3-8z"/></svg></div>
                     <h4 style="margin-bottom: 6px; font-size: 1rem;">Ayam Crispy Bakar</h4>
                     <p class="text-xs text-muted" style="line-height: 1.5;">
                         Ayam renyah yang dibalut olesan saus bakar kecap gurih aromatik dan dipanggang sebentar untuk menghasilkan aroma manis berasap.

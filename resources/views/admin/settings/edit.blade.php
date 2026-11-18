@@ -4,7 +4,7 @@
 
 @section('content')
 <div style="margin-bottom: var(--space-lg);">
-    <h2 style="font-size: 1.4rem; margin-bottom: 4px;">⚙️ Pengaturan Toko &amp; Kontak</h2>
+    <h2 style="font-size: 1.4rem; margin-bottom: 4px;">Pengaturan Toko &amp; Kontak</h2>
     <p class="text-sm text-muted">
         Konfigurasikan informasi resmi kedai, nomor WhatsApp pemesanan, jam buka, biaya kemasan, dan layanan pesan antar.
     </p>

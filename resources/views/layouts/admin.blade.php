@@ -9,9 +9,10 @@
     <script>try { document.documentElement.dataset.theme = localStorage.getItem('glo-theme') || 'light'; } catch (error) { document.documentElement.dataset.theme = 'light'; }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/tokens.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pos.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/glo.css') }}">
     @stack('styles')
 </head>
 <body class="console-page admin-page">
@@ -58,13 +59,13 @@
         <aside class="admin-sidebar">
             <span class="eyebrow admin-sidebar-label">Kelola kedai</span>
             <nav class="admin-nav-links" aria-label="Navigasi admin">
-                <a href="{{ route('admin.dashboard') }}" class="admin-nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">⌂</span>Ikhtisar</a>
-                <a href="{{ route('admin.stock.index') }}" class="admin-nav-item {{ request()->routeIs('admin.stock.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">◉</span>Stok menu</a>
-                <a href="{{ route('admin.items.index') }}" class="admin-nav-item {{ request()->routeIs('admin.items.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">▦</span>Menu</a>
-                <a href="{{ route('admin.promos.index') }}" class="admin-nav-item {{ request()->routeIs('admin.promos.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">✦</span>Promo</a>
-                <a href="{{ route('admin.cashiers.index') }}" class="admin-nav-item {{ request()->routeIs('admin.cashiers.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">♙</span>Akun kasir</a>
-                <a href="{{ route('admin.settings.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">⚙</span>Pengaturan kedai</a>
-                <a href="{{ route('admin.password.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.password.*') ? 'active' : '' }}"><span class="admin-nav-icon" aria-hidden="true">🔒</span>Ubah password</a>
+                <a href="{{ route('admin.dashboard') }}" class="admin-nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Ikhtisar</a>
+                <a href="{{ route('admin.stock.index') }}" class="admin-nav-item {{ request()->routeIs('admin.stock.*') ? 'active' : '' }}">Stok menu</a>
+                <a href="{{ route('admin.items.index') }}" class="admin-nav-item {{ request()->routeIs('admin.items.*') ? 'active' : '' }}">Menu</a>
+                <a href="{{ route('admin.promos.index') }}" class="admin-nav-item {{ request()->routeIs('admin.promos.*') ? 'active' : '' }}">Promo</a>
+                <a href="{{ route('admin.cashiers.index') }}" class="admin-nav-item {{ request()->routeIs('admin.cashiers.*') ? 'active' : '' }}">Akun kasir</a>
+                <a href="{{ route('admin.settings.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">Pengaturan kedai</a>
+                <a href="{{ route('admin.password.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.password.*') ? 'active' : '' }}">Ubah password</a>
             </nav>
             <div class="admin-sidebar-bottom">
                 <span class="sidebar-note">Panel pengelola Geprek GLO</span>

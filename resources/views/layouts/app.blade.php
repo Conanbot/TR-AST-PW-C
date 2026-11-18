@@ -12,24 +12,21 @@
     <script>try { document.documentElement.dataset.theme = localStorage.getItem('glo-theme') || 'light'; } catch (error) { document.documentElement.dataset.theme = 'light'; }</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Design Tokens & CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/tokens.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/pos.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/glo.css') }}">
     @stack('styles')
 </head>
 <body>
-    <!-- Site Header -->
     <header class="site-header">
         <div class="container flex items-center justify-between">
-            <!-- Brand Logo & Status -->
             <div class="flex items-center gap-md">
                 <a href="{{ route('home') }}" class="flex items-center gap-sm" style="text-decoration: none;">
                     <span class="brand-lockup"><span class="brand-mark">G</span><span>Geprek <b>GLO</b></span></span>
                 </a>
 
-                <!-- Live Store Status Badge (FR-06) -->
                 @php
                     $isOpen = $settings->is_open ?? true;
                 @endphp
@@ -39,7 +36,6 @@
                 </div>
             </div>
 
-            <!-- Desktop Navigation -->
             <nav class="flex items-center gap-sm" style="display: none;" id="desktop-nav">
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
                 <a href="{{ route('profil') }}" class="nav-link {{ request()->routeIs('profil') ? 'active' : '' }}">Profil</a>
@@ -57,7 +53,6 @@
                 }
             </style>
 
-            <!-- Actions (Cart Button & Mobile Hamburger) -->
             <div class="flex items-center gap-sm">
                 <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema"><span aria-hidden="true">◐</span><span class="theme-toggle-label">Tema</span></button>
                 @if(!auth()->check() || auth()->user()->role === 'customer')
@@ -65,7 +60,6 @@
                         {{ auth()->check() ? 'Akun' : 'Masuk' }}
                     </a>
                 @endif
-                <!-- Cart Button -->
                 <button type="button" class="btn btn-secondary btn-sm" onclick="openCartModal()" aria-label="Buka Keranjang Pesanan" style="position: relative;">
                     <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
@@ -74,7 +68,6 @@
                     <span class="cart-count-badge badge badge-best-seller" style="display: none; padding: 2px 6px; font-size: 0.7rem;">0</span>
                 </button>
 
-                <!-- Mobile Hamburger Toggle -->
                 <button type="button" id="nav-toggle-btn" class="btn btn-secondary btn-sm" aria-label="Menu Navigasi">
                     <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
@@ -84,7 +77,6 @@
         </div>
     </header>
 
-    <!-- Mobile Navigation Drawer -->
     <div id="mobile-nav" class="mobile-nav">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
             <span style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: #FFFFFF;">
@@ -110,12 +102,10 @@
         </div>
     </div>
 
-    <!-- Main Content Area -->
     <main style="flex: 1 0 auto;">
         @yield('content')
     </main>
 
-    <!-- Cart Modal Overlay -->
     <div id="cart-modal" class="modal-overlay" onclick="handleModalOverlayClick(event)">
         <div class="modal-content" role="dialog" aria-labelledby="cart-modal-title">
             <div class="modal-header">
@@ -129,18 +119,13 @@
             </div>
 
             <div class="modal-body">
-                <!-- Out of Stock / Closed Notice if any -->
                 <div id="checkout-closed-warning" style="display: none; background: rgba(122,122,128,0.15); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.85rem; margin-bottom: 14px;"></div>
                 
-                <!-- Order List -->
                 <div id="cart-drawer-items">
-                    <!-- Populated by Cart.renderCartDrawer() -->
                 </div>
 
-                <!-- Big Order Notice (BR-04) -->
                 <div id="checkout-order-warning" style="display: none; background: rgba(243,156,18,0.15); border: 1px solid rgba(243,156,18,0.4); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.85rem; margin-top: 14px;"></div>
 
-                <!-- Customer Details & Service Options (FR-11) -->
                 <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
                     <div class="form-group">
                         <label for="customer-name" class="form-label">Nama Pemesan <span class="text-primary">*</span></label>
@@ -178,7 +163,6 @@
                         </div>
                     </div>
 
-                    <!-- Customer Address (Required if delivery) -->
                     <div id="delivery-address-container" class="form-group" style="display: none;">
                         <label for="customer-address" class="form-label">Alamat Pengantaran & Catatan Lokasi <span class="text-primary">*</span></label>
                         <textarea id="customer-address" class="form-control" placeholder="Tuliskan nama jalan, nomor rumah / kos, patokan, dll."></textarea>
@@ -196,7 +180,6 @@
                     </script>
                 </div>
 
-                <!-- Price Summary -->
                 <div style="margin-top: 16px; padding: 14px; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
                         <span class="text-muted">Subtotal Menu:</span>
@@ -225,10 +208,11 @@
         </div>
     </div>
 
-    <!-- Mobile Floating Cart Bar -->
     <div id="cart-floating-bar" class="cart-floating-bar" style="display: none;" onclick="openCartModal()">
         <div class="flex items-center gap-sm">
-            <span class="badge badge-best-seller" style="font-size: 0.8rem; padding: 4px 8px;">🛒</span>
+            <span class="badge badge-best-seller" style="font-size: 0.8rem; padding: 4px 8px;">
+                <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l2.4 11.2a2 2 0 002 1.6h7.8a2 2 0 001.9-1.4L21 7H6M10 20h.01M18 20h.01"/></svg>
+            </span>
             <div>
                 <div class="floating-cart-count" style="font-weight: 700; font-size: 0.95rem; color: #FFFFFF;">0 menu</div>
                 <div class="text-xs text-muted">Tekan untuk checkout pesanan</div>
@@ -240,11 +224,9 @@
         </div>
     </div>
 
-    <!-- Site Footer -->
     <footer class="site-footer">
         <div class="container">
             <div class="grid grid-cols-1 grid-cols-2 grid-cols-4 gap-lg" style="margin-bottom: var(--space-xl);">
-                <!-- Brand Info -->
                 <div style="grid-column: span 1; @media (min-width: 1024px) { grid-column: span 2; }">
                     <span style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: #FFFFFF;">
                         GEPREK <span style="color: var(--primary);">GLO</span>
@@ -260,7 +242,6 @@
                     </div>
                 </div>
 
-                <!-- Navigation Links -->
                 <div>
                     <h4 style="font-size: 1rem; margin-bottom: 12px; color: #FFFFFF;">Navigasi</h4>
                     <div class="flex flex-col gap-sm text-sm text-muted">
@@ -272,7 +253,6 @@
                     </div>
                 </div>
 
-                <!-- Contact & Hours -->
                 <div>
                     <h4 style="font-size: 1rem; margin-bottom: 12px; color: #FFFFFF;">Jam Operasional & Alamat</h4>
                     <div class="flex flex-col gap-sm text-sm text-muted">
@@ -293,7 +273,6 @@
                 </div>
             </div>
 
-            <!-- Footer Bottom -->
             <div style="border-top: 1px solid var(--border); padding-top: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; font-size: 0.825rem; color: var(--text-dim);">
                 <div>
                     &copy; {{ date('Y') }} Geprek GLO Salatiga. Hak cipta dilindungi.
@@ -305,11 +284,9 @@
         </div>
     </footer>
 
-    <!-- Core Scripts -->
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/cart.js') }}"></script>
     <script>
-        // Initialize Cart with settings from server
         Cart.init({
             isOpen: {{ ($settings->is_open ?? true) ? 'true' : 'false' }},
             waNumber: '{{ $settings->wa_number ?? "6281268177729" }}',

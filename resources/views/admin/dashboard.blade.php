@@ -142,7 +142,7 @@
 <div class="grid grid-cols-1 grid-cols-2 gap-lg" style="margin-bottom: var(--space-xl);">
     <!-- Potongan Ayam -->
     <div class="card" style="padding: var(--space-lg);">
-        <h4 style="margin-bottom: 12px; font-size: 1.05rem;">🍗 Status Stok Potongan Ayam</h4>
+        <h4 style="margin-bottom: 12px; font-size: 1.05rem;">Status Stok Potongan Ayam</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
             @foreach($chickenCuts as $cut)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
@@ -160,7 +160,7 @@
 
     <!-- Opsi Minuman Paket -->
     <div class="card" style="padding: var(--space-lg);">
-        <h4 style="margin-bottom: 12px; font-size: 1.05rem;">🥤 Status Opsi Minuman Paket</h4>
+        <h4 style="margin-bottom: 12px; font-size: 1.05rem;">Status Opsi Minuman Paket</h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
             @foreach($drinkOptions as $drink)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
@@ -188,7 +188,7 @@
             + Tambah Banner Promo
         </a>
         <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary">
-            ⚙️ Ubah Info Toko &amp; WhatsApp
+            Ubah Info Toko &amp; WhatsApp
         </a>
     </div>
 </div>

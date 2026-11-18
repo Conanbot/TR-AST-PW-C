@@ -1,6 +1,6 @@
 :root {
-  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-heading: "Nunito", var(--font-sans);
+  --font-sans: "Work Sans", "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: "Outfit", "Nunito", var(--font-sans);
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 22px;
