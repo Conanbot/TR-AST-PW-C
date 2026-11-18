@@ -176,8 +176,8 @@ const Cart = {
           
           ${(item.cut || item.drink) ? `
             <div class="text-xs" style="color: var(--text-muted); display: flex; gap: 8px; flex-wrap: wrap;">
-              ${item.cut ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 6px; font-size: 0.7rem;">🍗 ${escapeHtml(item.cut)}</span>` : ''}
-              ${item.drink ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 6px; font-size: 0.7rem;">🥤 ${escapeHtml(item.drink)}</span>` : ''}
+              ${item.cut ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 8px; font-size: 0.75rem; border: 1px solid var(--border); text-transform: uppercase; font-weight: 600;">Potongan: ${escapeHtml(item.cut)}</span>` : ''}
+              ${item.drink ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 8px; font-size: 0.75rem; border: 1px solid var(--border); text-transform: uppercase; font-weight: 600;">Minuman: ${escapeHtml(item.drink)}</span>` : ''}
             </div>
           ` : ''}
 
@@ -232,8 +232,8 @@ const Cart = {
       if (totalQty >= 20) {
         warningEl.style.display = 'block';
         warningEl.innerHTML = `
-          ⚠️ <strong>Pesanan Rombongan (${totalQty} porsi):</strong> 
-          Pemesanan 20 kotak atau lebih akan diarahkan ke WhatsApp untuk konfirmasi ketersediaan & jadwal masak langsung dengan Ibu Catur.
+          <strong>Pesanan Rombongan (${totalQty} porsi):</strong> 
+          Pemesanan 20 kotak atau lebih akan diarahkan ke WhatsApp untuk konfirmasi ketersediaan dan jadwal masak langsung dengan Ibu Catur.
         `;
       } else {
         warningEl.style.display = 'none';
@@ -245,7 +245,7 @@ const Cart = {
       if (!this.settings.isOpen) {
         closedWarningEl.style.display = 'block';
         closedWarningEl.innerHTML = `
-          ⛔ <strong>Kedai Sedang Tutup:</strong> 
+          <strong>Kedai Sedang Tutup:</strong> 
           Saat ini kedai sedang berstatus Tutup. Anda tetap dapat mengirimkan pesan ke WhatsApp untuk menanyakan jadwal buka berikutnya.
         `;
       } else {
@@ -260,6 +260,15 @@ const Cart = {
 
   // WhatsApp Message Composer (FR-10, BR-01)
   async checkoutWhatsApp() {
+    if (window.isUserLoggedIn === false) {
+      if (typeof window.openAuthRequiredModal === 'function') {
+        window.openAuthRequiredModal();
+      } else {
+        window.location.href = '/akun/login?redirect=' + encodeURIComponent(window.location.pathname);
+      }
+      return;
+    }
+
     const items = this.getItems();
     if (items.length === 0) {
       window.showToast('Keranjang Anda masih kosong!', 'error');
@@ -267,9 +276,14 @@ const Cart = {
     }
 
     const customerNameInput = document.getElementById('customer-name');
+    const customerPhoneInput = document.getElementById('customer-phone');
     const customerAddressInput = document.getElementById('customer-address');
+    const tableNumberInput = document.getElementById('table-number');
+
     const customerName = customerNameInput ? customerNameInput.value.trim() : '';
+    const customerPhone = customerPhoneInput ? customerPhoneInput.value.trim() : '';
     const customerAddress = customerAddressInput ? customerAddressInput.value.trim() : '';
+    const tableNumber = tableNumberInput ? tableNumberInput.value.trim() : '';
 
     if (!customerName) {
       window.showToast('Harap masukkan nama pemesan terlebih dahulu.', 'error');
@@ -287,6 +301,11 @@ const Cart = {
         return;
       }
     }
+
+    // Information Architecture: Collect Order Notes (Priority Service, Add Cutlery, Birthday Message, Table Change)
+    const selectedNoteTags = Array.from(document.querySelectorAll('input[name="order_note_tag"]:checked'))
+      .map(cb => cb.value);
+    const orderNotes = selectedNoteTags.join(', ');
 
     const checkoutWindow = window.open('about:blank', '_blank');
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -306,8 +325,11 @@ const Cart = {
         },
         body: JSON.stringify({
           customer_name: customerName,
+          customer_phone: customerPhone || null,
           service_method: serviceMethod,
+          table_number: (serviceMethod === 'dine_in' && tableNumber) ? tableNumber : null,
           customer_address: customerAddress || null,
+          order_notes: orderNotes || null,
           items: items.map(item => ({
             id: item.id,
             qty: item.qty,

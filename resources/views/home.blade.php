@@ -55,14 +55,19 @@
 
         <div class="grid grid-cols-1 grid-cols-2 gap-md">
             @foreach($promos as $promo)
-            <div class="card" style="padding: var(--space-md); display: flex; flex-direction: column; justify-content: space-between; border-left: 4px solid var(--primary);">
-                <div>
+            <div class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; border-left: 4px solid var(--primary);">
+                @if($promo->image)
+                    <div style="height: 180px; overflow: hidden; background: var(--surface);">
+                        <img src="{{ $promo->image_url }}" alt="{{ $promo->title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                @endif
+                <div style="padding: var(--space-md);">
                     <h4 style="color: #FFFFFF; font-size: 1.1rem; margin-bottom: 6px;">{{ $promo->title }}</h4>
                     <p class="text-sm text-muted" style="line-height: 1.5;">{{ $promo->subtitle }}</p>
-                </div>
-                <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
-                    <span class="text-xs text-dim">Berlaku untuk Dine-In &amp; Takeaway</span>
-                    <a href="{{ route('menu') }}" class="btn btn-outline-primary btn-sm">Pesan Promo</a>
+                    <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                        <span class="text-xs text-dim">Berlaku Dine-In &amp; Takeaway</span>
+                        <a href="{{ route('menu') }}" class="btn btn-outline-primary btn-sm">Pesan Promo</a>
+                    </div>
                 </div>
             </div>
             @endforeach

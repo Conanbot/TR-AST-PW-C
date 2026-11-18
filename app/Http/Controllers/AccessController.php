@@ -27,19 +27,28 @@ class AccessController extends Controller
     public function loginCustomer(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        if (!Auth::attempt($credentials + ['role' => 'customer'], $request->boolean('remember'))) {
+        $user = User::where('role', 'customer')
+            ->where(function ($q) use ($credentials) {
+                $q->where('email', $credentials['email'])
+                  ->orWhere('phone', $credentials['email'])
+                  ->orWhere('username', $credentials['email']);
+            })->first();
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
-                'email' => 'Email atau kata sandi tidak cocok dengan akun pelanggan.',
+                'email' => 'Email/No. WhatsApp atau kata sandi tidak cocok dengan akun pelanggan.',
             ]);
         }
 
+        Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        return redirect()->intended(route('account.dashboard'));
+        $redirectTo = $request->input('redirect') ?: route('menu');
+        return redirect()->intended($redirectTo)->with('success', 'Selamat datang kembali, ' . $user->name . '! Akun Anda aktif. Silakan pilih menu favorit Anda.');
     }
 
     public function registerCustomer(Request $request): RedirectResponse
@@ -47,6 +56,7 @@ class AccessController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'phone' => ['nullable', 'string', 'max:30'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
@@ -57,18 +67,17 @@ class AccessController extends Controller
             $username = $baseUsername . $suffix++;
         }
 
-        $user = User::create([
+        User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
             'username' => $username,
             'password' => Hash::make($data['password']),
             'role' => 'customer',
         ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()->route('account.dashboard')->with('success', 'Akun pelanggan berhasil dibuat.');
+        // Per user requirements: User registers -> data saved to database -> then logs in using newly registered account
+        return redirect()->route('account.login')->with('success', 'Registrasi berhasil! Data akun Anda telah disimpan. Silakan masuk dengan email/nomor WhatsApp dan kata sandi yang baru Anda daftarkan.');
     }
 
     public function dashboardCustomer(Request $request): View

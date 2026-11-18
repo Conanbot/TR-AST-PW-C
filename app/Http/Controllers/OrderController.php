@@ -15,6 +15,7 @@ class OrderController extends Controller
             'customer_phone' => ['nullable', 'string', 'max:30'],
             'service_method' => ['required', 'in:dine_in,takeaway,delivery'],
             'table_number' => ['nullable', 'string', 'max:20'],
+            'order_notes' => ['nullable', 'string', 'max:255'],
             'customer_address' => ['required_if:service_method,delivery', 'nullable', 'string', 'max:1000'],
             'items' => ['required', 'array', 'min:1', 'max:30'],
             'items.*.id' => ['required', 'integer'],

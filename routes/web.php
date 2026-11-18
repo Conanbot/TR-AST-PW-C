@@ -28,6 +28,9 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
 Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1')->name('orders.store');
 
+Route::get('/login', [AccessController::class, 'showCustomerLogin'])->name('login');
+Route::get('/register', [AccessController::class, 'showCustomerRegister'])->name('register');
+
 Route::prefix('akun')->name('account.')->group(function () {
     Route::get('/login', [AccessController::class, 'showCustomerLogin'])->name('login');
     Route::post('/login', [AccessController::class, 'loginCustomer'])->middleware('throttle:6,1')->name('login.submit');
@@ -74,6 +77,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::patch('/store/toggle', [DashboardController::class, 'toggleStore'])->name('store.toggle');
+        Route::patch('/orders/{order}/kitchen-status', [DashboardController::class, 'updateKitchenStatus'])->name('orders.kitchen-status');
+        Route::post('/orders/{order}/staff-note', [DashboardController::class, 'updateStaffNote'])->name('orders.staff-note');
         Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
         Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
 

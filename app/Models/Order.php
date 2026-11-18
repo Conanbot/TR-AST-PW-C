@@ -17,10 +17,13 @@ class Order extends Model
         'service_method',
         'table_number',
         'customer_address',
+        'order_notes',
+        'staff_notes',
         'subtotal',
         'packaging_fee',
         'total',
         'status',
+        'kitchen_status',
         'source',
     ];
 

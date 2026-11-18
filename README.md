@@ -171,33 +171,49 @@ TR-AST-PW-C/
 
 ## 7. Rangkuman Aturan Bisnis & Fitur Utama
 
-1. **Biaya Kemasan Takeaway (BR-01):** Dikenakan Rp1.000 flat per pesanan bungkus; Dine-in dikenakan Rp0 (tanpa biaya kemasan).
-2. **Katalog & Stok (BR-06):** Menu yang berstatus **Habis** otomatis berubah abu-abu dan tombol tambah dinonaktifkan.
-3. **Pilihan Potongan Ayam & Minuman Paket (BR-08, FR-07, FR-08):**
+1. **Alur Pelanggan & Gating Pemesanan (User Flow):**
+   * Pelanggan baru **wajib mendaftar (Register)** terlebih dahulu &rarr; data akun dan nomor telepon tersimpan di database MySQL &rarr; diarahkan ke halaman **Login** &rarr; masuk menggunakan kredensial baru &rarr; barulah pelanggan dapat memilih menu, menentukan varian, dan melakukan pemesanan.
+   * Pelanggan yang belum login (tamu/guest) atau ter-logout akan dicegat oleh modal interaktif (*Auth Required Modal*) saat mencoba memilih varian menu, menambahkan ke keranjang, atau membuka keranjang.
+   * Alur navigasi mengikuti User Flow: `Login -> Home -> Select / Assign Table | Open Existing Order | Modify Table -> Order Type -> Menu Browser`.
+2. **Penetapan Meja Dine-In (Table Assignment):**
+   * Pelanggan yang login dapat menetapkan nomor meja (Meja 1 s.d. Meja 8, Meja Teras/Lesehan) langsung dari bar sesi pelanggan. Nomor meja otomatis tersinkronisasi ke keranjang belanja dan struk pesanan WhatsApp.
+3. **Information Architecture (Dashboard Operasional 4 Pilar):**
+   * **Orders:** Menampilkan Active Orders, ringkasan Sales Overview (*Daily Revenue*, *Peak Hours: 11:00-14:00 & 17:00-20:00*, *Best Sellers*, *Order Volume*), dan aksi cepat pembaruan status.
+   * **Menu Categories:** Mengelompokkan Menu Items, Food Items (Paket, Ayam, Sup), serta katalog **Add-Ons** resmi (*Nasi Daun Jeruk +2K, Telur Goreng +5K, Sambal Bawang, Sambal Ijo, Sambal Bajak, Sambal Matah*).
+   * **Kitchen (Dapur):** Kanban Cooking Queue 3 tahap interaktif (*Queued &rarr; Prepared &rarr; Ready*), rincian Ready Orders per nomor meja, serta daftar pesanan selesai (*Completed Orders*).
+   * **Support & Notes:** Pelacak *Order Notes* pelanggan (*Priority Service, Add Cutlery, Birthday Message, Table Change*), *Customer Requests*, dan *Staff Messages* (*Kitchen Delay & Item Unavailable*).
+4. **Implementasi Foto Resmi Menu & Promo:**
+   * Seluruh foto produk asli hasil kurasi kedai (Ayam Crispy, Ayam Geprek, Paket Super Komplit, Paket Geprek Telur, PAGEPIN, Kombo Oren, Combo Choco, Minuman Glug, dll.) dan banner promo telah diintegrasikan langsung pada direktori publik (`public/assets/img/menu/`, `public/assets/img/promos/`, `public/assets/img/brand/logo.jpg`), penyimpanan storage, dan basis data `database/geprek_glo.sql`.
+5. **Keranjang Bersih & Bebas Slop Emoji:**
+   * Seluruh ornamen emoji pada kartu keranjang, badge varian potongan ayam, dan minuman paket telah dibersihkan menjadi badge teks terstruktur yang rapi, profesional, dan elegan.
+6. **Biaya Kemasan Takeaway (BR-01):** Dikenakan Rp1.000 flat per pesanan bungkus; Dine-in dikenakan Rp0 (tanpa biaya kemasan).
+7. **Pilihan Potongan Ayam & Minuman Paket (BR-08, FR-07, FR-08):**
    * Menu ayam wajib memilih potongan (Dada, Paha Atas, Paha Bawah, Sayap). Potongan yang habis tidak dapat dipilih.
    * Menu Paket Hemat wajib memilih varian minuman (Es Teh, Teh Hangat, Air Mineral).
-4. **Pemesanan Rombongan (BR-04):** Pesanan $\ge 20$ porsi otomatis menampilkan pemberitahuan khusus untuk negosiasi jadwal masak langsung melalui WhatsApp.
-5. **Status Kedai Manual (BR-05):** Pengelola dapat mengubah status kedai menjadi Buka atau Tutup dalam hitungan detik lewat sakelar admin.
-6. **Layanan Antar (Delivery) (BR-03, FR-14):** Layanan pesan antar berstatus *default nonaktif* (hanya muncul saat diaktifkan admin) dengan validasi radius maksimal 800 meter menggunakan rumus Haversine.
-7. **Placeholder Foto Produk Konsisten:** Seluruh menu yang belum memiliki aset foto asli menampilkan komponen placeholder netral 4:3 bertuliskan *"Foto belum tersedia"* tanpa rekayasa gambar AI/stok pihak ketiga. Saat admin mengunggah foto asli melalui form menu, gambar akan otomatis tampil menggantikan placeholder.
+8. **Pemesanan Rombongan (BR-04):** Pesanan $\ge 20$ porsi otomatis menampilkan pemberitahuan khusus untuk negosiasi jadwal masak langsung melalui WhatsApp.
+9. **Status Kedai Manual (BR-05):** Pengelola dapat mengubah status kedai menjadi Buka atau Tutup dalam hitungan detik lewat sakelar admin.
+10. **Layanan Antar (Delivery) (BR-03, FR-14):** Layanan pesan antar berstatus *default nonaktif* (hanya muncul saat diaktifkan admin) dengan validasi radius maksimal 800 meter menggunakan rumus Haversine.
 
 ---
 
 ## 8. Verifikasi Pengujian Otomatis
 
-Proyek dilengkapi automated feature testing yang memverifikasi kebutuhan fungsional dan keamanan (PRD Section 17):
+Proyek dilengkapi automated feature testing yang memverifikasi seluruh alur pengguna, keamanan, dan integrasi arsitektur informasi:
 ```bash
 php artisan test
 # atau
 vendor/bin/phpunit
 ```
-**Hasil Verifikasi:** `OK (14 tests, 73 assertions)` lulus 100%.
+**Hasil Verifikasi:** `OK (25 tests, 132 assertions)` lulus 100%.
 * `T-01`: Semua navigasi halaman publik berhasil dibuka (200 OK).
+* `T-02`: Alur Registrasi Pelanggan &rarr; Simpan DB &rarr; Redirect Login &rarr; Login Pelanggan &rarr; Akses Menu.
 * `T-03`: Sakelar status kedai admin berhasil mengubah status publik.
 * `T-04`: Pengubahan stok ketersediaan menu berfungsi.
-* `T-06 & T-07`: Kalkulasi biaya kemasan Takeaway (+Rp1.000) dan Dine-In (+Rp0) akurat.
-* `T-11`: Akses halaman admin tanpa sesi login dialihkan ke form login.
-* `T-12`: Login admin dengan kredensial valid dan proteksi pesan salah.
+* `T-05`: Alur Kitchen Queue (*queued* &rarr; *prepared* &rarr; *ready* &rarr; *completed*) berfungsi akurat.
+* `T-06`: Penyimpanan nomor meja dan catatan khusus (*Order Notes: Priority Service, Add Cutlery*) pada pesanan.
+* `T-07 & T-08`: Kalkulasi biaya kemasan Takeaway (+Rp1.000) dan Dine-In (+Rp0) akurat.
+* `T-11`: Akses halaman admin tanpa sesi login dialihkan ke form login admin.
+* `T-12`: Pemisahan login berdasarkan peran (Admin, Kasir, Pelanggan) terproteksi ketat.
 * `T-13 & T-14`: Validasi upload foto menolak file non-gambar/PHP berbahaya dan menolak ukuran > 2 MB.
 * `T-15`: Proteksi SQL Injection pada form login melalui prepared statements Eloquent.
 * Kontrak Endpoint API JSON `/api/menu` dan `/api/settings` sesuai spesifikasi kontrak PRD.

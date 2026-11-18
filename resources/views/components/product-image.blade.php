@@ -6,12 +6,28 @@
 ])
 
 <div class="product-image-box {{ $class }}">
-    @if($src && \Illuminate\Support\Facades\Storage::disk('public')->exists($src))
-        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($src) }}" 
+    @php
+        $imageUrl = null;
+        if ($src) {
+            if (file_exists(public_path('assets/img/' . $src))) {
+                $imageUrl = asset('assets/img/' . $src);
+            } elseif (\Illuminate\Support\Facades\Storage::disk('public')->exists($src)) {
+                $imageUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($src);
+            } elseif (file_exists(public_path('storage/' . $src))) {
+                $imageUrl = asset('storage/' . $src);
+            } elseif (file_exists(public_path($src))) {
+                $imageUrl = asset($src);
+            }
+        }
+    @endphp
+
+    @if($imageUrl)
+        <img src="{{ $imageUrl }}" 
              alt="{{ $alt }}" 
              loading="lazy" 
              width="400" 
-             height="300">
+             height="300"
+             style="width: 100%; height: 100%; object-fit: cover;">
     @else
         <div class="placeholder-content">
             <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

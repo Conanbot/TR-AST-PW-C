@@ -37,6 +37,51 @@
     </div>
 </section>
 
+@if(auth()->check() && auth()->user()->role === 'customer')
+    <!-- User Flow Bar (Login -> Home -> Select / Assign Table | Open Existing Order -> Order Type -> Menu Browser) -->
+    <div style="background: var(--surface-card); border-bottom: 1px solid var(--border); padding: 12px 0;">
+        <div class="container flex flex-wrap justify-between items-center gap-md">
+            <div class="flex items-center gap-sm flex-wrap">
+                <span class="badge badge-open">Pelanggan Aktif: {{ auth()->user()->name }}</span>
+                <div class="flex items-center gap-xs">
+                    <label for="flow-table-select" class="text-xs text-muted" style="margin-right: 4px;">Pilih / Tetapkan Meja (Dine-In):</label>
+                    <select id="flow-table-select" class="form-control" style="padding: 4px 10px; font-size: 0.85rem; width: auto; background: var(--surface); color: var(--text);" onchange="updateFlowTable(this.value)">
+                        <option value="">-- Belum Pilih Meja --</option>
+                        <option value="Meja 1">Meja 1 (Depan)</option>
+                        <option value="Meja 2">Meja 2 (Depan)</option>
+                        <option value="Meja 3">Meja 3 (Tengah)</option>
+                        <option value="Meja 4">Meja 4 (Tengah)</option>
+                        <option value="Meja 5">Meja 5 (Dalam)</option>
+                        <option value="Meja 6">Meja 6 (Dalam)</option>
+                        <option value="Meja 7">Meja 7 (Lesehan)</option>
+                        <option value="Meja 8">Meja 8 (Lesehan)</option>
+                        <option value="Meja Luar / Teras">Meja Luar / Teras</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex items-center gap-sm">
+                <a href="{{ route('account.dashboard') }}" class="btn btn-secondary btn-sm" title="Lihat pesanan yang sedang berjalan atau riwayat">
+                    Lihat Pesanan Saya
+                </a>
+            </div>
+        </div>
+    </div>
+@else
+    <!-- Guest Notification Banner (Gating Menu Selection) -->
+    <div style="background: rgba(215, 38, 61, 0.08); border-bottom: 1px solid rgba(215, 38, 61, 0.2); padding: 12px 0;">
+        <div class="container flex flex-wrap justify-between items-center gap-md">
+            <div class="flex items-center gap-sm">
+                <svg style="width: 20px; height: 20px; color: var(--primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span class="text-sm">Anda sedang menjelajahi katalog sebagai tamu. <strong>Masuk atau daftar</strong> terlebih dahulu sebelum memilih menu.</span>
+            </div>
+            <div class="flex items-center gap-xs">
+                <a href="{{ route('account.login') }}?redirect=/menu" class="btn btn-primary btn-sm">Masuk (Login)</a>
+                <a href="{{ route('account.register') }}" class="btn btn-secondary btn-sm">Daftar Akun Baru</a>
+            </div>
+        </div>
+    </div>
+@endif
+
 <!-- Menu Items Grid Section -->
 <section style="padding: var(--space-xl) 0 var(--space-2xl) 0;">
     <div class="container">
@@ -252,8 +297,32 @@
         }
     });
 
+    function updateFlowTable(tableVal) {
+        if (tableVal) {
+            localStorage.setItem('glo_assigned_table', tableVal);
+            const cartTable = document.getElementById('table-number');
+            if (cartTable) cartTable.value = tableVal;
+            window.showToast('Meja berhasil ditetapkan: ' + tableVal, 'info');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTable = localStorage.getItem('glo_assigned_table');
+        if (savedTable) {
+            const flowSelect = document.getElementById('flow-table-select');
+            if (flowSelect) flowSelect.value = savedTable;
+            const cartTable = document.getElementById('table-number');
+            if (cartTable) cartTable.value = savedTable;
+        }
+    });
+
     // Product Customization Modal logic
     function openProductModal(item, categorySlug) {
+        if (!window.isUserLoggedIn) {
+            openAuthRequiredModal();
+            return;
+        }
+
         activeModalItem = { ...item, categorySlug };
         modalQty = 1;
 

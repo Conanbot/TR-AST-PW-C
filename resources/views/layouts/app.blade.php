@@ -55,9 +55,20 @@
 
             <div class="flex items-center gap-sm">
                 <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema"><span aria-hidden="true">◐</span><span class="theme-toggle-label">Tema</span></button>
-                @if(!auth()->check() || auth()->user()->role === 'customer')
-                    <a href="{{ auth()->check() ? route('account.dashboard') : route('account.login') }}" class="btn btn-secondary btn-sm account-shortcut">
-                        {{ auth()->check() ? 'Akun' : 'Masuk' }}
+                @if(auth()->check() && auth()->user()->role === 'customer')
+                    <a href="{{ route('account.dashboard') }}" class="btn btn-secondary btn-sm account-shortcut" title="Lihat Akun &amp; Riwayat Pesanan">
+                        {{ Str::limit(auth()->user()->name, 12) }}
+                    </a>
+                    <form action="{{ route('account.logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary btn-sm" title="Keluar dari akun">Keluar</button>
+                    </form>
+                @else
+                    <a href="{{ route('account.login') }}" class="btn btn-secondary btn-sm account-shortcut">
+                        Masuk
+                    </a>
+                    <a href="{{ route('account.register') }}" class="btn btn-primary btn-sm" style="display: none; @media(min-width: 640px) { display: inline-flex; }">
+                        Daftar
                     </a>
                 @endif
                 <button type="button" class="btn btn-secondary btn-sm" onclick="openCartModal()" aria-label="Buka Keranjang Pesanan" style="position: relative;">
@@ -127,9 +138,15 @@
                 <div id="checkout-order-warning" style="display: none; background: rgba(243,156,18,0.15); border: 1px solid rgba(243,156,18,0.4); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.85rem; margin-top: 14px;"></div>
 
                 <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
-                    <div class="form-group">
-                        <label for="customer-name" class="form-label">Nama Pemesan <span class="text-primary">*</span></label>
-                        <input type="text" id="customer-name" class="form-control" placeholder="Contoh: Budi Santoso" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label for="customer-name" class="form-label">Nama Pemesan <span class="text-primary">*</span></label>
+                            <input type="text" id="customer-name" class="form-control" value="{{ auth()->check() ? auth()->user()->name : '' }}" placeholder="Contoh: Budi Santoso" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-phone" class="form-label">Nomor WhatsApp</label>
+                            <input type="text" id="customer-phone" class="form-control" value="{{ auth()->check() ? auth()->user()->phone : '' }}" placeholder="0812xxx">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -163,15 +180,68 @@
                         </div>
                     </div>
 
+                    <!-- Table Selection for Dine-In (User Flow: Select / Assign Table) -->
+                    <div id="table-number-container" class="form-group" style="margin-top: 10px;">
+                        <label for="table-number" class="form-label" style="display: flex; justify-content: space-between;">
+                            <span>Pilih / Tetapkan Nomor Meja (Dine-In)</span>
+                            <span class="text-xs text-muted">Makan di tempat</span>
+                        </label>
+                        <select id="table-number" class="form-control" style="background: var(--surface); color: var(--text);">
+                            <option value="">-- Pilih Meja Anda --</option>
+                            <option value="Meja 1">Meja 1 (Depan)</option>
+                            <option value="Meja 2">Meja 2 (Depan)</option>
+                            <option value="Meja 3">Meja 3 (Tengah)</option>
+                            <option value="Meja 4">Meja 4 (Tengah)</option>
+                            <option value="Meja 5">Meja 5 (Dalam)</option>
+                            <option value="Meja 6">Meja 6 (Dalam)</option>
+                            <option value="Meja 7">Meja 7 (Lesehan)</option>
+                            <option value="Meja 8">Meja 8 (Lesehan)</option>
+                            <option value="Meja Luar / Teras">Meja Luar / Teras</option>
+                        </select>
+                    </div>
+
                     <div id="delivery-address-container" class="form-group" style="display: none;">
                         <label for="customer-address" class="form-label">Alamat Pengantaran & Catatan Lokasi <span class="text-primary">*</span></label>
                         <textarea id="customer-address" class="form-control" placeholder="Tuliskan nama jalan, nomor rumah / kos, patokan, dll."></textarea>
+                    </div>
+
+                    <!-- Information Architecture: Order Notes (Priority Service, Add Cutlery, Birthday Message, Table Change) -->
+                    <div class="form-group" style="margin-top: 14px;">
+                        <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">Catatan Khusus Pesanan (Pilihan Cepat):</label>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+                            <label class="form-check" style="background: var(--surface); padding: 6px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.8rem;">
+                                <input type="checkbox" name="order_note_tag" value="Priority Service">
+                                <span>Layanan Cepat / Prioritas</span>
+                            </label>
+                            <label class="form-check" style="background: var(--surface); padding: 6px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.8rem;">
+                                <input type="checkbox" name="order_note_tag" value="Add Cutlery">
+                                <span>Tambah Sendok &amp; Garpu</span>
+                            </label>
+                            <label class="form-check" style="background: var(--surface); padding: 6px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.8rem;">
+                                <input type="checkbox" name="order_note_tag" value="Birthday Message">
+                                <span>Ucapan Ulang Tahun</span>
+                            </label>
+                            <label class="form-check" style="background: var(--surface); padding: 6px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 0.8rem;">
+                                <input type="checkbox" name="order_note_tag" value="Table Change">
+                                <span>Permintaan Pindah Meja</span>
+                            </label>
+                        </div>
                     </div>
 
                     <script>
                         document.addEventListener('change', function(e) {
                             if (e.target.name === 'service_method') {
                                 const deliveryBox = document.getElementById('delivery-address-container');
+                                const tableBox = document.getElementById('table-number-container');
+                                if (deliveryBox) {
+                                    deliveryBox.style.display = e.target.value === 'delivery' ? 'block' : 'none';
+                                }
+                                if (tableBox) {
+                                    tableBox.style.display = e.target.value === 'dine_in' ? 'block' : 'none';
+                                }
+                            }
+                        });
+                    </script>
                                 if (deliveryBox) {
                                     deliveryBox.style.display = e.target.value === 'delivery' ? 'block' : 'none';
                                 }
@@ -284,9 +354,38 @@
         </div>
     </footer>
 
+    <!-- Modal Wajib Login / Daftar untuk Tamu (Gating Pemesanan & Menu) -->
+    <div id="auth-required-modal" class="modal-overlay" onclick="handleAuthModalClick(event)">
+        <div class="modal-content" role="dialog" aria-labelledby="auth-modal-title" style="max-width: 440px; text-align: center; padding: 28px 24px;">
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(215, 38, 61, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: var(--primary);">
+                <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+            <h3 id="auth-modal-title" style="margin-bottom: 8px;">Silakan Masuk atau Daftar Terlebih Dahulu</h3>
+            <p class="text-sm text-muted" style="margin-bottom: 24px; line-height: 1.5;">
+                Untuk memilih menu makanan/minuman dan memesan di Geprek GLO, Anda harus masuk dengan akun pelanggan. Jika belum punya akun, silakan daftar akun baru terlebih dahulu.
+            </p>
+            <div class="flex flex-col gap-sm">
+                <a href="{{ route('account.login') }}?redirect={{ urlencode(request()->getRequestUri()) }}" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    Masuk ke Akun (Login)
+                </a>
+                <a href="{{ route('account.register') }}" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                    Daftar Akun Baru (Register)
+                </a>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeAuthRequiredModal()" style="margin-top: 6px; opacity: 0.7;">
+                    Tutup &amp; Lihat Menu Dulu
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('assets/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/cart.js') }}"></script>
     <script>
+        window.isUserLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+        window.currentUser = @json(auth()->user());
+
         Cart.init({
             isOpen: {{ ($settings->is_open ?? true) ? 'true' : 'false' }},
             waNumber: '{{ $settings->wa_number ?? "6281268177729" }}',
@@ -297,7 +396,33 @@
             storeLng: {{ (float) ($settings->store_lng ?? 110.4851234) }}
         });
 
+        function openAuthRequiredModal() {
+            const modal = document.getElementById('auth-required-modal');
+            if (modal) {
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeAuthRequiredModal() {
+            const modal = document.getElementById('auth-required-modal');
+            if (modal) {
+                modal.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function handleAuthModalClick(e) {
+            if (e.target.id === 'auth-required-modal') {
+                closeAuthRequiredModal();
+            }
+        }
+
         function openCartModal() {
+            if (!window.isUserLoggedIn) {
+                openAuthRequiredModal();
+                return;
+            }
             const modal = document.getElementById('cart-modal');
             if (modal) {
                 modal.classList.add('open');

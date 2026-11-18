@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\ChickenCut;
 use App\Models\DrinkOption;
 use App\Models\MenuItem;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Promo;
 use App\Models\StoreSetting;
 use App\Models\User;
@@ -19,14 +21,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Admin User
+        // 1. Admin & Demo Customer User
         User::updateOrCreate(
             ['username' => 'admin'],
             [
                 'name' => 'Admin Geprek GLO',
                 'email' => 'admin@geprekglo.com',
+                'phone' => '081268177729',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['username' => 'pelanggan'],
+            [
+                'name' => 'Budi Santoso',
+                'email' => 'pelanggan@gmail.com',
+                'phone' => '081234567890',
+                'password' => Hash::make('password123'),
+                'role' => 'customer',
             ]
         );
 
@@ -90,15 +104,15 @@ class DatabaseSeeder extends Seeder
             DrinkOption::updateOrCreate(['name' => $drink['name']], $drink);
         }
 
-        // 6. Menu Items (Data ilustrasi bertanda placeholder sesuai PRD)
+        // 6. Menu Items (Menggunakan foto resmi & harga riil dari materi Geprek GLO)
         $menuItems = [
-            // Paket Hemat
+            // Paket Hemat & Combo
             [
                 'category_id' => $catHemat->id,
-                'name' => 'Paket Hemat Ayam Crispy',
-                'description' => 'Satu porsi nasi hangat, ayam crispy renyah gurih, sambal pilihan, dan minuman paket segar.',
-                'price' => 11000,
-                'image' => null,
+                'name' => 'Paket Super Komplit',
+                'description' => 'Paket terlaris super puas: Nasi hangat, Ayam Geprek sambal mantap, Telur Goreng, Sop Kaldu Ayam segar, dan Es Teh Jumbo.',
+                'price' => 25000,
+                'image' => 'menu/paket_super_komplit.jpg',
                 'is_available' => true,
                 'is_best_seller' => true,
                 'is_package' => true,
@@ -106,10 +120,10 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_id' => $catHemat->id,
-                'name' => 'Paket Hemat Ayam Geprek',
-                'description' => 'Nasi putih pulen, ayam goreng renyah digeprek dengan cabai rawit segar khas GLO, plus minuman paket.',
-                'price' => 13000,
-                'image' => null,
+                'name' => 'Paket Geprek Komplit',
+                'description' => 'Paket lengkap mantap: Nasi putih pulen, Ayam Geprek pilihan, Telur Goreng gurih, dan Es Teh Jumbo segar.',
+                'price' => 20000,
+                'image' => 'menu/paket_geprek_komplit.jpg',
                 'is_available' => true,
                 'is_best_seller' => true,
                 'is_package' => true,
@@ -117,114 +131,112 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_id' => $catHemat->id,
-                'name' => 'Paket Hemat Ayam Crispy Bakar',
-                'description' => 'Ayam crispy berbalut racikan kecap rempah bakar aroma manis gurih istimewa, nasi, dan minuman paket.',
-                'price' => 14000,
-                'image' => null,
+                'name' => 'Paket Geprek Telur',
+                'description' => 'Kombinasi juara ayam geprek pedas gurih dipadukan dengan telur dadar/ceplok goreng hangat dan nasi pulen.',
+                'price' => 17000,
+                'image' => 'menu/paket_geprek_telur.jpg',
+                'is_available' => true,
+                'is_best_seller' => true,
+                'is_package' => true,
+                'sort_order' => 3,
+            ],
+            [
+                'category_id' => $catHemat->id,
+                'name' => 'PAGEPIN (Paket Geprek Paling Murah)',
+                'description' => 'Solusi hemat mahasiswa dan pelajar: Nasi putih hangat, Ayam Geprek gurih pedas, plus Es Teh cup kecil.',
+                'price' => 15000,
+                'image' => 'menu/pagepin.jpg',
+                'is_available' => true,
+                'is_best_seller' => true,
+                'is_package' => true,
+                'sort_order' => 4,
+            ],
+            [
+                'category_id' => $catHemat->id,
+                'name' => 'Kombo Hebat (Hemat Banget)',
+                'description' => 'Nasi putih, Ayam Crispy/Geprek renyah bumbu meresap, dan Es Teh Jumbo segar dingin.',
+                'price' => 15000,
+                'image' => 'menu/combo_hebat.jpg',
                 'is_available' => true,
                 'is_best_seller' => false,
                 'is_package' => true,
-                'sort_order' => 3,
+                'sort_order' => 5,
+            ],
+            [
+                'category_id' => $catHemat->id,
+                'name' => 'Kombo Oren',
+                'description' => 'Paket segar komplit: Nasi hangat, Ayam Crispy/Geprek pilihan, dipadukan dengan Es Jeruk segar atau Teh Kampul.',
+                'price' => 16000,
+                'image' => 'menu/kombo_oren.jpg',
+                'is_available' => true,
+                'is_best_seller' => false,
+                'is_package' => true,
+                'sort_order' => 6,
+            ],
+            [
+                'category_id' => $catHemat->id,
+                'name' => 'Combo Choco',
+                'description' => 'Paket spesial kekinian: Nasi, Ayam Crispy/Geprek pedas gurih, dan minuman Es Coklat Glug creamy nikmat.',
+                'price' => 20000,
+                'image' => 'menu/combo_choco.jpg',
+                'is_available' => true,
+                'is_best_seller' => false,
+                'is_package' => true,
+                'sort_order' => 7,
             ],
 
             // Aneka Ayam
             [
                 'category_id' => $catAyam->id,
-                'name' => 'Ayam Crispy Original (Ala Carte)',
-                'description' => 'Potongan ayam pilihan digoreng tepung keemasan dengan tekstur kriuk tahan lama dan bumbu meresap.',
+                'name' => 'Ayam Crispy Original',
+                'description' => 'Ayam goreng tepung bumbu rempah rahasia Ibu Catur, krispi kriuk di luar dan juicy lembut di dalam.',
                 'price' => 8000,
-                'image' => null,
-                'is_available' => true,
-                'is_best_seller' => false,
-                'is_package' => false,
-                'sort_order' => 4,
-            ],
-            [
-                'category_id' => $catAyam->id,
-                'name' => 'Ayam Geprek Cabai Segar',
-                'description' => 'Ayam crispy digeprek langsung dengan cabai rawit merah pedas nendang (level pedas bisa request di catatan).',
-                'price' => 10000,
-                'image' => null,
-                'is_available' => true,
-                'is_best_seller' => true,
-                'is_package' => false,
-                'sort_order' => 5,
-            ],
-            [
-                'category_id' => $catAyam->id,
-                'name' => 'Ayam Crispy Bakar Spesial',
-                'description' => 'Kombinasi tekstur krispi di luar dengan karamelisasi bumbu bakar manis gurih yang meresap.',
-                'price' => 11000,
-                'image' => null,
-                'is_available' => true,
-                'is_best_seller' => false,
-                'is_package' => false,
-                'sort_order' => 6,
-            ],
-            [
-                'category_id' => $catAyam->id,
-                'name' => 'Ayam Geprek Bakar',
-                'description' => 'Paduan unik ayam geprek pedas dengan sentuhan panggangan beraroma asap yang menggugah selera.',
-                'price' => 12000,
-                'image' => null,
-                'is_available' => true,
-                'is_best_seller' => false,
-                'is_package' => false,
-                'sort_order' => 7,
-            ],
-
-            // Sup
-            [
-                'category_id' => $catSup->id,
-                'name' => 'Sup Sayur Hangat',
-                'description' => 'Semangkuk sup berkuah kaldu ayam bening gurih dengan irisan wortel, buncis, kembang kol, dan seledri.',
-                'price' => 5000,
-                'image' => null,
+                'image' => 'menu/ayam_crispy.jpg',
                 'is_available' => true,
                 'is_best_seller' => false,
                 'is_package' => false,
                 'sort_order' => 8,
             ],
             [
-                'category_id' => $catSup->id,
-                'name' => 'Sup Ceker Ayam Gurih',
-                'description' => 'Sup ceker ayam lembut yang dimasak empuk dengan rempah kuah kaldu segar penghangat tubuh.',
-                'price' => 7000,
-                'image' => null,
+                'category_id' => $catAyam->id,
+                'name' => 'Ayam Geprek Sambal Bawang',
+                'description' => 'Ayam crispy digeprek dengan ulekan cabai rawit pedas dan bawang putih segar beraroma gurih nampol.',
+                'price' => 10000,
+                'image' => 'menu/ayam_geprek.jpg',
                 'is_available' => true,
-                'is_best_seller' => false,
+                'is_best_seller' => true,
                 'is_package' => false,
                 'sort_order' => 9,
             ],
-
-            // Minuman
             [
-                'category_id' => $catMinuman->id,
-                'name' => 'Es Teh Manis',
-                'description' => 'Seduhan teh melati wangi dengan es kristal dingin yang menyegarkan.',
-                'price' => 3000,
-                'image' => null,
+                'category_id' => $catAyam->id,
+                'name' => 'Ayam Crispy Bakar',
+                'description' => 'Ayam crispy yang dibakar dengan olesan bumbu bakar khas manis gurih legit berkaramel.',
+                'price' => 12000,
+                'image' => 'menu/ayam_crispy_bakar.jpg',
                 'is_available' => true,
                 'is_best_seller' => false,
                 'is_package' => false,
                 'sort_order' => 10,
             ],
             [
-                'category_id' => $catMinuman->id,
-                'name' => 'Teh Hangat Manis',
-                'description' => 'Teh hangat beraroma wangi melati alami untuk menemani santap santai.',
-                'price' => 3000,
-                'image' => null,
+                'category_id' => $catAyam->id,
+                'name' => 'Ayam Geprek Bakar',
+                'description' => 'Perpaduan sempurna kepedasan ayam geprek dengan wangi aroma bakar yang meresap istimewa.',
+                'price' => 13000,
+                'image' => 'menu/ayam_geprek_bakar.jpg',
                 'is_available' => true,
                 'is_best_seller' => false,
                 'is_package' => false,
                 'sort_order' => 11,
             ],
+
+            // Sup
             [
-                'category_id' => $catMinuman->id,
-                'name' => 'Air Mineral Botol',
-                'description' => 'Air mineral kemasan botol higienis dan menyegarkan.',
-                'price' => 4000,
+                'category_id' => $catSup->id,
+                'name' => 'Sup Kaldu Ayam Segar',
+                'description' => 'Kuah kaldu ayam gurih bening beraroma seledri, rempah penghangat tubuh, wortel, buncis, dan suwiran ayam.',
+                'price' => 8000,
                 'image' => null,
                 'is_available' => true,
                 'is_best_seller' => false,
@@ -232,15 +244,61 @@ class DatabaseSeeder extends Seeder
                 'sort_order' => 12,
             ],
             [
-                'category_id' => $catMinuman->id,
-                'name' => 'Es Jeruk Peras',
-                'description' => 'Jeruk asli diperas segar dengan rasa manis asam alami penyegar dahaga.',
-                'price' => 4000,
+                'category_id' => $catSup->id,
+                'name' => 'Sup Ceker Ayam Rempah',
+                'description' => 'Sup ceker ayam lembut kenyal yang dimasak empuk dengan bumbu rempah kaldu kaya rasa.',
+                'price' => 7000,
                 'image' => null,
                 'is_available' => true,
                 'is_best_seller' => false,
                 'is_package' => false,
                 'sort_order' => 13,
+            ],
+
+            // Minuman Glug & Segar
+            [
+                'category_id' => $catMinuman->id,
+                'name' => 'Es Teh Jumbo',
+                'description' => 'Teh manis wangi melati racikan kedai disajikan dingin segar dalam cup porsi jumbo.',
+                'price' => 3500,
+                'image' => 'menu/minuman_glug.jpg',
+                'is_available' => true,
+                'is_best_seller' => true,
+                'is_package' => false,
+                'sort_order' => 14,
+            ],
+            [
+                'category_id' => $catMinuman->id,
+                'name' => 'Es Teh Kampul Segar',
+                'description' => 'Sensasi teh manis solo dipadukan dengan irisan jeruk segar yang diperas langsung.',
+                'price' => 5500,
+                'image' => 'menu/minuman_glug.jpg',
+                'is_available' => true,
+                'is_best_seller' => false,
+                'is_package' => false,
+                'sort_order' => 15,
+            ],
+            [
+                'category_id' => $catMinuman->id,
+                'name' => 'Es Jeruk Peras Asli',
+                'description' => 'Perasan jeruk asli manis asam segar alami penghilang rasa pedas.',
+                'price' => 5500,
+                'image' => 'menu/kombo_oren.jpg',
+                'is_available' => true,
+                'is_best_seller' => false,
+                'is_package' => false,
+                'sort_order' => 16,
+            ],
+            [
+                'category_id' => $catMinuman->id,
+                'name' => 'Es Coklat Glug',
+                'description' => 'Minuman coklat kental nikmat khas Glug dengan rasa creamy manis pas penyegar dahaga.',
+                'price' => 8000,
+                'image' => 'menu/combo_choco.jpg',
+                'is_available' => true,
+                'is_best_seller' => false,
+                'is_package' => false,
+                'sort_order' => 17,
             ],
         ];
 
@@ -251,12 +309,12 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // 7. Promos
+        // 7. Promos dengan banner resmi
         Promo::updateOrCreate(
-            ['title' => 'Spesial Menu Paket Hemat Blotongan'],
+            ['title' => 'Spesial Paket Super Komplit Hemat'],
             [
-                'subtitle' => 'Nikmati Paket Hemat Ayam Crispy komplit nasi dan minuman mulai Rp11.000! Lezat, puas, dan ramah di kantong.',
-                'image' => null,
+                'subtitle' => 'Nasi + Ayam Geprek + Telur Goreng + Sop Kaldu Ayam + Es Teh Jumbo hanya Rp25.000! Super hemat dan puas.',
+                'image' => 'promos/super_komplit.jpg',
                 'is_active' => true,
                 'start_date' => now()->subDays(5),
                 'end_date' => now()->addDays(30),
@@ -264,14 +322,127 @@ class DatabaseSeeder extends Seeder
         );
 
         Promo::updateOrCreate(
-            ['title' => 'Pemesanan Rombongan & Jumat Berkah'],
+            ['title' => 'Promo Mantap Paket Geprek Telur'],
             [
-                'subtitle' => 'Menerima pesanan nasi kotak / rombongan (min. 20 porsi). Hubungi kami via WhatsApp untuk harga & koordinasi pengiriman.',
-                'image' => null,
+                'subtitle' => 'Kombinasi ayam geprek cabai segar plus telur dadar gurih cuma Rp17.000. Wajib dicoba saat santap siang!',
+                'image' => 'promos/geprek_telur.jpg',
                 'is_active' => true,
                 'start_date' => now()->subDays(5),
                 'end_date' => now()->addDays(60),
             ]
         );
+
+        Promo::updateOrCreate(
+            ['title' => 'Combo Hebat Kenyang Maksimal'],
+            [
+                'subtitle' => 'Ayam crispy gurih kriuk + nasi putih hangat + es teh jumbo cuma Rp15.000! Ramah di kantong mahasiswa.',
+                'image' => 'promos/combo_hebat.jpg',
+                'is_active' => true,
+                'start_date' => now()->subDays(5),
+                'end_date' => now()->addDays(60),
+            ]
+        );
+
+        // 8. Sample Active & Kitchen Orders (Information Architecture demo)
+        $customerUser = User::where('username', 'pelanggan')->first();
+        $sampleAyam = MenuItem::where('name', 'Paket Super Komplit')->first();
+        $sampleGeprek = MenuItem::where('name', 'Paket Geprek Telur')->first();
+        $sampleEsTeh = MenuItem::where('name', 'Es Teh Jumbo')->first();
+
+        if ($customerUser && $sampleAyam) {
+            $order1 = Order::updateOrCreate(
+                ['order_number' => 'GLO-261118-0001'],
+                [
+                    'user_id' => $customerUser->id,
+                    'customer_name' => 'Budi Santoso',
+                    'customer_phone' => '081234567890',
+                    'service_method' => 'dine_in',
+                    'table_number' => 'Meja 3',
+                    'order_notes' => 'Priority Service, Add Cutlery',
+                    'subtotal' => 25000,
+                    'packaging_fee' => 0,
+                    'total' => 25000,
+                    'status' => 'confirmed',
+                    'kitchen_status' => 'prepared',
+                    'source' => 'online',
+                ]
+            );
+            $order1->items()->delete();
+            $order1->items()->create([
+                'menu_item_id' => $sampleAyam->id,
+                'item_name' => $sampleAyam->name,
+                'quantity' => 1,
+                'unit_price' => 25000,
+                'line_total' => 25000,
+                'chicken_cut' => 'Dada',
+                'drink_option' => 'Es Teh Jumbo',
+                'note' => 'Cabai 5 pedas mantap',
+            ]);
+
+            $order2 = Order::updateOrCreate(
+                ['order_number' => 'GLO-261118-0002'],
+                [
+                    'user_id' => $customerUser->id,
+                    'customer_name' => 'Siti Rahma',
+                    'customer_phone' => '085712345678',
+                    'service_method' => 'dine_in',
+                    'table_number' => 'Meja 5',
+                    'order_notes' => 'Add Cutlery',
+                    'subtotal' => 17000,
+                    'packaging_fee' => 0,
+                    'total' => 17000,
+                    'status' => 'pending',
+                    'kitchen_status' => 'queued',
+                    'source' => 'online',
+                ]
+            );
+            $order2->items()->delete();
+            $order2->items()->create([
+                'menu_item_id' => $sampleGeprek->id,
+                'item_name' => $sampleGeprek->name,
+                'quantity' => 1,
+                'unit_price' => 17000,
+                'line_total' => 17000,
+                'chicken_cut' => 'Paha Atas',
+                'note' => 'Telur ceplok matang',
+            ]);
+
+            $order3 = Order::updateOrCreate(
+                ['order_number' => 'GLO-261118-0003'],
+                [
+                    'user_id' => null,
+                    'customer_name' => 'Dimas Arya',
+                    'customer_phone' => '081399887766',
+                    'service_method' => 'takeaway',
+                    'table_number' => null,
+                    'order_notes' => 'Priority Service',
+                    'subtotal' => 23500,
+                    'packaging_fee' => 1000,
+                    'total' => 24500,
+                    'status' => 'ready',
+                    'kitchen_status' => 'ready',
+                    'source' => 'online',
+                ]
+            );
+            $order3->items()->delete();
+            $order3->items()->createMany([
+                [
+                    'menu_item_id' => $sampleGeprek->id,
+                    'item_name' => $sampleGeprek->name,
+                    'quantity' => 1,
+                    'unit_price' => 17000,
+                    'line_total' => 17000,
+                    'chicken_cut' => 'Sayap',
+                    'note' => 'Bungkus rapi',
+                ],
+                [
+                    'menu_item_id' => $sampleEsTeh->id,
+                    'item_name' => $sampleEsTeh->name,
+                    'quantity' => 1,
+                    'unit_price' => 3500,
+                    'line_total' => 3500,
+                ],
+            ]);
+        }
     }
 }

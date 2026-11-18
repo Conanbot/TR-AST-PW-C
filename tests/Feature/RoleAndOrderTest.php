@@ -28,16 +28,25 @@ class RoleAndOrderTest extends TestCase
         $response = $this->post('/akun/daftar', [
             'name' => 'Dina Mahasiswa',
             'email' => 'dina@example.test',
+            'phone' => '081234567890',
             'password' => 'rahasia123',
             'password_confirmation' => 'rahasia123',
         ]);
 
-        $response->assertRedirect('/akun');
-        $this->assertAuthenticated();
+        $response->assertRedirect('/akun/login');
         $this->assertDatabaseHas('users', [
             'email' => 'dina@example.test',
             'role' => 'customer',
         ]);
+
+        // Customer then logs in with their newly registered account
+        $loginResponse = $this->post('/akun/login', [
+            'email' => 'dina@example.test',
+            'password' => 'rahasia123',
+        ]);
+        $loginResponse->assertRedirect('/menu');
+        $this->assertAuthenticated();
+
         $this->get('/admin')->assertForbidden();
         $this->get('/kasir')->assertForbidden();
     }

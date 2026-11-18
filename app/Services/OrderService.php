@@ -66,9 +66,11 @@ class OrderService
                 'service_method' => $data['service_method'],
                 'table_number' => $data['table_number'] ?? null,
                 'customer_address' => $data['customer_address'] ?? null,
+                'order_notes' => $data['order_notes'] ?? null,
                 'subtotal' => $subtotal,
                 'packaging_fee' => $packagingFee,
                 'total' => $subtotal + $packagingFee,
+                'kitchen_status' => 'queued',
                 'source' => $source,
             ]);
 
@@ -103,7 +105,9 @@ class OrderService
         $message = "Halo Geprek GLO, saya ingin memesan:\n\n" . $lines->implode("\n")
             . "\n\nNomor pesanan: {$order->order_number}"
             . "\nLayanan: {$service}"
+            . ($order->table_number ? "\nNomor Meja: {$order->table_number}" : '')
             . "\nNama pemesan: {$order->customer_name}"
+            . ($order->order_notes ? "\nCatatan Khusus: {$order->order_notes}" : '')
             . ($order->customer_address ? "\nAlamat pengantaran: {$order->customer_address}" : '')
             . "\nSubtotal: Rp" . number_format($order->subtotal, 0, ',', '.')
             . ($order->packaging_fee > 0 ? "\nBiaya kemasan: Rp" . number_format($order->packaging_fee, 0, ',', '.') : '')

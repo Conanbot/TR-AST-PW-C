@@ -53,6 +53,14 @@ class MenuItem extends Model
      */
     public function getImageUrlAttribute(): ?string
     {
+        if ($this->image && file_exists(public_path('assets/img/' . $this->image))) {
+            return asset('assets/img/' . $this->image);
+        }
+
+        if ($this->image && file_exists(public_path('storage/' . $this->image))) {
+            return asset('storage/' . $this->image);
+        }
+
         if ($this->image && Storage::disk('public')->exists($this->image)) {
             return Storage::disk('public')->url($this->image);
         }
