@@ -127,6 +127,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
         Route::patch('/payments/{payment}/confirm-cash', [AdminPaymentController::class, 'confirmCash'])->name('payments.confirm-cash');
         Route::patch('/payments/{payment}/verify-qris', [AdminPaymentController::class, 'verifyQris'])->name('payments.verify-qris');
+        Route::get('/payments/{payment}/proof', [AdminPaymentController::class, 'proof'])->name('payments.proof');
         Route::get('/payment-settings', [AdminPaymentController::class, 'settings'])->name('payments.settings');
         Route::put('/payment-settings', [AdminPaymentController::class, 'updateSettings'])->name('payments.settings.update');
     });

@@ -19,6 +19,11 @@ class PaymentService
     {
         return DB::transaction(function () use ($order, $methodCode) {
         $lockedOrder = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
+        if ($lockedOrder->status === 'cancelled') {
+            throw ValidationException::withMessages([
+                'payment' => 'Pembayaran tidak dapat dibuat untuk pesanan yang dibatalkan.',
+            ]);
+        }
         $method = PaymentMethod::active()->where('code', $methodCode)->first();
         if (!$method) {
             throw ValidationException::withMessages([
@@ -28,7 +33,7 @@ class PaymentService
 
         if ($methodCode === 'qris') {
             $settings = StoreSetting::current();
-            if (!$settings->qris_enabled || !$settings->qris_image) {
+            if (!$settings->qris_enabled || !$settings->qris_image || !$settings->qris_merchant_name) {
                 throw ValidationException::withMessages([
                     'payment_method' => 'Pembayaran QRIS belum tersedia.',
                 ]);
@@ -82,6 +87,12 @@ class PaymentService
 
         return DB::transaction(function () use ($payment, $actor, $claimedAmount) {
             $payment = Payment::whereKey($payment->id)->lockForUpdate()->firstOrFail();
+            $order = Order::whereKey($payment->order_id)->lockForUpdate()->firstOrFail();
+            if ($order->status === 'cancelled') {
+                throw ValidationException::withMessages([
+                    'payment' => 'Pembayaran pesanan yang dibatalkan tidak dapat dikonfirmasi.',
+                ]);
+            }
             if ($payment->status === 'paid') {
                 return $payment->load('histories');
             }
@@ -98,7 +109,7 @@ class PaymentService
                 'paid_at' => now(),
                 'verified_at' => now(),
             ]);
-            $payment->order->update(['payment_status' => 'paid']);
+            $order->update(['payment_status' => 'paid']);
             $this->history($payment, $actor, 'confirmed_cash', $fromStatus, 'paid', $amount);
 
             return $payment->load('histories');
@@ -111,19 +122,26 @@ class PaymentService
             throw ValidationException::withMessages(['payment' => 'Bukti hanya diperlukan untuk QRIS.']);
         }
 
-        if ($payment->status === 'paid') {
-            throw ValidationException::withMessages(['payment' => 'Pembayaran QRIS sudah lunas.']);
-        }
-
-        $amount = $claimedAmount ?? $payment->amount;
-        if ($amount !== $payment->amount) {
-            throw ValidationException::withMessages(['amount' => 'Nominal bukti pembayaran tidak sesuai dengan total pesanan.']);
-        }
-
-        $path = $proof->store('payment-proofs', 'public');
-
-        return DB::transaction(function () use ($payment, $path, $amount) {
+        return DB::transaction(function () use ($payment, $proof, $claimedAmount) {
             $payment = Payment::whereKey($payment->id)->lockForUpdate()->firstOrFail();
+            $order = Order::whereKey($payment->order_id)->lockForUpdate()->firstOrFail();
+            if ($order->status === 'cancelled') {
+                throw ValidationException::withMessages(['payment' => 'Bukti tidak dapat dikirim untuk pesanan yang dibatalkan.']);
+            }
+            if ($payment->status === 'paid') {
+                throw ValidationException::withMessages(['payment' => 'Pembayaran QRIS sudah lunas.']);
+            }
+            if ($payment->status === 'pending_verification' && !$payment->rejection_reason) {
+                return $payment->load('histories');
+            }
+
+            $amount = $claimedAmount ?? $payment->amount;
+            if ($amount !== $payment->amount) {
+                throw ValidationException::withMessages(['amount' => 'Nominal bukti pembayaran tidak sesuai dengan total pesanan.']);
+            }
+
+            $path = $proof->store('payment-proofs', 'local');
+
             $oldProof = $payment->proof_image;
             $fromStatus = $payment->status;
             $payment->update([
@@ -131,11 +149,11 @@ class PaymentService
                 'status' => 'pending_verification',
                 'rejection_reason' => null,
             ]);
-            $payment->order->update(['payment_status' => 'pending_verification']);
+            $order->update(['payment_status' => 'pending_verification']);
             $this->history($payment, null, 'proof_submitted', $fromStatus, 'pending_verification', $amount);
 
             if ($oldProof && $oldProof !== $path) {
-                Storage::disk('public')->delete($oldProof);
+                Storage::disk('local')->delete($oldProof);
             }
 
             return $payment->load('histories');
@@ -154,6 +172,12 @@ class PaymentService
 
         return DB::transaction(function () use ($payment, $actor, $approved, $reason) {
             $payment = Payment::whereKey($payment->id)->lockForUpdate()->firstOrFail();
+            $order = Order::whereKey($payment->order_id)->lockForUpdate()->firstOrFail();
+            if ($order->status === 'cancelled') {
+                throw ValidationException::withMessages([
+                    'payment' => 'Pembayaran pesanan yang dibatalkan tidak dapat diverifikasi.',
+                ]);
+            }
             if ($payment->status === 'paid' || !$payment->proof_image) {
                 if ($payment->status === 'paid') {
                     return $payment->load('histories');
@@ -170,17 +194,20 @@ class PaymentService
                     'verified_at' => now(),
                     'rejection_reason' => null,
                 ]);
-                $payment->order->update(['payment_status' => 'paid']);
+                $order->update(['payment_status' => 'paid']);
                 $this->history($payment, $actor, 'approved', $fromStatus, 'paid', $payment->amount);
             } else {
                 if (blank($reason)) {
                     throw ValidationException::withMessages(['rejection_reason' => 'Alasan penolakan wajib diisi.']);
                 }
+                if ($payment->rejection_reason === $reason) {
+                    return $payment->load('histories');
+                }
                 $payment->update([
                     'status' => 'pending_verification',
                     'rejection_reason' => $reason,
                 ]);
-                $payment->order->update(['payment_status' => 'pending_verification']);
+                $order->update(['payment_status' => 'pending_verification']);
                 $this->history($payment, $actor, 'rejected', $fromStatus, 'pending_verification', $payment->amount, $reason);
             }
 

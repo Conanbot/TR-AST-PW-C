@@ -47,7 +47,7 @@ class OrderService
         }
 
         if ($paymentMethod === 'qris') {
-            if (!$settings->qris_enabled || !$settings->qris_image) {
+            if (!$settings->qris_enabled || !$settings->qris_image || !$settings->qris_merchant_name) {
                 throw ValidationException::withMessages([
                     'payment_method' => 'Pembayaran QRIS belum tersedia.',
                 ]);

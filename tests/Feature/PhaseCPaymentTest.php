@@ -53,6 +53,7 @@ class PhaseCPaymentTest extends TestCase
         $settings->update([
             'qris_enabled' => true,
             'qris_image' => 'qris/test.png',
+            'qris_merchant_name' => 'Geprek GLO',
         ]);
 
         $order = $this->order('takeaway', 'qris');
@@ -76,7 +77,7 @@ class PhaseCPaymentTest extends TestCase
     {
         Storage::fake('public');
         $this->paymentMethods();
-        StoreSetting::current()->update(['qris_enabled' => true, 'qris_image' => 'qris/test.png']);
+        StoreSetting::current()->update(['qris_enabled' => true, 'qris_image' => 'qris/test.png', 'qris_merchant_name' => 'Geprek GLO']);
         $order = $this->order('takeaway', 'qris');
         $payment = app(PaymentService::class)->createForOrder($order, 'qris');
         app(PaymentService::class)->submitProof($payment, UploadedFile::fake()->image('proof.png'), $order->total);
@@ -121,6 +122,42 @@ class PhaseCPaymentTest extends TestCase
         } catch (\Illuminate\Validation\ValidationException $exception) {
             $this->assertArrayHasKey('customer_address', $exception->errors());
         }
+    }
+
+    public function test_cancelled_order_rejects_new_cash_confirmation(): void
+    {
+        $this->paymentMethods();
+        $cashier = $this->roleUser('cashier');
+        $order = $this->order('takeaway', 'cash_pickup');
+        $payment = app(PaymentService::class)->createForOrder($order, 'cash_pickup');
+        $order->update(['status' => 'cancelled']);
+
+        try {
+            app(PaymentService::class)->confirmCash($payment, $cashier, $order->total);
+            $this->fail('Cancelled order should not accept payment confirmation.');
+        } catch (\Illuminate\Validation\ValidationException $exception) {
+            $this->assertArrayHasKey('payment', $exception->errors());
+        }
+    }
+
+    public function test_unpaid_order_cannot_be_completed(): void
+    {
+        $this->paymentMethods();
+        $admin = $this->roleUser('admin');
+        $order = $this->order('takeaway', 'cash_pickup');
+        $payment = app(PaymentService::class)->createForOrder($order, 'cash_pickup');
+        $order->update(['status' => 'ready']);
+
+        try {
+            app(\App\Services\OrderStatusService::class)->transition($order, 'completed', $admin);
+            $this->fail('Unpaid order should not be completed.');
+        } catch (\Illuminate\Validation\ValidationException $exception) {
+            $this->assertArrayHasKey('status', $exception->errors());
+        }
+
+        app(PaymentService::class)->confirmCash($payment, $admin, $order->total);
+        app(\App\Services\OrderStatusService::class)->transition($order->fresh(), 'completed', $admin);
+        $this->assertSame('completed', $order->fresh()->status);
     }
 
     private function paymentMethods(): void

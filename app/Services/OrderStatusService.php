@@ -31,6 +31,18 @@ class OrderStatusService
                 ]);
             }
 
+            if ($toStatus === 'completed') {
+                $paymentIsPaid = $lockedOrder->payment_status === 'paid'
+                    || $lockedOrder->latestPayment()->where('status', 'paid')->exists();
+                $paymentWasEstablished = $lockedOrder->payment_status !== null
+                    || $lockedOrder->payments()->exists();
+                if ($paymentWasEstablished && !$paymentIsPaid) {
+                    throw ValidationException::withMessages([
+                        'status' => 'Pesanan hanya dapat diselesaikan setelah pembayaran berstatus paid.',
+                    ]);
+                }
+            }
+
             if ($toStatus === 'cancelled' && blank($note)) {
                 throw ValidationException::withMessages([
                     'cancellation_reason' => 'Alasan pembatalan wajib diisi.',

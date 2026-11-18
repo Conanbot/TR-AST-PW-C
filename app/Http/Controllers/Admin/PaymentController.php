@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PaymentController extends Controller
 {
@@ -74,14 +75,15 @@ class PaymentController extends Controller
 
     public function updateSettings(Request $request): RedirectResponse
     {
+        $qrisEnabled = $request->boolean('qris_enabled');
+        $settings = StoreSetting::current();
+
         $data = $request->validate([
             'qris_enabled' => ['nullable', 'boolean'],
-            'qris_merchant_name' => ['nullable', 'string', 'max:120'],
+            'qris_merchant_name' => [$qrisEnabled ? 'required' : 'nullable', 'string', 'max:120'],
             'qris_instructions' => ['nullable', 'string', 'max:1000'],
-            'qris_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'qris_image' => [$qrisEnabled && !$settings->qris_image ? 'required' : 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
-
-        $settings = StoreSetting::current();
         $settings->qris_enabled = $request->boolean('qris_enabled');
         $settings->qris_merchant_name = $data['qris_merchant_name'] ?? null;
         $settings->qris_instructions = $data['qris_instructions'] ?? null;
@@ -104,5 +106,12 @@ class PaymentController extends Controller
         }
 
         return back()->with('success', 'Pengaturan pembayaran berhasil disimpan.');
+    }
+
+    public function proof(Payment $payment): StreamedResponse
+    {
+        abort_unless($payment->proof_image && Storage::disk('local')->exists($payment->proof_image), 404);
+
+        return Storage::disk('local')->response($payment->proof_image);
     }
 }

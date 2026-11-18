@@ -39,7 +39,7 @@
                         <button class="btn btn-primary btn-sm" type="submit">Konfirmasi tunai</button>
                     </form>
                 @elseif($payment->method_code === 'qris')
-                    @if($payment->proof_image)<a href="{{ asset('storage/'.$payment->proof_image) }}" target="_blank" class="btn btn-secondary btn-sm">Bukti</a>@endif
+                    @if($payment->proof_image)<a href="{{ route('admin.payments.proof',$payment) }}" target="_blank" rel="noreferrer" class="btn btn-secondary btn-sm">Bukti</a>@endif
                     @if($payment->status !== 'paid')
                         <form method="POST" action="{{ route('admin.payments.verify-qris',$payment) }}" class="stack-sm" style="margin-top:8px;">@csrf @method('PATCH')
                             <input type="hidden" name="decision" value="approve">

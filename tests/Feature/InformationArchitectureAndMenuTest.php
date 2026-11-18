@@ -155,6 +155,7 @@ class InformationArchitectureAndMenuTest extends TestCase
             'packaging_fee' => 0,
             'total' => 25000,
             'status' => 'pending',
+            'payment_status' => 'paid',
             'kitchen_status' => 'queued',
         ]);
 

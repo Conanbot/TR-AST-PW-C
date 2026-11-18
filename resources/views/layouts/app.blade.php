@@ -171,7 +171,7 @@
                                 </div>
                             </label>
 
-                            @if($settings->delivery_enabled ?? false)
+                            @if(($activePaymentMethods['cod'] ?? null)?->is_active && ($settings->delivery_enabled ?? false))
                             <label class="form-check" style="background: var(--surface); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                                 <input type="radio" name="service_method" value="delivery" onchange="Cart.renderCartDrawer()">
                                 <div>
@@ -214,11 +214,13 @@
                     <div class="form-group" style="margin-top:14px;">
                         <label class="form-label">Metode Pembayaran <span class="text-primary">*</span></label>
                         <div style="display:flex; flex-direction:column; gap:8px;">
+                            @if(($activePaymentMethods['cash_pickup'] ?? null)?->is_active)
                             <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
                                 <input type="radio" name="payment_method" value="cash_pickup" checked>
                                 <div><strong>Cash on Pickup</strong><div class="text-xs text-muted">Bayar tunai saat pesanan diambil.</div></div>
                             </label>
-                            @if($settings->qris_enabled ?? false)
+                            @endif
+                            @if(($activePaymentMethods['qris'] ?? null)?->is_active && ($settings->qris_enabled ?? false))
                             <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
                                 <input type="radio" name="payment_method" value="qris">
                                 <div><strong>QRIS</strong><div class="text-xs text-muted">Upload bukti manual untuk diverifikasi admin.</div></div>

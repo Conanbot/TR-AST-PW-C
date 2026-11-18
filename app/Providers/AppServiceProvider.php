@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer('*', function ($view) {
+            if (Schema::hasTable('payment_methods')) {
+                $view->with(
+                    'activePaymentMethods',
+                    \App\Models\PaymentMethod::active()->orderBy('sort_order')->get()->keyBy('code')
+                );
+            }
+        });
+
         // Auto-create database geprek_glo if not exists in local Laragon environment
         if (app()->environment('local') && config('database.default') === 'mysql') {
             try {
