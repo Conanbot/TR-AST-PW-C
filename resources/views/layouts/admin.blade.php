@@ -44,29 +44,13 @@
             <a class="brand-lockup" href="{{ route('admin.dashboard') }}"><span class="brand-mark">G</span><span>Menu <b>admin</b></span></a>
             <button type="button" id="admin-mobile-close" class="close-btn" aria-label="Tutup menu">×</button>
         </div>
-        <nav class="admin-nav-links" aria-label="Navigasi admin">
-            <a href="{{ route('admin.dashboard') }}" class="admin-nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Ikhtisar</a>
-            <a href="{{ route('admin.stock.index') }}" class="admin-nav-item {{ request()->routeIs('admin.stock.*') ? 'active' : '' }}">Stok menu</a>
-            <a href="{{ route('admin.items.index') }}" class="admin-nav-item {{ request()->routeIs('admin.items.*') ? 'active' : '' }}">Menu</a>
-            <a href="{{ route('admin.promos.index') }}" class="admin-nav-item {{ request()->routeIs('admin.promos.*') ? 'active' : '' }}">Promo</a>
-            <a href="{{ route('admin.cashiers.index') }}" class="admin-nav-item {{ request()->routeIs('admin.cashiers.*') ? 'active' : '' }}">Akun kasir</a>
-            <a href="{{ route('admin.settings.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">Pengaturan kedai</a>
-            <a href="{{ route('admin.password.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.password.*') ? 'active' : '' }}">Ubah password</a>
-        </nav>
+        <x-admin-nav />
     </div>
 
     <div class="admin-shell">
         <aside class="admin-sidebar">
             <span class="eyebrow admin-sidebar-label">Kelola kedai</span>
-            <nav class="admin-nav-links" aria-label="Navigasi admin">
-                <a href="{{ route('admin.dashboard') }}" class="admin-nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Ikhtisar</a>
-                <a href="{{ route('admin.stock.index') }}" class="admin-nav-item {{ request()->routeIs('admin.stock.*') ? 'active' : '' }}">Stok menu</a>
-                <a href="{{ route('admin.items.index') }}" class="admin-nav-item {{ request()->routeIs('admin.items.*') ? 'active' : '' }}">Menu</a>
-                <a href="{{ route('admin.promos.index') }}" class="admin-nav-item {{ request()->routeIs('admin.promos.*') ? 'active' : '' }}">Promo</a>
-                <a href="{{ route('admin.cashiers.index') }}" class="admin-nav-item {{ request()->routeIs('admin.cashiers.*') ? 'active' : '' }}">Akun kasir</a>
-                <a href="{{ route('admin.settings.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">Pengaturan kedai</a>
-                <a href="{{ route('admin.password.edit') }}" class="admin-nav-item {{ request()->routeIs('admin.password.*') ? 'active' : '' }}">Ubah password</a>
-            </nav>
+            <x-admin-nav />
             <div class="admin-sidebar-bottom">
                 <span class="sidebar-note">Panel pengelola Geprek GLO</span>
                 <a href="{{ route('cashier.login') }}" class="btn btn-secondary">Buka portal kasir</a>
@@ -74,6 +58,11 @@
         </aside>
 
         <main class="admin-console-main">
+            <div class="admin-breadcrumb" aria-label="Breadcrumb">
+                <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <span aria-hidden="true">/</span>
+                <span>{{ Str::headline(request()->segment(2) ?: 'overview') }}</span>
+            </div>
             @if(session('success'))<div class="alert alert-success" role="status">{{ session('success') }}</div>@endif
             @if(session('error'))<div class="alert alert-error" role="alert">{{ session('error') }}</div>@endif
             @if($errors->any())<div class="alert alert-error" role="alert"><strong>Periksa kembali formulir:</strong><ul>@foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach</ul></div>@endif

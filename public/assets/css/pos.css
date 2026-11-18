@@ -343,9 +343,23 @@ html[data-theme="dark"] .status-cancelled { color: #FFB6B7; background: #422226;
 .admin-header .brand-lockup { font-size: 1.05rem; }
 .admin-header .brand-mark { width: 36px; height: 36px; flex-basis: 36px; }
 .admin-header .user-chip { padding-left: 8px; }
-.admin-nav-item { min-height: 44px; color: var(--text-muted); border-radius: 12px; }
+.admin-nav-groups { display: grid; gap: 18px; }
+.admin-nav-group { display: grid; gap: 3px; }
+.admin-nav-group-label {
+  padding: 0 12px 5px;
+  color: var(--text-dim);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.admin-nav-item { display: flex; align-items: center; min-height: 40px; padding: 0 12px; color: var(--text-muted); border-radius: 12px; }
 .admin-nav-item:hover, .admin-nav-item.active { background: var(--accent-soft); color: var(--text); }
 .admin-nav-item.active { color: var(--primary); border-left-color: var(--primary); }
+.admin-nav-item.is-planned { display: flex; align-items: center; justify-content: space-between; cursor: not-allowed; opacity: .58; }
+.admin-nav-item.is-planned small { font-size: .62rem; color: var(--text-dim); }
+.admin-breadcrumb { display: flex; gap: 8px; align-items: center; margin-bottom: 18px; color: var(--text-dim); font-size: .8rem; }
+.admin-breadcrumb a { color: var(--primary); font-weight: 700; }
 .admin-console-main { width: min(1500px, 100%); margin: 0 auto; padding: 28px clamp(16px, 3vw, 36px) 60px; }
 .admin-page-heading { margin-bottom: 24px; }
 .admin-page-heading h1 { margin: 5px 0; font-size: clamp(1.7rem, 3vw, 2.2rem); }
@@ -376,7 +390,7 @@ html[data-theme="dark"] .status-cancelled { color: #FFB6B7; background: #422226;
   }
   .admin-mobile-drawer.open { transform: translateX(0); }
   .admin-drawer-heading { display: flex; align-items: center; justify-content: space-between; }
-  .admin-mobile-drawer .admin-nav-links { gap: 7px; }
+  .admin-mobile-drawer .admin-nav-groups { gap: 16px; overflow-y: auto; }
   .admin-header .console-actions { gap: 8px; }
 }
 @media (max-width: 680px) {

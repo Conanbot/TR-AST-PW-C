@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Promo;
 use App\Models\StoreSetting;
+use App\Services\OrderStatusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -132,18 +133,37 @@ class DashboardController extends Controller
     /**
      * Update kitchen cooking queue status (Queued -> Prepared -> Ready -> Completed).
      */
-    public function updateKitchenStatus(Request $request, Order $order): RedirectResponse|JsonResponse
+    public function updateKitchenStatus(Request $request, Order $order, OrderStatusService $statuses): RedirectResponse|JsonResponse
     {
         $request->validate([
             'kitchen_status' => ['required', 'in:queued,prepared,ready,completed'],
         ]);
 
-        $order->kitchen_status = $request->input('kitchen_status');
-        if ($request->input('kitchen_status') === 'completed') {
-            $order->status = 'completed';
-        } elseif ($request->input('kitchen_status') === 'ready') {
-            $order->status = 'ready';
+        $kitchenStatus = $request->input('kitchen_status');
+        $status = match ($kitchenStatus) {
+            'prepared' => 'preparing',
+            'ready' => 'ready',
+            'completed' => 'completed',
+            default => null,
+        };
+
+        if ($status && $order->status !== $status) {
+            $nextStatus = [
+                'pending' => 'preparing',
+                'confirmed' => 'preparing',
+                'preparing' => 'ready',
+                'ready' => 'completed',
+            ];
+
+            while ($order->status !== $status && isset($nextStatus[$order->status])) {
+                $statuses->transition($order, $nextStatus[$order->status], $request->user());
+            }
+
+            if ($order->status !== $status) {
+                abort(422, 'Status pesanan tidak dapat mengikuti status dapur yang dipilih.');
+            }
         }
+        $order->kitchen_status = $kitchenStatus;
         $order->save();
 
         if ($request->wantsJson()) {

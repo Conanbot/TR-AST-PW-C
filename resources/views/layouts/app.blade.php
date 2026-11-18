@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-type="place" data-radius="soft" data-buttons="solid" data-motion="hover">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="orders-url" content="{{ route('orders.store') }}">
     <meta name="description" content="Website Resmi UMKM Geprek GLO Salatiga. Profil kedai, katalog aneka ayam crispy & geprek pedas, dan pemesanan cepat via WhatsApp.">
+    <meta name="site-kind" content="other">
+    <meta name="page-kind" content="place">
+    <meta name="page-type" content="place">
     <meta name="theme-color" content="#FFF9F1">
     <title>@yield('title', 'Geprek GLO Salatiga — Cita Rasa Ayam Crispy & Geprek Pedas Nikmat')</title>
 
@@ -67,7 +70,7 @@
                     <a href="{{ route('account.login') }}" class="btn btn-secondary btn-sm account-shortcut">
                         Masuk
                     </a>
-                    <a href="{{ route('account.register') }}" class="btn btn-primary btn-sm" style="display: none; @media(min-width: 640px) { display: inline-flex; }">
+                    <a href="{{ route('account.register') }}" class="btn btn-primary btn-sm register-shortcut">
                         Daftar
                     </a>
                 @endif
@@ -297,7 +300,7 @@
     <footer class="site-footer">
         <div class="container">
             <div class="grid grid-cols-1 grid-cols-2 grid-cols-4 gap-lg" style="margin-bottom: var(--space-xl);">
-                <div style="grid-column: span 1; @media (min-width: 1024px) { grid-column: span 2; }">
+                <div class="footer-brand">
                     <span style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: #FFFFFF;">
                         GEPREK <span style="color: var(--primary);">GLO</span>
                     </span>
@@ -419,10 +422,6 @@
         }
 
         function openCartModal() {
-            if (!window.isUserLoggedIn) {
-                openAuthRequiredModal();
-                return;
-            }
             const modal = document.getElementById('cart-modal');
             if (modal) {
                 modal.classList.add('open');

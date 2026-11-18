@@ -4,10 +4,10 @@
 
 @section('content')
 <!-- Header Page Section -->
-<section style="background: radial-gradient(circle at 50% 10%, rgba(215, 38, 61, 0.12), transparent 75%); padding: var(--space-xl) 0 var(--space-md) 0; border-bottom: 1px solid var(--border);">
+<section class="menu-hero">
     <div class="container text-center">
-        <span class="badge badge-promo" style="margin-bottom: 8px;">Katalog Digital</span>
-        <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Daftar Menu &amp; Paket Hemat</h1>
+        <span class="home-kicker">Pesan tanpa antre</span>
+        <h1>Daftar Menu ayam crispy yang siap dipilih</h1>
         <p class="text-muted text-sm" style="max-width: 600px; margin: 0 auto; line-height: 1.5;">
             Pilih menu favorit Anda, tentukan potongan ayam dan minuman paket, lalu kirimkan langsung pesanan Anda ke WhatsApp kedai.
         </p>
@@ -24,11 +24,11 @@
 
             <!-- Category Filter Tabs -->
             <div class="flex gap-xs justify-center flex-wrap" id="category-tabs">
-                <button type="button" class="btn btn-secondary btn-sm category-tab active" data-category="all" style="border-radius: var(--radius-pill);">
+                <button type="button" class="btn btn-secondary btn-sm category-tab {{ $activeCategory === 'all' ? 'active' : '' }}" data-category="all" style="border-radius: var(--radius-pill);">
                     Semua Menu
                 </button>
                 @foreach($categories as $cat)
-                <button type="button" class="btn btn-secondary btn-sm category-tab" data-category="{{ $cat->slug }}" style="border-radius: var(--radius-pill);">
+                <button type="button" class="btn btn-secondary btn-sm category-tab {{ $activeCategory === $cat->slug ? 'active' : '' }}" data-category="{{ $cat->slug }}" style="border-radius: var(--radius-pill);">
                     {{ $cat->name }}
                 </button>
                 @endforeach
@@ -67,16 +67,16 @@
         </div>
     </div>
 @else
-    <!-- Guest Notification Banner (Gating Menu Selection) -->
+    <!-- Guest checkout notice -->
     <div style="background: rgba(215, 38, 61, 0.08); border-bottom: 1px solid rgba(215, 38, 61, 0.2); padding: 12px 0;">
         <div class="container flex flex-wrap justify-between items-center gap-md">
             <div class="flex items-center gap-sm">
                 <svg style="width: 20px; height: 20px; color: var(--primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span class="text-sm">Anda sedang menjelajahi katalog sebagai tamu. <strong>Masuk atau daftar</strong> terlebih dahulu sebelum memilih menu.</span>
+                <span class="text-sm">Anda dapat memilih menu dan checkout sebagai tamu. Masuk agar riwayat pesanan tersimpan di akun.</span>
             </div>
             <div class="flex items-center gap-xs">
-                <a href="{{ route('account.login') }}?redirect=/menu" class="btn btn-primary btn-sm">Masuk (Login)</a>
-                <a href="{{ route('account.register') }}" class="btn btn-secondary btn-sm">Daftar Akun Baru</a>
+                <a href="{{ route('account.login') }}?redirect=/menu" class="btn btn-secondary btn-sm">Masuk</a>
+                <a href="{{ route('account.register') }}" class="btn btn-secondary btn-sm">Daftar</a>
             </div>
         </div>
     </div>
@@ -100,7 +100,7 @@
                 <div class="card menu-card flex flex-col justify-between" 
                      data-category="{{ $category->slug }}" 
                      data-name="{{ strtolower($item->name) }}"
-                     style="{{ !$item->is_available ? 'opacity: 0.7;' : '' }}">
+                     style="{{ !$item->is_available ? 'opacity: 0.7;' : '' }}{{ $activeCategory !== 'all' && $activeCategory !== $category->slug ? ' display: none;' : '' }}">
                     <div>
                         <!-- Product Image Component with 4:3 Neutral Placeholder (Section 5) -->
                         <x-product-image :src="$item->image" :alt="$item->name" />
@@ -159,48 +159,13 @@
             </div>
             <p id="modal-product-desc" class="text-sm text-muted" style="line-height: 1.5; margin-bottom: var(--space-md);"></p>
 
-            <!-- Chicken Cut Selection (FR-07) -->
-            <div id="cut-selection-container" class="form-group" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
-                <label class="form-label" style="display: flex; justify-content: space-between;">
-                    <span>Pilih Potongan Ayam <span class="text-primary">*</span></span>
-                    <span class="text-xs text-muted">Wajib pilih 1</span>
-                </label>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;" id="cut-options-grid">
-                    @foreach($chickenCuts as $cut)
-                    <label class="form-check" style="background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); {{ !$cut->is_available ? 'opacity: 0.5; cursor: not-allowed;' : '' }}">
-                        <input type="radio" name="selected_chicken_cut" value="{{ $cut->name }}" {{ !$cut->is_available ? 'disabled' : '' }}>
-                        <span style="font-size: 0.9rem;">
-                            {{ $cut->name }}
-                            @if(!$cut->is_available)
-                                <small class="text-off">(Habis)</small>
-                            @endif
-                        </span>
-                    </label>
-                    @endforeach
-                </div>
-                <div id="cut-error-msg" class="form-error" style="display: none;">Harap pilih potongan ayam terlebih dahulu.</div>
+            <div id="variant-selection-container" class="form-group" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
+                <label class="form-label" for="selected-product-variant">Pilih varian</label>
+                <select id="selected-product-variant" class="form-control"></select>
             </div>
+            <p class="text-muted text-xs" style="margin-top: 10px;">Pilih varian dan kustomisasi sesuai grup pilihan yang tersedia.</p>
 
-            <!-- Drink Option for Paket Hemat (FR-08, BR-08) -->
-            <div id="drink-selection-container" class="form-group" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
-                <label class="form-label" style="display: flex; justify-content: space-between;">
-                    <span>Pilihan Minuman Paket <span class="text-primary">*</span></span>
-                    <span class="text-xs text-muted">Termasuk dalam paket</span>
-                </label>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;" id="drink-options-grid">
-                    @foreach($drinkOptions as $drink)
-                    <label class="form-check" style="background: var(--surface); padding: 8px 10px; border-radius: var(--radius-md); border: 1px solid var(--border); {{ !$drink->is_available ? 'opacity: 0.5; cursor: not-allowed;' : '' }}">
-                        <input type="radio" name="selected_drink" value="{{ $drink->name }}" {{ !$drink->is_available ? 'disabled' : '' }}>
-                        <span style="font-size: 0.85rem;">
-                            {{ $drink->name }}
-                            @if(!$drink->is_available)
-                                <small class="text-off">(Habis)</small>
-                            @endif
-                        </span>
-                    </label>
-                    @endforeach
-                </div>
-                <div id="drink-error-msg" class="form-error" style="display: none;">Harap pilih varian minuman untuk menu paket hemat.</div>
+            <div id="modifier-groups-container" class="form-group" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
             </div>
 
             <!-- Special Note (Catatan Khusus) -->
@@ -245,7 +210,7 @@
         const menuCards = document.querySelectorAll('.menu-card');
         const noMenuFound = document.getElementById('no-menu-found');
 
-        let activeCategory = 'all';
+        let activeCategory = @json($activeCategory);
         let searchQuery = '';
 
         function applyFilter() {
@@ -318,11 +283,6 @@
 
     // Product Customization Modal logic
     function openProductModal(item, categorySlug) {
-        if (!window.isUserLoggedIn) {
-            openAuthRequiredModal();
-            return;
-        }
-
         activeModalItem = { ...item, categorySlug };
         modalQty = 1;
 
@@ -332,11 +292,38 @@
         document.getElementById('modal-item-qty').textContent = modalQty;
         document.getElementById('modal-item-note').value = '';
 
-        // Reset radio buttons
-        document.querySelectorAll('input[name="selected_chicken_cut"]').forEach(r => r.checked = false);
-        document.querySelectorAll('input[name="selected_drink"]').forEach(r => r.checked = false);
-        document.getElementById('cut-error-msg').style.display = 'none';
-        document.getElementById('drink-error-msg').style.display = 'none';
+        const variantContainer = document.getElementById('variant-selection-container');
+        const variantSelect = document.getElementById('selected-product-variant');
+        const modifierContainer = document.getElementById('modifier-groups-container');
+        const variants = (item.variants || []).filter(variant => variant.is_available);
+        const modifierGroups = item.modifier_groups || [];
+
+        variantContainer.style.display = variants.length ? 'block' : 'none';
+        variantSelect.innerHTML = variants.map(variant =>
+            `<option value="${variant.id}">${escapeHtml(variant.name)} — ${escapeHtml(variant.formatted_price)}</option>`
+        ).join('');
+
+        modifierContainer.style.display = modifierGroups.length ? 'block' : 'none';
+        modifierContainer.innerHTML = modifierGroups.map(group => {
+            const max = group.max_selections || 1;
+            const inputType = max === 1 ? 'radio' : 'checkbox';
+            const requiredLabel = group.is_required ? ' *' : '';
+
+            return `
+                <div class="modifier-group" data-group-id="${group.id}" data-min="${group.min_selections || (group.is_required ? 1 : 0)}" data-max="${group.max_selections || ''}" style="margin-bottom: 14px;">
+                    <label class="form-label">${escapeHtml(group.name)}${requiredLabel}</label>
+                    <div style="display: grid; gap: 8px;">
+                        ${group.options.map(option => `
+                            <label class="form-check" style="background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+                                <input type="${inputType}" name="modifier_group_${group.id}" value="${option.id}" data-group-id="${group.id}" data-group-name="${escapeHtml(group.name)}" data-option-name="${escapeHtml(option.name)}" data-price-delta="${option.price_delta}">
+                                <span style="font-size: 0.9rem;">${escapeHtml(option.name)}${option.price_delta > 0 ? ` (+${window.formatRupiah(option.price_delta)})` : ''}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="form-error modifier-error" style="display: none;">Pilih opsi yang sesuai untuk grup ini.</div>
+                </div>
+            `;
+        }).join('');
 
         // Set image container
         const imgContainer = document.getElementById('modal-product-image-container');
@@ -358,16 +345,6 @@
                 </div>
             `;
         }
-
-        // Show/hide Cut selection (FR-07: menu ayam dan paket)
-        const isChickenItem = item.is_package || ['paket-hemat', 'aneka-ayam'].includes(categorySlug) || item.name.toLowerCase().includes('ayam');
-        const cutContainer = document.getElementById('cut-selection-container');
-        cutContainer.style.display = isChickenItem ? 'block' : 'none';
-
-        // Show/hide Drink selection (FR-08: menu paket hemat)
-        const isPackage = item.is_package || categorySlug === 'paket-hemat';
-        const drinkContainer = document.getElementById('drink-selection-container');
-        drinkContainer.style.display = isPackage ? 'block' : 'none';
 
         const modal = document.getElementById('product-detail-modal');
         modal.classList.add('open');
@@ -395,41 +372,44 @@
     function submitModalToCart() {
         if (!activeModalItem) return;
 
-        const isChickenItem = activeModalItem.is_package || ['paket-hemat', 'aneka-ayam'].includes(activeModalItem.categorySlug) || activeModalItem.name.toLowerCase().includes('ayam');
-        const isPackage = activeModalItem.is_package || activeModalItem.categorySlug === 'paket-hemat';
+        const selectedModifiers = [];
+        let invalidGroup = false;
+        document.querySelectorAll('.modifier-group').forEach(group => {
+            const selected = group.querySelectorAll('input:checked');
+            const min = Number(group.dataset.min || 0);
+            const max = group.dataset.max ? Number(group.dataset.max) : null;
+            const error = group.querySelector('.modifier-error');
+            const invalid = selected.length < min || (max !== null && selected.length > max);
 
-        // Validate chicken cut if required
-        let selectedCut = null;
-        if (isChickenItem) {
-            const cutRadio = document.querySelector('input[name="selected_chicken_cut"]:checked');
-            if (!cutRadio) {
-                document.getElementById('cut-error-msg').style.display = 'block';
-                return;
-            }
-            selectedCut = cutRadio.value;
-        }
+            if (error) error.style.display = invalid ? 'block' : 'none';
+            invalidGroup = invalidGroup || invalid;
 
-        // Validate drink option if package (FR-08, BR-08, T-05)
-        let selectedDrink = null;
-        if (isPackage) {
-            const drinkRadio = document.querySelector('input[name="selected_drink"]:checked');
-            if (!drinkRadio) {
-                document.getElementById('drink-error-msg').style.display = 'block';
-                return;
-            }
-            selectedDrink = drinkRadio.value;
+            selected.forEach(input => selectedModifiers.push({
+                optionId: Number(input.value),
+                groupName: input.dataset.groupName,
+                optionName: input.dataset.optionName,
+                priceDelta: Number(input.dataset.priceDelta || 0)
+            }));
+        });
+
+        if (invalidGroup) {
+            return;
         }
 
         const note = document.getElementById('modal-item-note').value.trim();
+        const variantId = document.getElementById('selected-product-variant').value || null;
+        const selectedVariant = (activeModalItem.variants || []).find(variant => String(variant.id) === String(variantId));
 
         // Add item to Cart
         Cart.addItem({
             id: activeModalItem.id,
             name: activeModalItem.name,
-            price: activeModalItem.price,
+            price: selectedVariant ? selectedVariant.price : activeModalItem.price,
             qty: modalQty,
-            cut: selectedCut,
-            drink: selectedDrink,
+            variantId: variantId ? Number(variantId) : null,
+            variantName: selectedVariant ? selectedVariant.name : null,
+            modifiers: selectedModifiers,
+            modifierTotal: selectedModifiers.reduce((total, modifier) => total + modifier.priceDelta, 0),
             note: note
         });
 

@@ -18,7 +18,7 @@
         </div>
 
         <!-- Big Store Status Toggle Button (FR-18, FR-19, US-11) -->
-        <div style="display: flex; align-items: center; gap: 12px; background: var(--surface); padding: 8px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+        <div id="store-status" style="display: flex; align-items: center; gap: 12px; background: var(--surface); padding: 8px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
             <div>
                 <span class="text-xs text-muted block">Status Kedai Publik:</span>
                 <strong id="dashboard-store-label" class="{{ $settings->is_open ? 'text-ok' : 'text-off' }}" style="font-size: 1.1rem;">

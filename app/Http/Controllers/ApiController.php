@@ -16,7 +16,9 @@ class ApiController extends Controller
     public function menu(): JsonResponse
     {
         $categories = Category::with(['menuItems' => function ($q) {
-            $q->orderBy('sort_order')->orderBy('id');
+            $q->with(['variants', 'modifierGroups.options'])
+                ->orderBy('sort_order')
+                ->orderBy('id');
         }])->orderBy('sort_order')->get();
 
         $chickenCuts = ChickenCut::orderBy('sort_order')->get();
@@ -38,6 +40,25 @@ class ApiController extends Controller
                         'is_available' => (bool) $item->is_available,
                         'is_best_seller' => (bool) $item->is_best_seller,
                         'is_package' => (bool) $item->is_package,
+                        'variants' => $item->variants->map(fn ($variant) => [
+                            'id' => $variant->id,
+                            'name' => $variant->name,
+                            'price' => $variant->price,
+                            'formatted_price' => 'Rp' . number_format($variant->price, 0, ',', '.'),
+                            'is_available' => (bool) $variant->is_available,
+                        ])->values(),
+                        'modifier_groups' => $item->modifierGroups->where('is_active', true)->map(fn ($group) => [
+                            'id' => $group->id,
+                            'name' => $group->name,
+                            'is_required' => (bool) ($group->pivot->is_required ?? $group->is_required),
+                            'min_selections' => $group->pivot->min_selections ?? $group->min_selections,
+                            'max_selections' => $group->pivot->max_selections ?? $group->max_selections,
+                            'options' => $group->options->where('is_available', true)->map(fn ($option) => [
+                                'id' => $option->id,
+                                'name' => $option->name,
+                                'price_delta' => $option->price_delta,
+                            ])->values(),
+                        ])->values(),
                     ];
                 }),
             ];

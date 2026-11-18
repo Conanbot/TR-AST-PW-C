@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\ChickenCut;
-use App\Models\DrinkOption;
 use App\Models\MenuItem;
 use App\Models\StoreSetting;
 use Illuminate\Http\Request;
@@ -17,12 +15,17 @@ class MenuController extends Controller
         $settings = StoreSetting::current();
 
         $categories = Category::with(['menuItems' => function ($q) {
-            $q->orderBy('sort_order')->orderBy('id');
+            $q->with(['variants', 'modifierGroups.options'])
+                ->orderBy('sort_order')
+                ->orderBy('id');
         }])->orderBy('sort_order')->get();
 
-        $chickenCuts = ChickenCut::orderBy('sort_order')->get();
-        $drinkOptions = DrinkOption::orderBy('sort_order')->get();
+        $activeCategory = (string) $request->query('category', 'all');
 
-        return view('menu', compact('settings', 'categories', 'chickenCuts', 'drinkOptions'));
+        if ($activeCategory !== 'all' && !$categories->contains('slug', $activeCategory)) {
+            $activeCategory = 'all';
+        }
+
+        return view('menu', compact('settings', 'categories', 'activeCategory'));
     }
 }

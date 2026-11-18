@@ -21,8 +21,12 @@ class Order extends Model
         'staff_notes',
         'subtotal',
         'packaging_fee',
+        'discount_amount',
+        'delivery_fee',
         'total',
         'status',
+        'payment_status',
+        'payment_method',
         'kitchen_status',
         'source',
     ];
@@ -40,6 +44,16 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function statusHistories(): HasMany
+    {
+        return $this->hasMany(OrderStatusHistory::class);
+    }
+
+    public function accessTokens(): HasMany
+    {
+        return $this->hasMany(OrderAccessToken::class);
     }
 
     public function getFormattedTotalAttribute(): string

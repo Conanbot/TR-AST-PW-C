@@ -14,6 +14,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderTrackingController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,9 @@ Route::get('/profil', [ProfileController::class, 'index'])->name('profil');
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
 Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1')->name('orders.store');
+Route::get('/orders/{orderNumber}/track/{token}', [OrderTrackingController::class, 'show'])
+    ->middleware('throttle:30,1')
+    ->name('orders.track');
 
 Route::get('/login', [AccessController::class, 'showCustomerLogin'])->name('login');
 Route::get('/register', [AccessController::class, 'showCustomerRegister'])->name('register');

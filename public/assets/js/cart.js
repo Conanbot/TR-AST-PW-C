@@ -42,10 +42,15 @@ const Cart = {
   },
 
   addItem(item) {
-    // Unique key combines item id, chicken cut, and drink option
+    // Unique key includes every selection so different configurations remain separate.
     const cutPart = item.cut ? item.cut.trim() : '';
     const drinkPart = item.drink ? item.drink.trim() : '';
-    const key = `${item.id}-${cutPart}-${drinkPart}`;
+    const variantPart = item.variantId || '';
+    const modifierPart = (item.modifiers || [])
+      .map(modifier => modifier.optionId)
+      .sort((a, b) => a - b)
+      .join(',');
+    const key = `${item.id}-${variantPart}-${modifierPart}-${cutPart}-${drinkPart}`;
 
     let items = this.getItems();
     const existingIndex = items.findIndex(i => i.key === key && (i.note || '') === (item.note || ''));
@@ -58,6 +63,10 @@ const Cart = {
         id: item.id,
         name: item.name,
         price: item.price,
+        variantId: item.variantId || null,
+        variantName: item.variantName || null,
+        modifiers: item.modifiers || [],
+        modifierTotal: item.modifierTotal || 0,
         qty: item.qty,
         cut: item.cut || null,
         drink: item.drink || null,
@@ -103,7 +112,7 @@ const Cart = {
 
   getSubtotal() {
     const items = this.getItems();
-    return items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    return items.reduce((sum, item) => sum + ((item.price + (item.modifierTotal || 0)) * item.qty), 0);
   },
 
   getTotalQty() {
@@ -173,7 +182,7 @@ const Cart = {
 
     let html = '<div class="cart-items-list" style="display: flex; flex-direction: column; gap: 12px;">';
     items.forEach(item => {
-      const itemSubtotal = item.price * item.qty;
+      const itemSubtotal = (item.price + (item.modifierTotal || 0)) * item.qty;
       html += `
         <div class="cart-item-card" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -181,8 +190,10 @@ const Cart = {
             <button type="button" onclick="Cart.removeItem('${item.key}')" style="color: var(--text-dim); padding: 2px 6px;" title="Hapus menu">&times;</button>
           </div>
           
-          ${(item.cut || item.drink) ? `
+          ${(item.variantName || item.modifiers?.length || item.cut || item.drink) ? `
             <div class="text-xs" style="color: var(--text-muted); display: flex; gap: 8px; flex-wrap: wrap;">
+              ${item.variantName ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 8px; font-size: 0.75rem; border: 1px solid var(--border);">Varian: ${escapeHtml(item.variantName)}</span>` : ''}
+              ${(item.modifiers || []).map(modifier => `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 8px; font-size: 0.75rem; border: 1px solid var(--border);">${escapeHtml(modifier.groupName)}: ${escapeHtml(modifier.optionName)}</span>`).join('')}
               ${item.cut ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 8px; font-size: 0.75rem; border: 1px solid var(--border); text-transform: uppercase; font-weight: 600;">Potongan: ${escapeHtml(item.cut)}</span>` : ''}
               ${item.drink ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 8px; font-size: 0.75rem; border: 1px solid var(--border); text-transform: uppercase; font-weight: 600;">Minuman: ${escapeHtml(item.drink)}</span>` : ''}
             </div>
@@ -196,7 +207,7 @@ const Cart = {
 
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
             <div style="font-weight: 700; color: var(--primary); font-size: 0.95rem;">
-              ${window.formatRupiah(itemSubtotal)}
+              ${window.formatRupiah((item.price + (item.modifierTotal || 0)) * item.qty)}
             </div>
             <div style="display: flex; align-items: center; gap: 8px; background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px 8px;">
               <button type="button" onclick="Cart.updateQty('${item.key}', -1)" style="font-weight: bold; padding: 2px 6px;">-</button>
@@ -267,15 +278,6 @@ const Cart = {
 
   // WhatsApp Message Composer (FR-10, BR-01)
   async checkoutWhatsApp() {
-    if (window.isUserLoggedIn === false) {
-      if (typeof window.openAuthRequiredModal === 'function') {
-        window.openAuthRequiredModal();
-      } else {
-        window.location.href = '/akun/login?redirect=' + encodeURIComponent(window.location.pathname);
-      }
-      return;
-    }
-
     const items = this.getItems();
     if (items.length === 0) {
       window.showToast('Keranjang Anda masih kosong!', 'error');
@@ -340,6 +342,8 @@ const Cart = {
           items: items.map(item => ({
             id: item.id,
             qty: item.qty,
+            variant_id: item.variantId,
+            modifier_option_ids: (item.modifiers || []).map(modifier => modifier.optionId),
             cut: item.cut,
             drink: item.drink,
             note: item.note

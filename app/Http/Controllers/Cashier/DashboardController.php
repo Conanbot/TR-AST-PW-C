@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\StoreSetting;
 use App\Services\OrderService;
+use App\Services\OrderStatusService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\ValidationException;
@@ -65,12 +66,12 @@ class DashboardController extends Controller
             ->with('success', 'Pesanan ' . $order->order_number . ' berhasil dibuat.');
     }
 
-    public function updateStatus(Request $request, Order $order): RedirectResponse
+    public function updateStatus(Request $request, Order $order, OrderStatusService $statuses): RedirectResponse
     {
         $data = $request->validate([
             'status' => ['required', 'in:preparing,ready,completed,cancelled'],
         ]);
-        $order->update($data);
+        $statuses->transition($order, $data['status'], $request->user());
 
         return back()->with('success', 'Status ' . $order->order_number . ' diperbarui.');
     }
