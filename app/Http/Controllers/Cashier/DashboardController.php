@@ -39,6 +39,7 @@ class DashboardController extends Controller
             'service_method' => ['required', 'in:dine_in,takeaway'],
             'table_number' => ['required_if:service_method,dine_in', 'nullable', 'string', 'max:20'],
             'items' => ['required', 'json'],
+            'payment_method' => ['required', 'in:cash_pickup'],
         ]);
         $data['items'] = json_decode($data['items'], true);
 

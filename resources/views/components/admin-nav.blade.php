@@ -79,6 +79,16 @@
             ],
         ],
         [
+            'label' => 'Payments',
+            'items' => [
+                ['label' => 'Payment Overview', 'href' => route('admin.payments.index'), 'active' => request()->routeIs('admin.payments.index')],
+                ['label' => 'Payment Transactions', 'href' => route('admin.payments.index')],
+                ['label' => 'Pending QRIS Verification', 'href' => route('admin.payments.index', ['status' => 'pending_verification'])],
+                ['label' => 'Payment History', 'href' => route('admin.payments.index')],
+                ['label' => 'Payment Settings', 'href' => route('admin.payments.settings'), 'active' => request()->routeIs('admin.payments.settings')],
+            ],
+        ],
+        [
             'label' => 'Store Settings',
             'items' => [
                 ['label' => 'Store Information', 'href' => route('admin.settings.edit'), 'active' => request()->routeIs('admin.settings.*')],
@@ -86,7 +96,7 @@
                 ['label' => 'Operating Hours', 'href' => route('admin.settings.edit')],
                 ['label' => 'Store Location', 'href' => route('admin.settings.edit')],
                 ['label' => 'Delivery Radius', 'href' => route('admin.settings.edit')],
-                ['label' => 'Payment Settings', 'href' => null],
+                ['label' => 'Payment Settings', 'href' => route('admin.payments.settings')],
             ],
         ],
         [

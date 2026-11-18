@@ -206,6 +206,31 @@
                     <div id="delivery-address-container" class="form-group" style="display: none;">
                         <label for="customer-address" class="form-label">Alamat Pengantaran & Catatan Lokasi <span class="text-primary">*</span></label>
                         <textarea id="customer-address" class="form-control" placeholder="Tuliskan nama jalan, nomor rumah / kos, patokan, dll."></textarea>
+                        <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="Cart.captureDeliveryLocation()">Gunakan lokasi perangkat</button>
+                        <input type="hidden" id="delivery-lat">
+                        <input type="hidden" id="delivery-lng">
+                    </div>
+
+                    <div class="form-group" style="margin-top:14px;">
+                        <label class="form-label">Metode Pembayaran <span class="text-primary">*</span></label>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
+                                <input type="radio" name="payment_method" value="cash_pickup" checked>
+                                <div><strong>Cash on Pickup</strong><div class="text-xs text-muted">Bayar tunai saat pesanan diambil.</div></div>
+                            </label>
+                            @if($settings->qris_enabled ?? false)
+                            <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
+                                <input type="radio" name="payment_method" value="qris">
+                                <div><strong>QRIS</strong><div class="text-xs text-muted">Upload bukti manual untuk diverifikasi admin.</div></div>
+                            </label>
+                            @endif
+                            @if($settings->delivery_enabled ?? false)
+                            <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
+                                <input type="radio" name="payment_method" value="cod">
+                                <div><strong>Cash on Delivery</strong><div class="text-xs text-muted">Bayar tunai saat pesanan diterima.</div></div>
+                            </label>
+                            @endif
+                        </div>
                     </div>
 
                     <!-- Information Architecture: Order Notes (Priority Service, Add Cutlery, Birthday Message, Table Change) -->

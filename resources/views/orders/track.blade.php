@@ -34,6 +34,38 @@
                 <strong class="text-primary">{{ $order->formatted_total }}</strong>
             </div>
         </div>
+        @php
+            $payment = $order->payments->firstWhere('method_code', $order->payment_method);
+        @endphp
+        <div class="card" style="padding: var(--space-lg); margin-top: var(--space-lg);">
+            <h2>Pembayaran</h2>
+            <p><strong>{{ strtoupper(str_replace('_', ' ', $order->payment_method ?: 'unpaid')) }}</strong> · <span>{{ ucfirst(str_replace('_', ' ', $order->payment_status ?: 'unpaid')) }}</span></p>
+            <p class="text-muted">Tagihan: {{ $order->formatted_total }}</p>
+            @if($order->payment_method === 'qris')
+                @if($paymentSettings->qris_image)
+                    <img src="{{ asset('storage/' . $paymentSettings->qris_image) }}" alt="QRIS {{ $paymentSettings->qris_merchant_name }}" style="max-width:240px;width:100%;border-radius:12px;">
+                @else
+                    <p class="text-muted">Gambar QRIS belum tersedia.</p>
+                @endif
+                @if($paymentSettings->qris_instructions)<p>{{ $paymentSettings->qris_instructions }}</p>@endif
+                @if($payment && $payment->status !== 'paid')
+                    <form method="POST" action="{{ route('orders.payment-proof', ['orderNumber' => $order->order_number, 'token' => request()->route('token')]) }}" enctype="multipart/form-data" class="stack-sm" style="margin-top:12px;">
+                        @csrf
+                        <input type="hidden" name="claimed_amount" value="{{ $order->total }}">
+                        <label class="form-label" for="payment-proof">Unggah bukti pembayaran</label>
+                        <input id="payment-proof" class="form-control" type="file" name="proof" accept="image/jpeg,image/png,image/webp" required>
+                        <button class="btn btn-primary" type="submit">Kirim bukti QRIS</button>
+                    </form>
+                @endif
+            @elseif($order->payment_method === 'cash_pickup')
+                <p class="text-muted">Siapkan uang tunai sesuai total tagihan saat mengambil pesanan.</p>
+            @elseif($order->payment_method === 'cod')
+                <p class="text-muted">Siapkan uang tunai sesuai total tagihan saat pesanan diterima.</p>
+            @endif
+            @if($payment && $payment->rejection_reason)
+                <div class="alert alert-error">Bukti ditolak: {{ $payment->rejection_reason }}</div>
+            @endif
+        </div>
         <div class="card" style="padding: var(--space-lg); margin-top: var(--space-lg);">
             <h2>Perjalanan pesanan</h2>
             <ol class="stack-sm" style="margin-top: 16px; padding-left: 20px;">

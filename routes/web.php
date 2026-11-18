@@ -18,6 +18,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingController;
 use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PaymentProofController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +35,9 @@ Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:
 Route::get('/orders/{orderNumber}/track/{token}', [OrderTrackingController::class, 'show'])
     ->middleware('throttle:30,1')
     ->name('orders.track');
+Route::post('/orders/{orderNumber}/track/{token}/payment-proof', [PaymentProofController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('orders.payment-proof');
 
 Route::get('/login', [AccessController::class, 'showCustomerLogin'])->name('login');
 Route::get('/register', [AccessController::class, 'showCustomerRegister'])->name('register');
@@ -54,6 +59,7 @@ Route::prefix('kasir')->name('cashier.')->group(function () {
         Route::get('/', [CashierDashboardController::class, 'index'])->name('dashboard');
         Route::post('/orders', [CashierDashboardController::class, 'storeOrder'])->name('orders.store');
         Route::patch('/orders/{order}/status', [CashierDashboardController::class, 'updateStatus'])->name('orders.status');
+        Route::patch('/payments/{payment}/confirm-cash', [AdminPaymentController::class, 'confirmCash'])->name('payments.confirm-cash');
     });
 });
 
@@ -118,6 +124,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Change Password (FR-25)
         Route::get('/password', [AuthController::class, 'showChangePassword'])->name('password.edit');
         Route::put('/password', [AuthController::class, 'updatePassword'])->name('password.update');
+        Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
+        Route::patch('/payments/{payment}/confirm-cash', [AdminPaymentController::class, 'confirmCash'])->name('payments.confirm-cash');
+        Route::patch('/payments/{payment}/verify-qris', [AdminPaymentController::class, 'verifyQris'])->name('payments.verify-qris');
+        Route::get('/payment-settings', [AdminPaymentController::class, 'settings'])->name('payments.settings');
+        Route::put('/payment-settings', [AdminPaymentController::class, 'updateSettings'])->name('payments.settings.update');
     });
 });
 

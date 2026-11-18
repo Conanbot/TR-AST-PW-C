@@ -8,6 +8,7 @@ use App\Models\StoreSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Services\PaymentService;
 
 class OrderService
 {
@@ -28,6 +29,49 @@ class OrderService
         if ($data['service_method'] === 'delivery' && !$settings->delivery_enabled) {
             throw ValidationException::withMessages([
                 'service_method' => 'Layanan pesan antar sedang tidak tersedia.',
+            ]);
+        }
+
+        $paymentMethod = $data['payment_method'] ?? null;
+        if (!$paymentMethod) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'Pilih metode pembayaran.',
+            ]);
+        }
+
+        $method = \App\Models\PaymentMethod::active()->where('code', $paymentMethod)->first();
+        if (!$method) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'Metode pembayaran tidak tersedia.',
+            ]);
+        }
+
+        if ($paymentMethod === 'qris') {
+            if (!$settings->qris_enabled || !$settings->qris_image) {
+                throw ValidationException::withMessages([
+                    'payment_method' => 'Pembayaran QRIS belum tersedia.',
+                ]);
+            }
+        }
+
+        if ($paymentMethod === 'cod') {
+            if ($data['service_method'] !== 'delivery') {
+                throw ValidationException::withMessages([
+                    'payment_method' => 'Cash on Delivery hanya tersedia untuk pesanan delivery.',
+                ]);
+            }
+            $codOrder = new Order([
+                'service_method' => 'delivery',
+                'customer_address' => $data['customer_address'] ?? null,
+                'delivery_lat' => $data['delivery_lat'] ?? null,
+                'delivery_lng' => $data['delivery_lng'] ?? null,
+            ]);
+            app(PaymentService::class)->validateCodRadius($codOrder, $settings);
+        }
+
+        if ($paymentMethod === 'cash_pickup' && !in_array($data['service_method'], ['takeaway', 'dine_in'], true)) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'Cash on Pickup hanya tersedia untuk pesanan pickup atau dine-in.',
             ]);
         }
 
@@ -93,6 +137,8 @@ class OrderService
                 'service_method' => $data['service_method'],
                 'table_number' => $data['table_number'] ?? null,
                 'customer_address' => $data['customer_address'] ?? null,
+                'delivery_lat' => $data['delivery_lat'] ?? null,
+                'delivery_lng' => $data['delivery_lng'] ?? null,
                 'order_notes' => $data['order_notes'] ?? null,
                 'subtotal' => $subtotal,
                 'packaging_fee' => $packagingFee,
@@ -101,6 +147,7 @@ class OrderService
                 'total' => $total,
                 'status' => 'pending',
                 'payment_status' => 'unpaid',
+                'payment_method' => $data['payment_method'] ?? null,
                 'source' => $source,
             ]);
 
@@ -124,7 +171,11 @@ class OrderService
                 }
             }
 
-            return $order->load('items.modifiers');
+            if (!empty($data['payment_method'])) {
+                app(PaymentService::class)->createForOrder($order, $data['payment_method']);
+            }
+
+            return $order->load(['items.modifiers', 'payments']);
         });
     }
 

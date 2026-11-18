@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\OrderAccessService;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
+use App\Models\StoreSetting;
 
 class OrderTrackingController extends Controller
 {
@@ -15,7 +16,9 @@ class OrderTrackingController extends Controller
         abort_unless($order, 404);
 
         $order->load('statusHistories');
+        $order->load('payments.histories');
+        $paymentSettings = StoreSetting::current();
 
-        return view('orders.track', compact('order'));
+        return view('orders.track', compact('order', 'paymentSettings'));
     }
 }

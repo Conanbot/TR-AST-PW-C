@@ -59,6 +59,13 @@ return new class extends Migration
             $table->text('qris_instructions')->nullable();
             $table->boolean('qris_enabled')->default(false);
         });
+
+        $now = now();
+        \Illuminate\Support\Facades\DB::table('payment_methods')->insert([
+            ['code' => 'cash_pickup', 'name' => 'Cash on Pickup', 'description' => 'Bayar tunai saat mengambil pesanan.', 'is_active' => true, 'sort_order' => 1, 'created_at' => $now, 'updated_at' => $now],
+            ['code' => 'qris', 'name' => 'QRIS', 'description' => 'Bayar melalui QRIS merchant resmi dan unggah bukti.', 'is_active' => true, 'sort_order' => 2, 'created_at' => $now, 'updated_at' => $now],
+            ['code' => 'cod', 'name' => 'Cash on Delivery', 'description' => 'Bayar tunai saat pesanan diterima.', 'is_active' => true, 'sort_order' => 3, 'created_at' => $now, 'updated_at' => $now],
+        ]);
     }
 
     public function down(): void

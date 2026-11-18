@@ -8,6 +8,7 @@ use App\Models\DrinkOption;
 use App\Models\MenuItem;
 use App\Models\ModifierGroup;
 use App\Models\ModifierOption;
+use App\Models\PaymentMethod;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Promo;
@@ -63,6 +64,17 @@ class DatabaseSeeder extends Seeder
                 'delivery_radius_m' => 800,
             ]
         );
+
+        foreach ([
+            ['code' => 'cash_pickup', 'name' => 'Cash on Pickup', 'description' => 'Bayar tunai saat mengambil pesanan.', 'sort_order' => 1],
+            ['code' => 'qris', 'name' => 'QRIS', 'description' => 'Bayar melalui QRIS merchant resmi dan unggah bukti.', 'sort_order' => 2],
+            ['code' => 'cod', 'name' => 'Cash on Delivery', 'description' => 'Bayar tunai kepada petugas saat pesanan diterima.', 'sort_order' => 3],
+        ] as $method) {
+            PaymentMethod::updateOrCreate(
+                ['code' => $method['code']],
+                $method + ['is_active' => true]
+            );
+        }
 
         // 3. Categories
         $catHemat = Category::updateOrCreate(

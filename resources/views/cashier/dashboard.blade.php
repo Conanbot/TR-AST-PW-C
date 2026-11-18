@@ -108,6 +108,7 @@
                 </div>
             </div>
             <input type="hidden" name="table_number" id="cashier-table-number">
+            <input type="hidden" name="payment_method" value="cash_pickup">
             <input type="hidden" name="items" id="cashier-order-items">
             <div class="ticket-items" id="cashier-order-items-list" aria-live="polite">
                 <div class="ticket-empty"><span class="ticket-empty-mark" aria-hidden="true">＋</span><p>Belum ada menu.<br>Pilih menu untuk mulai.</p></div>

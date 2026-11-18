@@ -98,6 +98,9 @@ class ApiController extends Controller
             'store_lng' => (float) $s->store_lng,
             'delivery_enabled' => (bool) $s->delivery_enabled,
             'delivery_radius_m' => (int) $s->delivery_radius_m,
+            'qris_enabled' => (bool) $s->qris_enabled,
+            'qris_merchant_name' => $s->qris_merchant_name,
+            'qris_instructions' => $s->qris_instructions,
         ]);
     }
 }

@@ -277,6 +277,20 @@ const Cart = {
   },
 
   // WhatsApp Message Composer (FR-10, BR-01)
+  captureDeliveryLocation() {
+    if (!navigator.geolocation) {
+      window.showToast('Lokasi perangkat tidak didukung browser ini.', 'error');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(position => {
+      document.getElementById('delivery-lat').value = position.coords.latitude;
+      document.getElementById('delivery-lng').value = position.coords.longitude;
+      window.showToast('Lokasi pengantaran berhasil diambil.', 'success');
+    }, () => {
+      window.showToast('Lokasi perangkat tidak dapat diakses.', 'error');
+    }, {enableHighAccuracy: true, timeout: 10000});
+  },
+
   async checkoutWhatsApp() {
     const items = this.getItems();
     if (items.length === 0) {
@@ -288,6 +302,8 @@ const Cart = {
     const customerPhoneInput = document.getElementById('customer-phone');
     const customerAddressInput = document.getElementById('customer-address');
     const tableNumberInput = document.getElementById('table-number');
+    const deliveryLatInput = document.getElementById('delivery-lat');
+    const deliveryLngInput = document.getElementById('delivery-lng');
 
     const customerName = customerNameInput ? customerNameInput.value.trim() : '';
     const customerPhone = customerPhoneInput ? customerPhoneInput.value.trim() : '';
@@ -302,11 +318,30 @@ const Cart = {
 
     const serviceSelect = document.querySelector('input[name="service_method"]:checked');
     const serviceMethod = serviceSelect ? serviceSelect.value : 'dine_in';
+    const paymentSelect = document.querySelector('input[name="payment_method"]:checked');
+    const paymentMethod = paymentSelect ? paymentSelect.value : null;
+
+    if (!paymentMethod) {
+      window.showToast('Pilih metode pembayaran terlebih dahulu.', 'error');
+      return;
+    }
+    if (paymentMethod === 'cash_pickup' && !['takeaway', 'dine_in'].includes(serviceMethod)) {
+      window.showToast('Cash on Pickup hanya untuk pesanan bawa pulang atau makan di tempat.', 'error');
+      return;
+    }
+    if (paymentMethod === 'cod' && serviceMethod !== 'delivery') {
+      window.showToast('Cash on Delivery hanya untuk pesanan delivery.', 'error');
+      return;
+    }
 
     if (serviceMethod === 'delivery') {
       if (!customerAddress) {
         window.showToast('Harap cantumkan alamat lengkap untuk pengantaran.', 'error');
         if (customerAddressInput) customerAddressInput.focus();
+        return;
+      }
+      if (!deliveryLatInput?.value || !deliveryLngInput?.value) {
+        window.showToast('Ambil lokasi perangkat untuk memvalidasi radius delivery.', 'error');
         return;
       }
     }
@@ -338,6 +373,9 @@ const Cart = {
           service_method: serviceMethod,
           table_number: (serviceMethod === 'dine_in' && tableNumber) ? tableNumber : null,
           customer_address: customerAddress || null,
+          delivery_lat: deliveryLatInput?.value ? Number(deliveryLatInput.value) : null,
+          delivery_lng: deliveryLngInput?.value ? Number(deliveryLngInput.value) : null,
+          payment_method: paymentMethod,
           order_notes: orderNotes || null,
           items: items.map(item => ({
             id: item.id,

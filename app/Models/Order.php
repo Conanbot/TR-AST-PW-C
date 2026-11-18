@@ -34,6 +34,16 @@ class Order extends Model
         'source',
     ];
 
+    protected $casts = [
+        'subtotal' => 'integer',
+        'packaging_fee' => 'integer',
+        'discount_amount' => 'integer',
+        'delivery_fee' => 'integer',
+        'total' => 'integer',
+        'delivery_lat' => 'float',
+        'delivery_lng' => 'float',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
