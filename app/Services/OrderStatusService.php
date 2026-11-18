@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class OrderStatusService
@@ -19,33 +20,36 @@ class OrderStatusService
 
     public function transition(Order $order, string $toStatus, ?User $actor = null, ?string $note = null): Order
     {
-        $fromStatus = $order->status ?: 'pending';
-        $allowed = self::TRANSITIONS[$fromStatus] ?? [];
+        return DB::transaction(function () use ($order, $toStatus, $actor, $note) {
+            $lockedOrder = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
+            $fromStatus = $lockedOrder->status ?: 'pending';
+            $allowed = self::TRANSITIONS[$fromStatus] ?? [];
 
-        if (!in_array($toStatus, $allowed, true)) {
-            throw ValidationException::withMessages([
-                'status' => "Status pesanan tidak dapat diubah dari {$fromStatus} menjadi {$toStatus}.",
+            if (!in_array($toStatus, $allowed, true)) {
+                throw ValidationException::withMessages([
+                    'status' => "Status pesanan tidak dapat diubah dari {$fromStatus} menjadi {$toStatus}.",
+                ]);
+            }
+
+            if ($toStatus === 'cancelled' && blank($note)) {
+                throw ValidationException::withMessages([
+                    'cancellation_reason' => 'Alasan pembatalan wajib diisi.',
+                ]);
+            }
+
+            $lockedOrder->update([
+                'status' => $toStatus,
+                'cancellation_reason' => $toStatus === 'cancelled' ? $note : $lockedOrder->cancellation_reason,
             ]);
-        }
-
-        if ($toStatus === 'cancelled' && blank($note)) {
-            throw ValidationException::withMessages([
-                'cancellation_reason' => 'Alasan pembatalan wajib diisi.',
+            $lockedOrder->statusHistories()->create([
+                'from_status' => $fromStatus,
+                'to_status' => $toStatus,
+                'changed_by_user_id' => $actor?->id,
+                'note' => $note,
             ]);
-        }
 
-        $order->update([
-            'status' => $toStatus,
-            'cancellation_reason' => $toStatus === 'cancelled' ? $note : $order->cancellation_reason,
-        ]);
-        $order->statusHistories()->create([
-            'from_status' => $fromStatus,
-            'to_status' => $toStatus,
-            'changed_by_user_id' => $actor?->id,
-            'note' => $note,
-        ]);
-
-        return $order->refresh();
+            return $lockedOrder->refresh();
+        });
     }
 
     public function canTransition(string $fromStatus, string $toStatus): bool

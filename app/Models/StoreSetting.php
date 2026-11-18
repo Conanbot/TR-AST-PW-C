@@ -23,6 +23,10 @@ class StoreSetting extends Model
         'store_lng',
         'delivery_enabled',
         'delivery_radius_m',
+        'qris_image',
+        'qris_merchant_name',
+        'qris_instructions',
+        'qris_enabled',
     ];
 
     protected $casts = [
@@ -30,6 +34,7 @@ class StoreSetting extends Model
         'delivery_enabled' => 'boolean',
         'packaging_fee' => 'integer',
         'delivery_radius_m' => 'integer',
+        'qris_enabled' => 'boolean',
         'store_lat' => 'float',
         'store_lng' => 'float',
     ];

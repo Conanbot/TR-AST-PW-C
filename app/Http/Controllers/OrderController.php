@@ -37,7 +37,7 @@ class OrderController extends Controller
 
         return response()->json([
             'order_number' => $order->order_number,
-            'whatsapp_url' => $orders->whatsappUrl($order),
+            'whatsapp_url' => $orders->whatsappUrl($order, route('orders.track', ['orderNumber' => $order->order_number, 'token' => $token]) ),
             'tracking_url' => route('orders.track', ['orderNumber' => $order->order_number, 'token' => $token]),
         ], 201);
     }

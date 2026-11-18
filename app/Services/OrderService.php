@@ -128,7 +128,7 @@ class OrderService
         });
     }
 
-    public function whatsappUrl(Order $order): string
+    public function whatsappUrl(Order $order, ?string $trackingUrl = null): string
     {
         $settings = StoreSetting::current();
         $lines = $order->items->map(function ($item, $index) {
@@ -163,6 +163,7 @@ class OrderService
             . ($order->packaging_fee > 0 ? "\nBiaya kemasan: Rp" . number_format($order->packaging_fee, 0, ',', '.') : '')
             . ($order->delivery_fee > 0 ? "\nBiaya antar: Rp" . number_format($order->delivery_fee, 0, ',', '.') : '')
             . "\nTotal: Rp" . number_format($order->total, 0, ',', '.')
+            . ($trackingUrl ? "\nLacak pesanan: " . $trackingUrl : '')
             . "\n\nMohon konfirmasi pesanan saya. Terima kasih!";
 
         return 'https://wa.me/' . $settings->wa_number . '?text=' . urlencode($message);

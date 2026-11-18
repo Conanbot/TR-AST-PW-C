@@ -156,7 +156,7 @@ class DashboardController extends Controller
             ];
 
             while ($order->status !== $status && isset($nextStatus[$order->status])) {
-                $statuses->transition($order, $nextStatus[$order->status], $request->user());
+                $order = $statuses->transition($order, $nextStatus[$order->status], $request->user());
             }
 
             if ($order->status !== $status) {

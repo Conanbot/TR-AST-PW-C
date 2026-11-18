@@ -99,14 +99,20 @@ class ProductConfigurationController extends Controller
         ]);
 
         $pivot = collect($data['modifier_groups'] ?? [])
-            ->mapWithKeys(fn (array $group, int $index) => [
-                $group['id'] => [
-                    'is_required' => (bool) ($group['is_required'] ?? false),
-                    'min_selections' => $group['min_selections'] ?? 0,
-                    'max_selections' => $group['max_selections'] ?? null,
-                    'sort_order' => $group['sort_order'] ?? $index,
-                ],
-            ])->all();
+            ->mapWithKeys(function (array $selected, int $index) {
+                $group = ModifierGroup::findOrFail($selected['id']);
+
+                return [
+                    $group->id => [
+                        'is_required' => array_key_exists('is_required', $selected)
+                            ? (bool) $selected['is_required']
+                            : $group->is_required,
+                        'min_selections' => $selected['min_selections'] ?? $group->min_selections,
+                        'max_selections' => $selected['max_selections'] ?? $group->max_selections,
+                        'sort_order' => $selected['sort_order'] ?? $index,
+                    ],
+                ];
+            })->all();
 
         $item->modifierGroups()->sync($pivot);
 
@@ -147,7 +153,7 @@ class ProductConfigurationController extends Controller
         return $request->validate([
             'menu_item_id' => ['required', 'integer', 'exists:menu_items,id'],
             'name' => ['required', 'string', 'max:120'],
-            'sku' => ['nullable', 'string', 'max:80'],
+            'sku' => ['nullable', 'string', 'max:80', 'unique:product_variants,sku,' . optional($request->route('variant'))->id],
             'price' => ['required', 'integer', 'min:0'],
             'sort_order' => ['required', 'integer', 'min:0'],
             'is_available' => ['nullable', 'boolean'],

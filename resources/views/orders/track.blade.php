@@ -39,7 +39,11 @@
             <ol class="stack-sm" style="margin-top: 16px; padding-left: 20px;">
                 @foreach(['pending' => 'Pesanan diterima', 'confirmed' => 'Pesanan dikonfirmasi', 'preparing' => 'Sedang diproses', 'ready' => 'Siap diambil/diantar', 'completed' => 'Pesanan selesai', 'cancelled' => 'Pesanan dibatalkan'] as $status => $label)
                     @php
-                        $reached = $order->status === $status || $order->statusHistories->contains('to_status', $status);
+                        $statusRank = ['pending' => 1, 'confirmed' => 2, 'preparing' => 3, 'ready' => 4, 'completed' => 5, 'cancelled' => 99];
+                        $currentRank = $statusRank[$order->status] ?? 0;
+                        $reached = $order->status === 'cancelled'
+                            ? $status === 'cancelled'
+                            : $statusRank[$status] <= $currentRank;
                     @endphp
                     <li style="{{ $reached ? 'font-weight: 700; color: var(--primary);' : 'color: var(--text-muted);' }}">{{ $label }}</li>
                 @endforeach

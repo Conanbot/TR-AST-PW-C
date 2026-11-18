@@ -52,6 +52,9 @@ class Phase3BTest extends TestCase
 
         $this->assertDatabaseHas('modifier_options', ['name' => 'Original', 'price_delta' => 1000]);
         $this->assertTrue($item->fresh()->modifierGroups->contains($group));
+        $pivot = $item->fresh()->modifierGroups->find($group->id)->pivot;
+        $this->assertTrue((bool) $pivot->is_required);
+        $this->assertSame(1, (int) $pivot->min_selections);
         $this->assertSame(1, ProductVariant::where('menu_item_id', $item->id)->count());
     }
 

@@ -54,6 +54,43 @@ class ProductCustomizationTest extends TestCase
         $this->get('/orders/' . $response->json('order_number') . '/track/invalid-token')->assertNotFound();
     }
 
+    public function test_disabled_modifier_is_not_accepted_for_a_new_order(): void
+    {
+        $item = $this->customizableItem();
+        $group = ModifierGroup::create([
+            'name' => 'Sambal',
+            'slug' => 'sambal-disabled',
+            'is_required' => false,
+            'min_selections' => 0,
+            'max_selections' => 1,
+            'is_active' => true,
+        ]);
+        $option = ModifierOption::create([
+            'modifier_group_id' => $group->id,
+            'name' => 'Sambal ijo',
+            'price_delta' => 500,
+            'is_available' => true,
+        ]);
+        $item->modifierGroups()->attach($group);
+        $option->update(['is_available' => false]);
+
+        $this->postJson('/orders', $this->orderPayload($item, [$option->id]))->assertStatus(422);
+    }
+
+    public function test_tracking_token_cannot_access_another_order(): void
+    {
+        $item = $this->customizableItem();
+        $first = $this->postJson('/orders', $this->orderPayload($item, []))->assertCreated();
+        $second = $this->postJson('/orders', $this->orderPayload($item, []))->assertCreated();
+
+        $firstUrl = parse_url($first->json('tracking_url'), PHP_URL_PATH);
+        $parts = explode('/', trim($firstUrl, '/'));
+        $token = end($parts);
+
+        $secondNumber = $second->json('order_number');
+        $this->get('/orders/' . $secondNumber . '/track/' . $token)->assertNotFound();
+    }
+
     private function customizableItem(): MenuItem
     {
         $category = Category::create(['name' => 'Paket', 'slug' => 'paket']);

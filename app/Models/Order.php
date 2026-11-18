@@ -17,6 +17,8 @@ class Order extends Model
         'service_method',
         'table_number',
         'customer_address',
+        'delivery_lat',
+        'delivery_lng',
         'order_notes',
         'staff_notes',
         'cancellation_reason',
@@ -55,6 +57,16 @@ class Order extends Model
     public function accessTokens(): HasMany
     {
         return $this->hasMany(OrderAccessToken::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function latestPayment()
+    {
+        return $this->hasOne(Payment::class)->latestOfMany();
     }
 
     public function getFormattedTotalAttribute(): string
