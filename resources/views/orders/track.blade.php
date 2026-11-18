@@ -34,6 +34,17 @@
                 <strong class="text-primary">{{ $order->formatted_total }}</strong>
             </div>
         </div>
+        <div class="card" style="padding: var(--space-lg); margin-top: var(--space-lg);">
+            <h2>Perjalanan pesanan</h2>
+            <ol class="stack-sm" style="margin-top: 16px; padding-left: 20px;">
+                @foreach(['pending' => 'Pesanan diterima', 'confirmed' => 'Pesanan dikonfirmasi', 'preparing' => 'Sedang diproses', 'ready' => 'Siap diambil/diantar', 'completed' => 'Pesanan selesai', 'cancelled' => 'Pesanan dibatalkan'] as $status => $label)
+                    @php
+                        $reached = $order->status === $status || $order->statusHistories->contains('to_status', $status);
+                    @endphp
+                    <li style="{{ $reached ? 'font-weight: 700; color: var(--primary);' : 'color: var(--text-muted);' }}">{{ $label }}</li>
+                @endforeach
+            </ol>
+        </div>
     </div>
 </section>
 @endsection

@@ -12,13 +12,13 @@
         [
             'label' => 'Orders',
             'items' => [
-                ['label' => 'All Orders', 'href' => route('admin.dashboard').'#ia-orders'],
-                ['label' => 'Pending', 'href' => route('admin.dashboard').'#ia-orders'],
-                ['label' => 'Confirmed', 'href' => null],
-                ['label' => 'Preparing', 'href' => route('admin.dashboard').'#ia-kitchen'],
-                ['label' => 'Ready', 'href' => route('admin.dashboard').'#ia-kitchen'],
-                ['label' => 'Completed', 'href' => route('admin.dashboard').'#ia-kitchen'],
-                ['label' => 'Cancelled', 'href' => null],
+                ['label' => 'All Orders', 'href' => route('admin.orders.index'), 'active' => request()->routeIs('admin.orders.*')],
+                ['label' => 'Pending', 'href' => route('admin.orders.index', ['status' => 'pending'])],
+                ['label' => 'Confirmed', 'href' => route('admin.orders.index', ['status' => 'confirmed'])],
+                ['label' => 'Preparing', 'href' => route('admin.orders.index', ['status' => 'preparing'])],
+                ['label' => 'Ready', 'href' => route('admin.orders.index', ['status' => 'ready'])],
+                ['label' => 'Completed', 'href' => route('admin.orders.index', ['status' => 'completed'])],
+                ['label' => 'Cancelled', 'href' => route('admin.orders.index', ['status' => 'cancelled'])],
             ],
         ],
         [
@@ -26,18 +26,18 @@
             'items' => [
                 ['label' => 'Categories', 'href' => null],
                 ['label' => 'Products', 'href' => route('admin.items.index'), 'active' => request()->routeIs('admin.items.*')],
-                ['label' => 'Product Variants', 'href' => null],
-                ['label' => 'Modifier Groups', 'href' => null],
-                ['label' => 'Customization Options', 'href' => route('admin.stock.index'), 'active' => request()->routeIs('admin.stock.*')],
+                ['label' => 'Product Variants', 'href' => route('admin.product-config.index'), 'active' => request()->routeIs('admin.product-config.*')],
+                ['label' => 'Modifier Groups', 'href' => route('admin.product-config.index'), 'active' => request()->routeIs('admin.product-config.*')],
+                ['label' => 'Customization Options', 'href' => route('admin.product-config.index'), 'active' => request()->routeIs('admin.product-config.*')],
             ],
         ],
         [
             'label' => 'Kitchen',
             'items' => [
-                ['label' => 'Cooking Queue', 'href' => route('admin.dashboard').'#ia-kitchen'],
-                ['label' => 'Preparing Orders', 'href' => route('admin.dashboard').'#ia-kitchen'],
-                ['label' => 'Ready Orders', 'href' => route('admin.dashboard').'#ia-kitchen'],
-                ['label' => 'Completed Orders', 'href' => route('admin.dashboard').'#ia-kitchen'],
+                ['label' => 'Cooking Queue', 'href' => route('kitchen.index'), 'active' => request()->routeIs('kitchen.*')],
+                ['label' => 'Preparing Orders', 'href' => route('kitchen.index')],
+                ['label' => 'Ready Orders', 'href' => route('kitchen.index')],
+                ['label' => 'Completed Orders', 'href' => route('admin.orders.index', ['status' => 'completed'])],
             ],
         ],
         [

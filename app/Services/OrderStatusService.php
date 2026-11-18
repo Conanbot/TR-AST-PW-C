@@ -28,7 +28,16 @@ class OrderStatusService
             ]);
         }
 
-        $order->update(['status' => $toStatus]);
+        if ($toStatus === 'cancelled' && blank($note)) {
+            throw ValidationException::withMessages([
+                'cancellation_reason' => 'Alasan pembatalan wajib diisi.',
+            ]);
+        }
+
+        $order->update([
+            'status' => $toStatus,
+            'cancellation_reason' => $toStatus === 'cancelled' ? $note : $order->cancellation_reason,
+        ]);
         $order->statusHistories()->create([
             'from_status' => $fromStatus,
             'to_status' => $toStatus,

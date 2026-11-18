@@ -19,6 +19,7 @@ class Order extends Model
         'customer_address',
         'order_notes',
         'staff_notes',
+        'cancellation_reason',
         'subtotal',
         'packaging_fee',
         'discount_amount',

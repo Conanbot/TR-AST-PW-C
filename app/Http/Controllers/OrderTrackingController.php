@@ -14,6 +14,8 @@ class OrderTrackingController extends Controller
 
         abort_unless($order, 404);
 
+        $order->load('statusHistories');
+
         return view('orders.track', compact('order'));
     }
 }

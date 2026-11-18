@@ -70,8 +70,9 @@ class DashboardController extends Controller
     {
         $data = $request->validate([
             'status' => ['required', 'in:preparing,ready,completed,cancelled'],
+            'cancellation_reason' => ['required_if:status,cancelled', 'nullable', 'string', 'max:255'],
         ]);
-        $statuses->transition($order, $data['status'], $request->user());
+        $statuses->transition($order, $data['status'], $request->user(), $data['cancellation_reason'] ?? null);
 
         return back()->with('success', 'Status ' . $order->order_number . ' diperbarui.');
     }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CashierController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\PromoController;
+use App\Http\Controllers\Admin\ProductConfigurationController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\ApiController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingController;
+use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -94,6 +96,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Menu CRUD
         Route::resource('/items', MenuItemController::class);
+        Route::get('/product-configuration', [ProductConfigurationController::class, 'index'])->name('product-config.index');
+        Route::post('/modifier-groups', [ProductConfigurationController::class, 'storeGroup'])->name('modifier-groups.store');
+        Route::put('/modifier-groups/{group}', [ProductConfigurationController::class, 'updateGroup'])->name('modifier-groups.update');
+        Route::delete('/modifier-groups/{group}', [ProductConfigurationController::class, 'destroyGroup'])->name('modifier-groups.destroy');
+        Route::post('/modifier-groups/{group}/options', [ProductConfigurationController::class, 'storeOption'])->name('modifier-options.store');
+        Route::put('/modifier-options/{option}', [ProductConfigurationController::class, 'updateOption'])->name('modifier-options.update');
+        Route::delete('/modifier-options/{option}', [ProductConfigurationController::class, 'destroyOption'])->name('modifier-options.destroy');
+        Route::post('/variants', [ProductConfigurationController::class, 'storeVariant'])->name('variants.store');
+        Route::put('/variants/{variant}', [ProductConfigurationController::class, 'updateVariant'])->name('variants.update');
+        Route::delete('/variants/{variant}', [ProductConfigurationController::class, 'destroyVariant'])->name('variants.destroy');
+        Route::put('/items/{item}/modifier-groups', [ProductConfigurationController::class, 'assignGroups'])->name('items.modifier-groups');
 
         // Promos CRUD
         Route::resource('/promos', PromoController::class);
@@ -106,4 +119,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/password', [AuthController::class, 'showChangePassword'])->name('password.edit');
         Route::put('/password', [AuthController::class, 'updatePassword'])->name('password.update');
     });
+});
+
+Route::middleware(['auth', 'role.any:admin,cashier,kitchen'])->group(function () {
+    Route::get('/admin/orders', [\App\Http\Controllers\Admin\OrderManagementController::class, 'index'])->name('admin.orders.index');
+    Route::get('/admin/orders/{order}', [\App\Http\Controllers\Admin\OrderManagementController::class, 'show'])->name('admin.orders.show');
+    Route::patch('/admin/orders/{order}/transition', [\App\Http\Controllers\Admin\OrderManagementController::class, 'transition'])->name('admin.orders.transition');
+    Route::get('/kitchen', [KitchenController::class, 'index'])->name('kitchen.index');
+    Route::get('/kitchen/feed', [KitchenController::class, 'feed'])->name('kitchen.feed');
+    Route::post('/kitchen/orders/{order}/status', [KitchenController::class, 'transition'])->name('kitchen.orders.status');
 });

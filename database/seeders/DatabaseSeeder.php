@@ -6,6 +6,8 @@ use App\Models\Category;
 use App\Models\ChickenCut;
 use App\Models\DrinkOption;
 use App\Models\MenuItem;
+use App\Models\ModifierGroup;
+use App\Models\ModifierOption;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Promo;
@@ -309,7 +311,71 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // 7. Promos dengan banner resmi
+        // 7. Initial customization data (example values; adjust from admin before launch)
+        $customizationGroups = [
+            'data-awal-bagian-ayam' => [
+                'name' => '[Data awal] Bagian ayam',
+                'required' => true,
+                'options' => ['Dada', 'Paha atas', 'Paha bawah', 'Sayap'],
+            ],
+            'data-awal-minuman' => [
+                'name' => '[Data awal] Minuman paket',
+                'required' => true,
+                'options' => ['Air putih', 'Es teh', 'Teh hangat'],
+            ],
+            'data-awal-sambal' => [
+                'name' => '[Data awal] Sambal',
+                'required' => true,
+                'options' => ['Sambal original', 'Sambal bawang', 'Sambal ijo'],
+            ],
+            'data-awal-topping' => [
+                'name' => '[Data awal] Topping',
+                'required' => false,
+                'options' => ['Tambah nasi', 'Tambah tahu', 'Tambah tempe', 'Tambah telur'],
+            ],
+        ];
+
+        $seededGroups = [];
+        foreach ($customizationGroups as $slug => $definition) {
+            $group = ModifierGroup::updateOrCreate(
+                ['slug' => $slug],
+                [
+                    'name' => $definition['name'],
+                    'is_required' => $definition['required'],
+                    'min_selections' => $definition['required'] ? 1 : 0,
+                    'max_selections' => 1,
+                    'is_active' => true,
+                    'sort_order' => count($seededGroups) + 1,
+                ]
+            );
+            $seededGroups[$slug] = $group;
+
+            foreach ($definition['options'] as $index => $name) {
+                ModifierOption::updateOrCreate(
+                    ['modifier_group_id' => $group->id, 'name' => $name],
+                    ['price_delta' => 0, 'is_available' => true, 'sort_order' => $index + 1]
+                );
+            }
+        }
+
+        MenuItem::whereIn('name', ['Paket Super Komplit', 'Paket Geprek Komplit', 'Paket Geprek Telur', 'PAGEPIN (Paket Geprek Paling Murah)'])
+            ->get()
+            ->each(fn (MenuItem $item) => $item->modifierGroups()->sync([
+                $seededGroups['data-awal-bagian-ayam']->id => ['is_required' => true, 'min_selections' => 1, 'max_selections' => 1, 'sort_order' => 1],
+                $seededGroups['data-awal-minuman']->id => ['is_required' => true, 'min_selections' => 1, 'max_selections' => 1, 'sort_order' => 2],
+                $seededGroups['data-awal-sambal']->id => ['is_required' => true, 'min_selections' => 1, 'max_selections' => 1, 'sort_order' => 3],
+                $seededGroups['data-awal-topping']->id => ['is_required' => false, 'min_selections' => 0, 'max_selections' => 4, 'sort_order' => 4],
+            ]));
+
+        MenuItem::whereIn('name', ['Ayam Crispy Original', 'Ayam Geprek Sambal Bawang', 'Ayam Crispy Bakar', 'Ayam Geprek Bakar'])
+            ->get()
+            ->each(fn (MenuItem $item) => $item->modifierGroups()->sync([
+                $seededGroups['data-awal-bagian-ayam']->id => ['is_required' => true, 'min_selections' => 1, 'max_selections' => 1, 'sort_order' => 1],
+                $seededGroups['data-awal-sambal']->id => ['is_required' => true, 'min_selections' => 1, 'max_selections' => 1, 'sort_order' => 2],
+                $seededGroups['data-awal-topping']->id => ['is_required' => false, 'min_selections' => 0, 'max_selections' => 4, 'sort_order' => 3],
+            ]));
+
+        // 8. Promos dengan banner resmi
         Promo::updateOrCreate(
             ['title' => 'Spesial Paket Super Komplit Hemat'],
             [
@@ -343,7 +409,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 8. Sample Active & Kitchen Orders (Information Architecture demo)
+        // 9. Sample Active & Kitchen Orders (Information Architecture demo)
         $customerUser = User::where('username', 'pelanggan')->first();
         $sampleAyam = MenuItem::where('name', 'Paket Super Komplit')->first();
         $sampleGeprek = MenuItem::where('name', 'Paket Geprek Telur')->first();
