@@ -53,6 +53,11 @@ class MenuItem extends Model
             ->orderByPivot('sort_order');
     }
 
+    public function recipes(): HasMany
+    {
+        return $this->hasMany(Recipe::class);
+    }
+
     public function scopeAvailable(Builder $query): Builder
     {
         return $query->where('is_available', true);

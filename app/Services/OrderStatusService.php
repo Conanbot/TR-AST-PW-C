@@ -41,6 +41,11 @@ class OrderStatusService
                         'status' => 'Pesanan hanya dapat diselesaikan setelah pembayaran berstatus paid.',
                     ]);
                 }
+
+            }
+
+            if ($toStatus === 'preparing') {
+                app(\App\Services\InventoryService::class)->consumeOrder($lockedOrder, $actor);
             }
 
             if ($toStatus === 'cancelled' && blank($note)) {

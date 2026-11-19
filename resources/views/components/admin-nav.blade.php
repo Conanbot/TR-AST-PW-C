@@ -44,12 +44,12 @@
             'label' => 'Inventory',
             'items' => [
                 ['label' => 'Stock Overview', 'href' => route('admin.stock.index'), 'active' => request()->routeIs('admin.stock.*')],
-                ['label' => 'Ingredients', 'href' => null],
-                ['label' => 'Stock In', 'href' => null],
-                ['label' => 'Stock Out', 'href' => null],
-                ['label' => 'Stock Adjustment', 'href' => null],
-                ['label' => 'Low Stock Alerts', 'href' => null],
-                ['label' => 'Recipes', 'href' => null],
+                ['label' => 'Ingredients', 'href' => route('admin.inventory.index'), 'active' => request()->routeIs('admin.inventory.index')],
+                ['label' => 'Stock In', 'href' => route('admin.inventory.index').'#movement'],
+                ['label' => 'Stock Out', 'href' => route('admin.inventory.index').'#movement'],
+                ['label' => 'Stock Adjustment', 'href' => route('admin.inventory.index').'#movement'],
+                ['label' => 'Low Stock Alerts', 'href' => route('admin.inventory.index').'#low-stock'],
+                ['label' => 'Recipes', 'href' => route('admin.inventory.recipes'), 'active' => request()->routeIs('admin.inventory.recipes')],
             ],
         ],
         [

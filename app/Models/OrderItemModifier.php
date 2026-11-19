@@ -24,4 +24,9 @@ class OrderItemModifier extends Model
     {
         return $this->belongsTo(OrderItem::class);
     }
+
+    public function option(): BelongsTo
+    {
+        return $this->belongsTo(ModifierOption::class, 'modifier_option_id');
+    }
 }

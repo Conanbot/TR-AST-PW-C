@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ModifierOption extends Model
 {
@@ -25,6 +26,11 @@ class ModifierOption extends Model
         'is_available' => 'boolean',
         'sort_order' => 'integer',
     ];
+
+    public function recipes(): HasMany
+    {
+        return $this->hasMany(ModifierOptionRecipe::class);
+    }
 
     public function group(): BelongsTo
     {

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\ProductConfigurationController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
@@ -99,6 +100,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/items/{id}/availability', [StockController::class, 'toggleMenuItem'])->name('items.availability');
         Route::patch('/cuts/{id}/availability', [StockController::class, 'toggleChickenCut'])->name('cuts.availability');
         Route::patch('/drinks/{id}/availability', [StockController::class, 'toggleDrinkOption'])->name('drinks.availability');
+
+        // Inventory foundation: materials, auditable movements, and recipes.
+        Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+        Route::post('/inventory/materials', [InventoryController::class, 'storeMaterial'])->name('inventory.materials.store');
+        Route::put('/inventory/materials/{rawMaterial}', [InventoryController::class, 'updateMaterial'])->name('inventory.materials.update');
+        Route::post('/inventory/movements', [InventoryController::class, 'recordMovement'])->name('inventory.movements.store');
+        Route::get('/inventory/recipes', [InventoryController::class, 'recipes'])->name('inventory.recipes');
+        Route::post('/inventory/recipes', [InventoryController::class, 'storeRecipe'])->name('inventory.recipes.store');
+        Route::post('/inventory/modifier-recipes', [InventoryController::class, 'storeModifierRecipe'])->name('inventory.modifier-recipes.store');
+        Route::delete('/inventory/recipes/{type}/{id}', [InventoryController::class, 'destroyRecipe'])->name('inventory.recipes.destroy');
 
         // Menu CRUD
         Route::resource('/items', MenuItemController::class);
