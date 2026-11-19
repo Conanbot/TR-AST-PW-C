@@ -11,6 +11,7 @@ use App\Models\OrderItem;
 use App\Models\Promo;
 use App\Models\StoreSetting;
 use App\Services\OrderStatusService;
+use App\Services\ReportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,9 +20,10 @@ use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(ReportService $reportService): View
     {
         $settings = StoreSetting::current();
+        $operational = $reportService->getDashboardData();
 
         // 1. Menu Categories & Items (Information Architecture)
         $totalMenu = MenuItem::count();
@@ -108,7 +110,8 @@ class DashboardController extends Controller
             'chickenCuts',
             'drinkOptions',
             'outOfStockItems',
-            'cashierCount'
+            'cashierCount',
+            'operational'
         ));
     }
 

@@ -102,11 +102,13 @@
         [
             'label' => 'Reports',
             'items' => [
-                ['label' => 'Sales Reports', 'href' => null],
-                ['label' => 'Order Reports', 'href' => null],
-                ['label' => 'Product Performance', 'href' => null],
-                ['label' => 'Inventory Reports', 'href' => null],
-                ['label' => 'Purchasing Reports', 'href' => null],
+                ['label' => 'Sales Reports', 'href' => route('admin.reports.sales'), 'active' => request()->routeIs('admin.reports.sales')],
+                ['label' => 'Product Performance', 'href' => route('admin.reports.products'), 'active' => request()->routeIs('admin.reports.products')],
+                ['label' => 'Payment Reports', 'href' => route('admin.reports.payments'), 'active' => request()->routeIs('admin.reports.payments')],
+                ['label' => 'Promotion Reports', 'href' => route('admin.reports.promotions'), 'active' => request()->routeIs('admin.reports.promotions')],
+                ['label' => 'Inventory Reports', 'href' => route('admin.reports.inventory'), 'active' => request()->routeIs('admin.reports.inventory')],
+                ['label' => 'Purchasing Reports', 'href' => route('admin.reports.purchasing'), 'active' => request()->routeIs('admin.reports.purchasing')],
+                ['label' => 'Customer Reports', 'href' => route('admin.reports.customers'), 'active' => request()->routeIs('admin.reports.customers')],
             ],
         ],
         [

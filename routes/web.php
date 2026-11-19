@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CashierController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuItemController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\PromoController;
 use App\Http\Controllers\Admin\ProductConfigurationController;
 use App\Http\Controllers\Admin\SettingController;
@@ -166,12 +167,26 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Change Password (FR-25)
         Route::get('/password', [AuthController::class, 'showChangePassword'])->name('password.edit');
         Route::put('/password', [AuthController::class, 'updatePassword'])->name('password.update');
+        // Payment Settings
         Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
         Route::patch('/payments/{payment}/confirm-cash', [AdminPaymentController::class, 'confirmCash'])->name('payments.confirm-cash');
         Route::patch('/payments/{payment}/verify-qris', [AdminPaymentController::class, 'verifyQris'])->name('payments.verify-qris');
         Route::get('/payments/{payment}/proof', [AdminPaymentController::class, 'proof'])->name('payments.proof');
         Route::get('/payment-settings', [AdminPaymentController::class, 'settings'])->name('payments.settings');
         Route::put('/payment-settings', [AdminPaymentController::class, 'updateSettings'])->name('payments.settings.update');
+
+        // Operational & Business Reports (Phase 4.5)
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'index'])->name('index');
+            Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
+            Route::get('/products', [ReportController::class, 'products'])->name('products');
+            Route::get('/payments', [ReportController::class, 'payments'])->name('payments');
+            Route::get('/promotions', [ReportController::class, 'promotions'])->name('promotions');
+            Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
+            Route::get('/purchasing', [ReportController::class, 'purchasing'])->name('purchasing');
+            Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
+            Route::get('/export/{type}', [ReportController::class, 'export'])->name('export');
+        });
     });
 });
 

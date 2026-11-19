@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard Pengelola — Geprek GLO Salatiga')
+@section('title', 'Dashboard Operasional & Bisnis — Geprek GLO Salatiga')
 
 @section('content')
 <!-- Header & Quick Toggle Bar -->
@@ -8,12 +8,12 @@
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
         <div>
             <div class="flex items-center gap-xs" style="margin-bottom: 4px;">
-                <span class="badge badge-promo" style="font-size: 0.75rem;">Information Architecture Dashboard</span>
-                <span class="text-xs text-muted">Sistem Manajemen Operasional Terpadu</span>
+                <span class="badge badge-promo" style="font-size: 0.75rem;">Dashboard Operasional Terpadu (Phase 4.5)</span>
+                <span class="text-xs text-muted">Pusat Informasi Operasional &amp; Laporan Bisnis Restoran</span>
             </div>
             <h2 style="font-size: 1.5rem; margin-bottom: 4px;">Halo, {{ auth()->user()->name }}!</h2>
             <p class="text-sm text-muted">
-                Pantau pesanan masuk, antrean dapur, ringkasan penjualan, menu &amp; add-ons, serta catatan khusus pelanggan.
+                Pantau omset harian, antrean dapur, ketersediaan stok bahan baku, pengadaan supplier, dan performa pelanggan.
             </p>
         </div>
 
@@ -38,84 +38,235 @@
     </div>
 @endif
 
-<!-- Information Architecture Quick Navigation Tabs -->
+<!-- Quick Navigation Bar for Operational Dashboard -->
 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: var(--space-xl); background: var(--surface); padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+    <a href="#ia-sales" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
+        1. Sales Summary &amp; Analytics
+    </a>
     <a href="#ia-orders" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        1. Orders &amp; Sales Overview
+        2. Order Status &amp; Active Orders
+    </a>
+    <a href="#ia-operations" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
+        3. Inventory &amp; Purchasing
+    </a>
+    <a href="#ia-customers" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
+        4. Customer &amp; Payment Overview
     </a>
     <a href="#ia-kitchen" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        2. Kitchen (Cooking Queue)
+        5. Kitchen (Cooking Queue)
     </a>
     <a href="#ia-menu" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        3. Menu &amp; Add-Ons
+        6. Menu &amp; Add-Ons
     </a>
-    <a href="#ia-support" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        4. Support &amp; Order Notes
+    <a href="{{ route('admin.reports.index') }}" class="btn btn-primary btn-sm" style="border-radius: var(--radius-sm); margin-left: auto;">
+        📊 Buka Laporan Bisnis Lengkap &rarr;
     </a>
 </div>
 
 <!-- ==========================================
-     IA SECTION 1: ORDERS & SALES OVERVIEW
-     (Daily Revenue, Peak Hours, Best Sellers, Order Volume, Active Orders, Quick Actions)
+     SECTION 1: SALES SUMMARY & ANALYTICS
+     ========================================== -->
+<section id="ia-sales" style="margin-bottom: var(--space-2xl);">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Operational Analytics: Sales</span>
+            <h3 style="font-size: 1.35rem; margin-top: 2px;">Ringkasan Penjualan Hari Ini</h3>
+        </div>
+        <div class="flex gap-xs">
+            <a href="{{ route('admin.reports.sales') }}" class="btn btn-secondary btn-sm">Laporan Sales Lengkap</a>
+            <a href="{{ route('admin.reports.products') }}" class="btn btn-secondary btn-sm">Performa Produk</a>
+        </div>
+    </div>
+
+    <!-- 4 KPI Sales Summary Cards -->
+    <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom: var(--space-lg);">
+        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--ok);">
+            <div class="text-xs text-muted">Pendapatan Berhasil (Paid Hari Ini)</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #2ecc71; margin-top: 4px;">
+                Rp{{ number_format($operational['sales_summary']['paid_revenue'], 0, ',', '.') }}
+            </div>
+            <div class="text-xs text-dim" style="margin-top: 2px;">
+                @if($operational['sales_summary']['revenue_growth'] !== null)
+                    <span style="color: {{ $operational['sales_summary']['revenue_growth'] >= 0 ? '#2ecc71' : '#e74c3c' }}; font-weight: 600;">
+                        {{ $operational['sales_summary']['revenue_growth'] >= 0 ? '+' : '' }}{{ $operational['sales_summary']['revenue_growth'] }}%
+                    </span> vs kemarin
+                @else
+                    Kemarin: Rp{{ number_format($operational['sales_summary']['paid_revenue_yesterday'], 0, ',', '.') }}
+                @endif
+            </div>
+        </div>
+
+        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--primary);">
+            <div class="text-xs text-muted">Volume Order Hari Ini</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF; margin-top: 4px;">
+                {{ $operational['sales_summary']['order_count'] }} Pesanan
+            </div>
+            <div class="text-xs text-dim" style="margin-top: 2px;">
+                <span style="color:#10b981;">✓ {{ $operational['sales_summary']['completed_count'] }} selesai</span> ·
+                <span style="color:#ef4444;">✕ {{ $operational['sales_summary']['cancelled_count'] }} batal</span>
+            </div>
+        </div>
+
+        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--warning);">
+            <div class="text-xs text-muted">Rata-rata Transaksi (AOV)</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--warning); margin-top: 4px;">
+                Rp{{ number_format($operational['sales_summary']['aov'], 0, ',', '.') }}
+            </div>
+            <div class="text-xs text-dim" style="margin-top: 2px;">Per transaksi terbayar hari ini</div>
+        </div>
+
+        <div class="card" style="padding: var(--space-md); border-top: 3px solid #3498db;">
+            <div class="text-xs text-muted">Net Sales (Valid Orders)</div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: #3498db; margin-top: 4px;">
+                Rp{{ number_format($operational['sales_summary']['net_sales'], 0, ',', '.') }}
+            </div>
+            <div class="text-xs text-dim" style="margin-top: 2px;">Diskon: -Rp{{ number_format($operational['sales_summary']['discount'], 0, ',', '.') }}</div>
+        </div>
+    </div>
+
+    <!-- Sales Chart Widget -->
+    <div class="card" style="padding: var(--space-md); margin-bottom: var(--space-lg);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+                <h4 style="font-size: 1.15rem; margin: 0; color: #FFFFFF;">Grafik Tren Penjualan</h4>
+                <span class="text-xs text-muted">Visualisasi pendapatan omset berdasarkan rentang waktu operasional</span>
+            </div>
+            <div style="display: flex; gap: 6px;">
+                <button type="button" class="btn btn-sm btn-primary" id="btn-chart-today" onclick="switchSalesChart('today')">Hari Ini (Per Jam)</button>
+                <button type="button" class="btn btn-sm btn-secondary" id="btn-chart-7d" onclick="switchSalesChart('last_7_days')">7 Hari Terakhir</button>
+                <button type="button" class="btn btn-sm btn-secondary" id="btn-chart-30d" onclick="switchSalesChart('last_30_days')">30 Hari Terakhir</button>
+            </div>
+        </div>
+
+        @foreach(['today' => 'Hari Ini', 'last_7_days' => '7 Hari Terakhir', 'last_30_days' => '30 Hari Terakhir'] as $chartKey => $chartTitle)
+            @php
+                $chart = $operational['chart_data'][$chartKey];
+                $maxVal = max(1, max($chart['values'] ?: [1]));
+            @endphp
+            <div id="chart-wrap-{{ $chartKey }}" class="sales-chart-view" style="{{ $chartKey === 'today' ? '' : 'display:none;' }}">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span class="text-xs text-muted">Total Omset: <strong style="color:#2ecc71;">Rp{{ number_format($chart['total'], 0, ',', '.') }}</strong></span>
+                    <span class="text-xs text-muted">Tampilan: <strong>{{ $chartTitle }}</strong></span>
+                </div>
+                <div style="display: flex; align-items: flex-end; gap: {{ $chartKey === 'last_30_days' ? '4px' : '10px' }}; height: 180px; padding: 20px 8px 0; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); overflow-x: auto;">
+                    @foreach($chart['values'] as $idx => $val)
+                        @php
+                            $heightPct = $val > 0 ? max(8, round(($val / $maxVal) * 90)) : 3;
+                        @endphp
+                        <div style="flex: 1; min-width: {{ $chartKey === 'last_30_days' ? '18px' : '28px' }}; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;"
+                             title="{{ $chart['labels'][$idx] }}: Rp{{ number_format($val, 0, ',', '.') }} ({{ $chart['counts'][$idx] }} order)">
+                            <div style="width: 100%; height: {{ $heightPct }}%; background: {{ $val > 0 ? '#2ecc71' : 'rgba(255,255,255,0.06)' }}; border-radius: 3px 3px 0 0; transition: all 0.3s ease;"></div>
+                            <span class="text-muted" style="font-size: 0.65rem; margin-top: 6px; white-space: nowrap;">{{ $chart['labels'][$idx] }}</span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <!-- Top Selling Products (Snapshot from Order Items) -->
+    <div class="card" style="padding: var(--space-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div>
+                <h4 style="font-size: 1.1rem; color: #FFFFFF;">Top Selling Products (Menu Terlaris)</h4>
+                <p class="text-xs text-muted">Berdasarkan unit kuantitas terjual dan line total snapshot transaksi.</p>
+            </div>
+            <a href="{{ route('admin.reports.products') }}" class="btn btn-secondary btn-sm">Lihat Semua Menu &rarr;</a>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">#</th>
+                        <th>Menu / Item</th>
+                        <th>Varian</th>
+                        <th style="text-align: right;">Unit Terjual</th>
+                        <th style="text-align: right;">Total Nilai Penjualan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($operational['top_selling_products'] as $idx => $p)
+                        <tr>
+                            <td>
+                                <span class="badge" style="background: rgba(255,255,255,0.06); font-weight: 700;">{{ $idx + 1 }}</span>
+                            </td>
+                            <td><strong style="color: var(--text);">{{ $p->item_name }}</strong></td>
+                            <td>
+                                @if($p->variant_name)
+                                    <span class="badge" style="background: rgba(52, 152, 219, 0.15); color: #3498db; font-size: 0.75rem;">{{ $p->variant_name }}</span>
+                                @else
+                                    <span class="text-muted text-xs">Standar</span>
+                                @endif
+                            </td>
+                            <td style="text-align: right;">
+                                <strong>{{ number_format($p->total_qty, 0, ',', '.') }} pcs</strong>
+                            </td>
+                            <td style="text-align: right; color: var(--primary); font-weight: 700;">
+                                Rp{{ number_format($p->total_revenue, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">
+                                Belum ada data penjualan produk.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SECTION 2: ORDER STATUS & ACTIVE ORDERS
      ========================================== -->
 <section id="ia-orders" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
         <div>
-            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Information Architecture: Orders</span>
-            <h3 style="font-size: 1.35rem; margin-top: 2px;">Sales Overview &amp; Active Orders</h3>
+            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Operational Status</span>
+            <h3 style="font-size: 1.35rem; margin-top: 2px;">Status Pesanan &amp; Antrean Aktif</h3>
         </div>
         <div class="flex gap-xs">
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary btn-sm">Semua Pesanan ({{ $operational['order_status']['total'] }})</a>
             <a href="{{ route('admin.cashiers.index') }}" class="btn btn-secondary btn-sm">Akun Kasir ({{ $cashierCount }})</a>
-            <a href="{{ route('admin.settings.edit') }}" class="btn btn-secondary btn-sm">Pengaturan</a>
         </div>
     </div>
 
-    <!-- 4 Sales Overview Metric Cards (Daily Revenue, Peak Hours, Best Sellers, Order Volume) -->
-    <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom: var(--space-lg);">
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--ok);">
-            <div class="text-xs text-muted">Daily Revenue (Hari Ini)</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #2ecc71; margin-top: 4px;">
-                Rp{{ number_format($dailyRevenue, 0, ',', '.') }}
-            </div>
-            <div class="text-xs text-dim" style="margin-top: 2px;">Total omset pesanan masuk</div>
-        </div>
-
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--primary);">
-            <div class="text-xs text-muted">Order Volume</div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF; margin-top: 4px;">
-                {{ $orderVolume }} Pesanan
-            </div>
-            <div class="text-xs text-dim" style="margin-top: 2px;">Transaksi tercatat di sistem</div>
-        </div>
-
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--warning);">
-            <div class="text-xs text-muted">Peak Hours (Jam Sibuk)</div>
-            <div style="font-size: 1.05rem; font-weight: 700; color: var(--warning); margin-top: 8px;">
-                {{ $peakHours }}
-            </div>
-            <div class="text-xs text-dim" style="margin-top: 4px;">Jam ramai pesanan kedai</div>
-        </div>
-
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid #3498db;">
-            <div class="text-xs text-muted">Best Sellers Teratas</div>
-            <div style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px;">
-                @forelse($bestSellers->take(2) as $bs)
-                    <div class="flex justify-between items-center text-xs">
-                        <strong style="color: var(--text);">{{ Str::limit($bs->item_name, 18) }}</strong>
-                        <span class="badge" style="background: rgba(255,255,255,0.08); font-size: 0.7rem;">{{ $bs->total_qty }}x</span>
-                    </div>
-                @empty
-                    <div class="text-xs text-muted">Paket Super Komplit, Ayam Geprek</div>
-                @endforelse
-            </div>
-        </div>
+    <!-- Status Overview Chips -->
+    <div class="grid grid-cols-2 grid-cols-6 gap-sm" style="margin-bottom: var(--space-md);">
+        <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="card" style="padding: 10px; text-decoration: none; color: inherit; text-align: center;">
+            <div class="text-xs text-muted">Pending</div>
+            <div style="font-size: 1.3rem; font-weight: 800; color: var(--warning); margin-top: 2px;">{{ $operational['order_status']['pending'] }}</div>
+        </a>
+        <a href="{{ route('admin.orders.index', ['status' => 'confirmed']) }}" class="card" style="padding: 10px; text-decoration: none; color: inherit; text-align: center;">
+            <div class="text-xs text-muted">Confirmed</div>
+            <div style="font-size: 1.3rem; font-weight: 800; color: #3498db; margin-top: 2px;">{{ $operational['order_status']['confirmed'] }}</div>
+        </a>
+        <a href="{{ route('admin.orders.index', ['status' => 'preparing']) }}" class="card" style="padding: 10px; text-decoration: none; color: inherit; text-align: center;">
+            <div class="text-xs text-muted">Preparing</div>
+            <div style="font-size: 1.3rem; font-weight: 800; color: #9b59b6; margin-top: 2px;">{{ $operational['order_status']['preparing'] }}</div>
+        </a>
+        <a href="{{ route('admin.orders.index', ['status' => 'ready']) }}" class="card" style="padding: 10px; text-decoration: none; color: inherit; text-align: center;">
+            <div class="text-xs text-muted">Ready</div>
+            <div style="font-size: 1.3rem; font-weight: 800; color: #2ecc71; margin-top: 2px;">{{ $operational['order_status']['ready'] }}</div>
+        </a>
+        <a href="{{ route('admin.orders.index', ['status' => 'completed']) }}" class="card" style="padding: 10px; text-decoration: none; color: inherit; text-align: center;">
+            <div class="text-xs text-muted">Completed</div>
+            <div style="font-size: 1.3rem; font-weight: 800; color: #27ae60; margin-top: 2px;">{{ $operational['order_status']['completed'] }}</div>
+        </a>
+        <a href="{{ route('admin.orders.index', ['status' => 'cancelled']) }}" class="card" style="padding: 10px; text-decoration: none; color: inherit; text-align: center;">
+            <div class="text-xs text-muted">Cancelled</div>
+            <div style="font-size: 1.3rem; font-weight: 800; color: #e74c3c; margin-top: 2px;">{{ $operational['order_status']['cancelled'] }}</div>
+        </a>
     </div>
 
     <!-- Active Orders Table (Quick Actions) -->
     <div class="card" style="padding: var(--space-md);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h4 style="font-size: 1.1rem; color: #FFFFFF;">Pesanan Aktif Terbaru (Active Orders)</h4>
-            <span class="badge badge-open">{{ $recentOrders->count() }} Pesanan Tercatat</span>
+            <h4 style="font-size: 1.1rem; color: #FFFFFF;">Pesanan Terbaru Masuk</h4>
+            <span class="badge badge-open">{{ $recentOrders->count() }} Pesanan Terkini</span>
         </div>
 
         @if($recentOrders->isEmpty())
@@ -130,61 +281,67 @@
                             <th>Nomor &amp; Waktu</th>
                             <th>Pelanggan</th>
                             <th>Layanan &amp; Meja</th>
-                            <th>Rincian Menu</th>
-                            <th>Catatan Pesanan</th>
+                            <th>Items &amp; Catatan</th>
                             <th>Status Dapur</th>
-                            <th>Total</th>
+                            <th>Total Tagihan</th>
                             <th>Aksi Cepat</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($recentOrders as $order)
+                        @php
+                            $kStatus = $order->kitchen_status ?: 'queued';
+                            $kBadgeClass = match($kStatus) {
+                                'queued' => 'badge-closed',
+                                'prepared' => 'badge-promo',
+                                'ready' => 'badge-best-seller',
+                                'completed' => 'badge-open',
+                                default => 'badge-closed',
+                            };
+                            $kLabel = match($kStatus) {
+                                'queued' => 'Antrean Masuk',
+                                'prepared' => 'Sedang Dimasak',
+                                'ready' => 'Siap Saji',
+                                'completed' => 'Selesai',
+                                default => 'Antrean Masuk',
+                            };
+                        @endphp
                         <tr>
                             <td>
-                                <strong>{{ $order->order_number }}</strong>
-                                <div class="text-xs text-muted">{{ $order->created_at->format('d M, H:i') }}</div>
+                                <a href="{{ route('admin.orders.show', $order) }}" style="font-weight: 700; color: var(--text); text-decoration: none;">
+                                    {{ $order->order_number }}
+                                </a>
+                                <div class="text-xs text-muted">{{ $order->created_at->format('H:i') }} WIB</div>
                             </td>
                             <td>
                                 <strong style="color: var(--text);">{{ $order->customer_name }}</strong>
-                                @if($order->customer_phone)
-                                    <div class="text-xs text-muted">{{ $order->customer_phone }}</div>
-                                @endif
+                                <div class="text-xs text-muted">{{ $order->customer_phone ?: 'Tanpa nomor' }}</div>
                             </td>
                             <td>
-                                <span class="badge" style="background: rgba(255,255,255,0.06);">
-                                    {{ $order->service_method === 'dine_in' ? 'Dine-In' : ($order->service_method === 'takeaway' ? 'Takeaway' : 'Delivery') }}
+                                <span class="badge" style="background: rgba(255,255,255,0.06); font-size: 0.75rem;">
+                                    {{ ucfirst(str_replace('_', ' ', $order->service_method)) }}
                                 </span>
                                 @if($order->table_number)
                                     <div class="text-xs" style="color: var(--primary); font-weight: 600; margin-top: 2px;">
-                                        {{ $order->table_number }}
+                                        Meja #{{ $order->table_number }}
                                     </div>
                                 @endif
                             </td>
-                            <td style="max-width: 220px;">
-                                <div class="text-xs" style="line-height: 1.4;">
-                                    @foreach($order->items as $itm)
-                                        <div>&bull; {{ $itm->quantity }}x {{ $itm->item_name }}
-                                            @if($itm->chicken_cut)<span class="text-muted">({{ $itm->chicken_cut }})</span>@endif
-                                            @if($itm->drink_option)<span class="text-muted">({{ $itm->drink_option }})</span>@endif
-                                        </div>
+                            <td>
+                                <div class="text-xs" style="max-width: 260px;">
+                                    @foreach($order->items as $it)
+                                        <div>&bull; {{ $it->quantity }}x {{ $it->item_name }} @if($it->variant_name)({{ $it->variant_name }})@endif</div>
                                     @endforeach
+                                    @if($order->order_notes)
+                                        <div style="color: var(--warning); margin-top: 2px; font-style: italic;">
+                                            "{{ $order->order_notes }}"
+                                        </div>
+                                    @endif
                                 </div>
                             </td>
-                            <td style="max-width: 180px;">
-                                @if($order->order_notes)
-                                    <span class="badge" style="background: rgba(243, 156, 18, 0.15); color: var(--warning); font-size: 0.75rem; border: 1px solid rgba(243,156,18,0.3);">
-                                        {{ $order->order_notes }}
-                                    </span>
-                                @else
-                                    <span class="text-xs text-dim">-</span>
-                                @endif
-                            </td>
                             <td>
-                                @php
-                                    $kStatus = $order->kitchen_status ?? 'queued';
-                                @endphp
-                                <span class="badge {{ $kStatus === 'ready' ? 'badge-open' : ($kStatus === 'prepared' ? 'badge-promo' : 'badge-closed') }}" style="text-transform: uppercase; font-size: 0.75rem;">
-                                    {{ $kStatus }}
+                                <span class="badge {{ $kBadgeClass }}" style="font-size: 0.75rem;">
+                                    {{ $kLabel }}
                                 </span>
                             </td>
                             <td>
@@ -196,13 +353,13 @@
                                     @method('PATCH')
                                     @if($kStatus === 'queued')
                                         <input type="hidden" name="kitchen_status" value="prepared">
-                                        <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 2px 8px;" title="Mulai proses masak di dapur">Mulai Masak</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 2px 8px;">Mulai Masak</button>
                                     @elseif($kStatus === 'prepared')
                                         <input type="hidden" name="kitchen_status" value="ready">
-                                        <button type="submit" class="btn btn-sm" style="background: #27ae60; color: #fff; font-size: 0.75rem; padding: 2px 8px;" title="Tandai pesanan matang & siap saji">Siap Saji</button>
+                                        <button type="submit" class="btn btn-sm" style="background: #27ae60; color: #fff; font-size: 0.75rem; padding: 2px 8px;">Siap Saji</button>
                                     @elseif($kStatus === 'ready')
                                         <input type="hidden" name="kitchen_status" value="completed">
-                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 2px 8px;" title="Tandai pesanan telah selesai disajikan">Selesai</button>
+                                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 2px 8px;">Selesai</button>
                                     @else
                                         <span class="text-xs text-ok">Selesai</span>
                                     @endif
@@ -218,8 +375,226 @@
 </section>
 
 <!-- ==========================================
-     IA SECTION 2: KITCHEN (COOKING QUEUE)
-     (Cooking Queue: Queued, Prepared, Ready, Ready Orders, Completed Orders)
+     SECTION 3: INVENTORY & PURCHASING DASHBOARDS
+     ========================================== -->
+<section id="ia-operations" style="margin-bottom: var(--space-2xl);">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+        <div>
+            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Supply Chain &amp; Inventory</span>
+            <h3 style="font-size: 1.35rem; margin-top: 2px;">Ringkasan Stok Bahan Baku &amp; Pengadaan PO</h3>
+        </div>
+        <div class="flex gap-xs">
+            <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary btn-sm">Bahan Baku &amp; Resep</a>
+            <a href="{{ route('admin.purchasing.index') }}" class="btn btn-secondary btn-sm">Purchase Orders</a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 grid-cols-2 gap-lg">
+        <!-- Inventory Summary Card -->
+        <div class="card" style="padding: var(--space-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h4 style="font-size:1.1rem;color:#FFFFFF;margin:0;">Status Stok Bahan (Inventory)</h4>
+                <a href="{{ route('admin.reports.inventory') }}" class="btn btn-secondary btn-sm">Laporan Mutasi &rarr;</a>
+            </div>
+
+            <div class="grid grid-cols-3 gap-sm" style="margin-bottom:12px;">
+                <div style="background:var(--surface);padding:8px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Total Bahan</div>
+                    <strong style="font-size:1.1rem;">{{ $operational['inventory_summary']['total_materials'] }}</strong>
+                </div>
+                <div style="background:var(--surface);padding:8px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Stok Rendah</div>
+                    <strong style="font-size:1.1rem;color:{{ $operational['inventory_summary']['low_stock_count'] > 0 ? '#e74c3c' : '#2ecc71' }};">
+                        {{ $operational['inventory_summary']['low_stock_count'] }}
+                    </strong>
+                </div>
+                <div style="background:var(--surface);padding:8px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Stok Habis</div>
+                    <strong style="font-size:1.1rem;color:{{ $operational['inventory_summary']['out_of_stock_count'] > 0 ? '#e74c3c' : 'inherit' }};">
+                        {{ $operational['inventory_summary']['out_of_stock_count'] }}
+                    </strong>
+                </div>
+            </div>
+
+            @if($operational['inventory_summary']['low_stock_items']->isNotEmpty())
+                <div style="margin-bottom:12px;background:rgba(231,76,60,0.1);padding:8px 12px;border-radius:var(--radius-sm);border:1px solid rgba(231,76,60,0.3);">
+                    <span class="text-xs" style="color:#e74c3c;font-weight:700;">⚠️ Peringatan Bahan Kritis / Menipis:</span>
+                    <div class="text-xs" style="margin-top:4px;">
+                        @foreach($operational['inventory_summary']['low_stock_items'] as $item)
+                            <div>• <strong>{{ $item->name }}</strong>: Sisa {{ number_format((float)$item->current_stock, 2, ',', '.') }} {{ $item->usage_unit }} (Batas Min: {{ number_format((float)$item->minimum_stock, 2, ',', '.') }})</div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <h5 style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">5 Mutasi Stok Terakhir:</h5>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                @forelse($operational['inventory_summary']['latest_movements'] as $mv)
+                    @php $isPos = (float)$mv->quantity_delta > 0; @endphp
+                    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:6px 10px;border-radius:var(--radius-sm);font-size:0.8rem;border:1px solid var(--border);">
+                        <div>
+                            <strong>{{ $mv->rawMaterial?->name }}</strong>
+                            <small class="text-muted block">{{ $mv->movement_type }} &middot; {{ $mv->created_at->format('H:i') }}</small>
+                        </div>
+                        <strong style="color:{{ $isPos ? '#2ecc71' : '#e74c3c' }};">
+                            {{ $isPos ? '+' : '' }}{{ number_format((float)$mv->quantity_delta, 2, ',', '.') }} {{ $mv->unit }}
+                        </strong>
+                    </div>
+                @empty
+                    <div class="text-xs text-muted" style="text-align:center;padding:10px;">Belum ada mutasi stok.</div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Purchasing Summary Card -->
+        <div class="card" style="padding: var(--space-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <h4 style="font-size:1.1rem;color:#FFFFFF;margin:0;">Pengadaan &amp; PO (Purchasing)</h4>
+                <a href="{{ route('admin.reports.purchasing') }}" class="btn btn-secondary btn-sm">Laporan Purchasing &rarr;</a>
+            </div>
+
+            <div class="grid grid-cols-4 gap-xs" style="margin-bottom:12px;">
+                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Draft</div>
+                    <strong style="font-size:1rem;">{{ $operational['purchasing_summary']['draft'] }}</strong>
+                </div>
+                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Ordered</div>
+                    <strong style="font-size:1rem;color:var(--warning);">{{ $operational['purchasing_summary']['ordered'] }}</strong>
+                </div>
+                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Parsial</div>
+                    <strong style="font-size:1rem;color:#3498db;">{{ $operational['purchasing_summary']['partially_received'] }}</strong>
+                </div>
+                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Received</div>
+                    <strong style="font-size:1rem;color:#2ecc71;">{{ $operational['purchasing_summary']['received'] }}</strong>
+                </div>
+            </div>
+
+            <div style="background:var(--surface);padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                <span class="text-xs text-muted">Total Belanja PO Received:</span>
+                <strong style="color:#2ecc71;font-size:1.1rem;">Rp{{ number_format($operational['purchasing_summary']['total_spend'], 0, ',', '.') }}</strong>
+            </div>
+
+            <h5 style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">Penerimaan Barang (Receivings) Terbaru:</h5>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                @forelse($operational['purchasing_summary']['latest_receivings'] as $rec)
+                    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:6px 10px;border-radius:var(--radius-sm);font-size:0.8rem;border:1px solid var(--border);">
+                        <div>
+                            <strong>{{ $rec->receiving_number }}</strong>
+                            <small class="text-muted block">{{ $rec->purchaseOrder?->supplier?->name }} &middot; {{ $rec->received_at->format('d/m/Y') }}</small>
+                        </div>
+                        <span class="badge" style="background:rgba(39, 174, 96, 0.15);color:#2ecc71;">Telah Diterima</span>
+                    </div>
+                @empty
+                    <div class="text-xs text-muted" style="text-align:center;padding:10px;">Belum ada penerimaan barang tercatat.</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     SECTION 4: CUSTOMER, PAYMENT & PROMO OVERVIEWS
+     ========================================== -->
+<section id="ia-customers" style="margin-bottom: var(--space-2xl);">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+        <div>
+            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Customer &amp; Finance</span>
+            <h3 style="font-size: 1.35rem; margin-top: 2px;">Ringkasan Pelanggan, Pembayaran &amp; Promo</h3>
+        </div>
+        <div class="flex gap-xs">
+            <a href="{{ route('admin.customers.index') }}" class="btn btn-secondary btn-sm">Direktori Pelanggan</a>
+            <a href="{{ route('admin.promos.index') }}" class="btn btn-secondary btn-sm">Daftar Promo</a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 grid-cols-3 gap-md">
+        <!-- Customer Overview -->
+        <div class="card" style="padding: var(--space-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h4 style="font-size:1.05rem;color:#FFFFFF;margin:0;">Pelanggan (Customers)</h4>
+                <a href="{{ route('admin.reports.customers') }}" class="text-xs text-muted">Laporan &rarr;</a>
+            </div>
+            <div class="grid grid-cols-3 gap-xs" style="margin-bottom:10px;">
+                <div style="background:var(--surface);padding:8px 4px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Total</div>
+                    <strong style="font-size:1.05rem;">{{ $operational['customer_summary']['total_customers'] }}</strong>
+                </div>
+                <div style="background:var(--surface);padding:8px 4px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Baru Bln Ini</div>
+                    <strong style="font-size:1.05rem;color:#2ecc71;">+{{ $operational['customer_summary']['new_this_month'] }}</strong>
+                </div>
+                <div style="background:var(--surface);padding:8px 4px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
+                    <div class="text-xs text-muted">Repeat</div>
+                    <strong style="font-size:1.05rem;color:#3498db;">{{ $operational['customer_summary']['repeat_customers'] }}</strong>
+                </div>
+            </div>
+            <h5 style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Top Customers:</h5>
+            <div style="display:flex;flex-direction:column;gap:6px;">
+                @forelse($operational['customer_summary']['top_customers']->take(3) as $c)
+                    <div style="display:flex;justify-content:space-between;font-size:0.8rem;background:var(--surface);padding:6px 8px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+                        <span>{{ $c->name }} ({{ $c->orders_count }}x)</span>
+                        <strong class="text-primary">Rp{{ number_format((int)$c->total_spent, 0, ',', '.') }}</strong>
+                    </div>
+                @empty
+                    <div class="text-xs text-muted" style="text-align:center;padding:10px;">Belum ada transaksi pelanggan.</div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Payment Overview -->
+        <div class="card" style="padding: var(--space-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h4 style="font-size:1.05rem;color:#FFFFFF;margin:0;">Pembayaran (Payments)</h4>
+                <a href="{{ route('admin.reports.payments') }}" class="text-xs text-muted">Laporan &rarr;</a>
+            </div>
+            <div style="background:var(--surface);padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:10px;">
+                <span class="text-xs text-muted">Total Pembayaran Berhasil:</span>
+                <div style="font-size:1.25rem;font-weight:700;color:#2ecc71;">
+                    Rp{{ number_format($operational['payment_summary']['total_paid_amount'], 0, ',', '.') }}
+                </div>
+                <div class="text-xs text-muted" style="margin-top:2px;">{{ $operational['payment_summary']['total_paid_count'] }} transaksi lunas</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;font-size:0.8rem;">
+                @foreach($operational['payment_summary']['by_method'] as $pm)
+                    <div style="display:flex;justify-content:space-between;background:var(--surface);padding:5px 8px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+                        <span>{{ match($pm->method_code) { 'cash_pickup' => 'Cash Pickup', 'qris' => 'QRIS', 'cod' => 'COD', default => $pm->method_code } }}</span>
+                        <strong>Rp{{ number_format($pm->paid_amount, 0, ',', '.') }}</strong>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Promotion Overview -->
+        <div class="card" style="padding: var(--space-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h4 style="font-size:1.05rem;color:#FFFFFF;margin:0;">Promosi (Promotions)</h4>
+                <a href="{{ route('admin.reports.promotions') }}" class="text-xs text-muted">Laporan &rarr;</a>
+            </div>
+            <div style="background:var(--surface);padding:8px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:10px;">
+                <span class="text-xs text-muted">Total Diskon Diberikan:</span>
+                <div style="font-size:1.25rem;font-weight:700;color:var(--warning);">
+                    Rp{{ number_format($operational['promotion_summary']['total_discount_given'], 0, ',', '.') }}
+                </div>
+                <div class="text-xs text-muted" style="margin-top:2px;">{{ $operational['promotion_summary']['total_usages'] }} kali pemakaian promo</div>
+            </div>
+            <div style="font-size:0.85rem;background:var(--surface);padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <span class="text-xs text-muted block">Promo Paling Sering Dipakai:</span>
+                @if($operational['promotion_summary']['top_promo'])
+                    <strong style="color:var(--primary);font-size:0.95rem;">{{ $operational['promotion_summary']['top_promo']->code }}</strong>
+                    <div class="text-xs text-muted">{{ $operational['promotion_summary']['top_promo']->count }}x klaim &middot; Diskon: Rp{{ number_format($operational['promotion_summary']['top_promo']->total_discount, 0, ',', '.') }}</div>
+                @else
+                    <span class="text-xs text-muted">Belum ada pemakaian promo.</span>
+                @endif
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ==========================================
+     IA SECTION 5: KITCHEN (COOKING QUEUE)
      ========================================== -->
 <section id="ia-kitchen" style="margin-bottom: var(--space-2xl);">
     <div style="margin-bottom: 12px;">
@@ -261,24 +636,22 @@
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="kitchen_status" value="prepared">
-                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; justify-content: center; font-size: 0.8rem; padding: 4px;">
-                            Mulai Masak &rarr;
-                        </button>
+                        <button type="submit" class="btn btn-primary btn-sm" style="width: 100%; font-size: 0.8rem;">Mulai Masak &rarr;</button>
                     </form>
                 </div>
                 @empty
                 <div class="text-xs text-muted" style="text-align: center; padding: 20px;">
-                    Tidak ada antrean pesanan baru.
+                    Tidak ada antrean pesanan masuk.
                 </div>
                 @endforelse
             </div>
         </div>
 
         <!-- Column 2: Prepared -->
-        <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--primary);">
+        <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--warning);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
                 <h4 style="font-size: 1rem; color: #FFFFFF;">2. Prepared (Sedang Dimasak)</h4>
-                <span class="badge badge-promo">{{ $preparedOrders->count() }}</span>
+                <span class="badge" style="background: rgba(243,156,18,0.15); color: var(--warning);">{{ $preparedOrders->count() }}</span>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -286,14 +659,13 @@
                 <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px;">
                     <div class="flex justify-between items-start" style="margin-bottom: 4px;">
                         <strong style="color: var(--text); font-size: 0.9rem;">{{ $pOrder->order_number }}</strong>
-                        <span class="badge" style="font-size: 0.7rem; background: rgba(215,38,61,0.2); color: var(--primary);">{{ $pOrder->table_number ?: $pOrder->service_method }}</span>
+                        <span class="badge" style="font-size: 0.7rem; background: rgba(255,255,255,0.06);">{{ $pOrder->table_number ?: $pOrder->service_method }}</span>
                     </div>
-                    <div class="text-xs text-muted" style="margin-bottom: 6px;">{{ $pOrder->customer_name }}</div>
+                    <div class="text-xs text-muted" style="margin-bottom: 6px;">{{ $pOrder->customer_name }} &middot; {{ $pOrder->created_at->format('H:i') }}</div>
 
                     <div class="text-xs" style="margin-bottom: 8px; border-top: 1px dashed var(--border); padding-top: 6px;">
                         @foreach($pOrder->items as $it)
                             <div>&bull; {{ $it->quantity }}x {{ $it->item_name }} @if($it->chicken_cut)({{ $it->chicken_cut }})@endif</div>
-                            @if($it->note)<div class="text-dim" style="padding-left: 8px; font-style: italic;">"{{ $it->note }}"</div>@endif
                         @endforeach
                     </div>
 
@@ -301,48 +673,40 @@
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="kitchen_status" value="ready">
-                        <button type="submit" class="btn btn-sm" style="width: 100%; justify-content: center; background: #27ae60; color: #fff; font-size: 0.8rem; padding: 4px;">
-                            Tandai Siap Saji &rarr;
-                        </button>
+                        <button type="submit" class="btn btn-sm" style="width: 100%; font-size: 0.8rem; background: #27ae60; color: #fff;">Siap Disajikan &check;</button>
                     </form>
                 </div>
                 @empty
                 <div class="text-xs text-muted" style="text-align: center; padding: 20px;">
-                    Tidak ada menu yang sedang dimasak saat ini.
+                    Tidak ada menu yang sedang digoreng/dimasak.
                 </div>
                 @endforelse
             </div>
         </div>
 
-        <!-- Column 3: Ready Orders -->
+        <!-- Column 3: Ready -->
         <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--ok);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
-                <h4 style="font-size: 1rem; color: #FFFFFF;">3. Ready Orders (Siap Disajikan)</h4>
-                <span class="badge badge-open">{{ $readyOrders->count() }}</span>
+                <h4 style="font-size: 1rem; color: #FFFFFF;">3. Ready (Siap Disajikan)</h4>
+                <span class="badge" style="background: rgba(39, 174, 96, 0.15); color: var(--ok);">{{ $readyOrders->count() }}</span>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 @forelse($readyOrders as $rOrder)
                 <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px;">
                     <div class="flex justify-between items-start" style="margin-bottom: 4px;">
-                        <strong style="color: #2ecc71; font-size: 0.9rem;">{{ $rOrder->order_number }}</strong>
-                        <span class="badge badge-open" style="font-size: 0.7rem;">{{ $rOrder->table_number ?: 'Takeaway' }}</span>
+                        <strong style="color: var(--text); font-size: 0.9rem;">{{ $rOrder->order_number }}</strong>
+                        <span class="badge" style="font-size: 0.7rem; background: rgba(39, 174, 96, 0.15); color: var(--ok);">SIAP</span>
                     </div>
-                    <div class="text-xs text-muted" style="margin-bottom: 6px;">{{ $rOrder->customer_name }} &middot; {{ $rOrder->formatted_total }}</div>
-
-                    <div class="text-xs" style="margin-bottom: 8px; border-top: 1px dashed var(--border); padding-top: 6px;">
-                        @foreach($rOrder->items as $it)
-                            <div>&bull; {{ $it->quantity }}x {{ $it->item_name }}</div>
-                        @endforeach
+                    <div class="text-xs text-muted" style="margin-bottom: 6px;">
+                        {{ $rOrder->customer_name }} &middot; {{ $rOrder->table_number ? 'Meja #' . $rOrder->table_number : ucfirst(str_replace('_', ' ', $rOrder->service_method)) }}
                     </div>
 
                     <form action="{{ route('admin.orders.kitchen-status', $rOrder) }}" method="POST">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="kitchen_status" value="completed">
-                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; font-size: 0.8rem; padding: 4px;">
-                            Selesaikan Pesanan &check;
-                        </button>
+                        <button type="submit" class="btn btn-secondary btn-sm" style="width: 100%; font-size: 0.8rem;">Pesanan Telah Selesai</button>
                     </form>
                 </div>
                 @empty
@@ -356,8 +720,7 @@
 </section>
 
 <!-- ==========================================
-     IA SECTION 3: MENU CATEGORIES & ADD-ONS
-     (Menu Item, Food Item, Add-Ons)
+     IA SECTION 6: MENU CATEGORIES & ADD-ONS
      ========================================== -->
 <section id="ia-menu" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
@@ -371,7 +734,7 @@
         </div>
     </div>
 
-    <!-- 3 Metrics for Menu Categories -->
+    <!-- 4 Metrics for Menu Categories -->
     <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom: var(--space-md);">
         <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Total Menu Items</div>
@@ -431,8 +794,7 @@
 </section>
 
 <!-- ==========================================
-     IA SECTION 4: SUPPORT & NOTES
-     (Order Notes: Priority Service, Add Cutlery, Birthday Message, Table Change; Customer Request; Staff Messages)
+     IA SECTION 7: SUPPORT & NOTES
      ========================================== -->
 <section id="ia-support" style="margin-bottom: var(--space-2xl);">
     <div style="margin-bottom: 12px;">
@@ -565,6 +927,23 @@
 @push('scripts')
 <script>
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    function switchSalesChart(key) {
+        document.querySelectorAll('.sales-chart-view').forEach(el => el.style.display = 'none');
+        const target = document.getElementById('chart-wrap-' + key);
+        if (target) target.style.display = 'block';
+
+        const buttons = {
+            'today': document.getElementById('btn-chart-today'),
+            'last_7_days': document.getElementById('btn-chart-7d'),
+            'last_30_days': document.getElementById('btn-chart-30d')
+        };
+        for (let k in buttons) {
+            if (buttons[k]) {
+                buttons[k].className = (k === key) ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+            }
+        }
+    }
 
     async function toggleStoreStatus() {
         try {
