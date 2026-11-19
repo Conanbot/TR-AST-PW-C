@@ -272,12 +272,6 @@
                             }
                         });
                     </script>
-                                if (deliveryBox) {
-                                    deliveryBox.style.display = e.target.value === 'delivery' ? 'block' : 'none';
-                                }
-                            }
-                        });
-                    </script>
                 </div>
 
                 <div style="margin-top: 16px; padding: 14px; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
