@@ -3,20 +3,16 @@
 namespace App\Services;
 
 use App\Models\Customer;
-use App\Models\GoodsReceiving;
-use App\Models\GoodsReceivingItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Promo;
 use App\Models\PromotionUsage;
-use App\Models\PurchaseOrder;
 use App\Models\RawMaterial;
 use App\Models\StockMovement;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportService
 {
@@ -248,23 +244,7 @@ class ReportService
             'latest_movements' => StockMovement::with(['rawMaterial', 'user'])->latest()->take(5)->get(),
         ];
 
-        // 8. Purchasing Dashboard Summary
-        $poCounts = PurchaseOrder::select('status', DB::raw('count(*) as count'))
-            ->groupBy('status')
-            ->pluck('count', 'status')
-            ->all();
-
-        $purchasingSummary = [
-            'draft' => $poCounts['draft'] ?? 0,
-            'ordered' => $poCounts['ordered'] ?? 0,
-            'partially_received' => $poCounts['partially_received'] ?? 0,
-            'received' => $poCounts['received'] ?? 0,
-            'cancelled' => $poCounts['cancelled'] ?? 0,
-            'total_spend' => (int) PurchaseOrder::where('status', 'received')->sum('total'),
-            'latest_receivings' => GoodsReceiving::with(['purchaseOrder.supplier', 'receiver'])->latest()->take(5)->get(),
-        ];
-
-        // 9. Customer Overview
+        // 8. Customer Overview (renumbered from 9)
         $customerSummary = [
             'total_customers' => Customer::count(),
             'new_this_month' => Customer::where('created_at', '>=', now()->startOfMonth())->count(),
@@ -298,7 +278,6 @@ class ReportService
             'payment_summary' => $paymentSummary,
             'promotion_summary' => $promotionSummary,
             'inventory_summary' => $inventorySummary,
-            'purchasing_summary' => $purchasingSummary,
             'customer_summary' => $customerSummary,
         ];
     }
@@ -584,282 +563,5 @@ class ReportService
             'movements' => $paginatedMovements,
             'period' => $period,
         ];
-    }
-
-    /**
-     * Purchasing Report data.
-     */
-    public function getPurchasingReport(array $period, int $perPage = 20): array
-    {
-        $start = $period['start'];
-        $end = $period['end'];
-
-        $poQuery = PurchaseOrder::whereBetween('purchase_date', [$start->toDateString(), $end->toDateString()]);
-
-        $statusCounts = (clone $poQuery)
-            ->select('status', DB::raw('count(*) as count'), DB::raw('sum(total) as total_val'))
-            ->groupBy('status')
-            ->get()
-            ->keyBy('status');
-
-        $receivingsQuery = GoodsReceiving::whereBetween('received_at', [$start->toDateString(), $end->toDateString()]);
-
-        $totalReceivings = (clone $receivingsQuery)->count();
-
-        // Calculate received value from goods_receiving_items
-        $totalReceivedSpend = (int) GoodsReceivingItem::join('goods_receivings', 'goods_receivings.id', '=', 'goods_receiving_items.goods_receiving_id')
-            ->whereBetween('goods_receivings.received_at', [$start->toDateString(), $end->toDateString()])
-            ->sum(DB::raw('accepted_quantity * actual_unit_price'));
-
-        $paginatedReceivings = (clone $receivingsQuery)
-            ->with(['purchaseOrder.supplier', 'receiver', 'items.purchaseOrderItem'])
-            ->latest('received_at')
-            ->paginate($perPage)
-            ->withQueryString();
-
-        return [
-            'po_status' => $statusCounts,
-            'summary' => [
-                'total_po' => (clone $poQuery)->count(),
-                'received_po_count' => $statusCounts->get('received')?->count ?? 0,
-                'total_po_value' => (int) (clone $poQuery)->whereIn('status', ['ordered', 'partially_received', 'received'])->sum('total'),
-                'total_receivings' => $totalReceivings,
-                'total_received_spend' => $totalReceivedSpend,
-            ],
-            'receivings' => $paginatedReceivings,
-            'period' => $period,
-        ];
-    }
-
-    /**
-     * Customer Report data.
-     */
-    public function getCustomerReport(array $period, int $perPage = 20): array
-    {
-        $start = $period['start'];
-        $end = $period['end'];
-
-        $totalCustomers = Customer::count();
-        $newCustomers = Customer::whereBetween('created_at', [$start, $end])->count();
-        $repeatCustomers = Customer::has('orders', '>=', 2)->count();
-
-        $topCustomers = Customer::withCount(['orders' => function ($q) use ($start, $end) {
-                $q->whereBetween('created_at', [$start, $end]);
-            }])
-            ->withSum(['orders as total_spent' => function ($q) use ($start, $end) {
-                $q->whereBetween('created_at', [$start, $end])
-                    ->where('status', '!=', 'cancelled')
-                    ->where(fn($sub) => $sub->where('payment_status', 'paid')->orWhere('status', 'completed'));
-            }], 'total')
-            ->orderByDesc('total_spent')
-            ->paginate($perPage)
-            ->withQueryString();
-
-        $totalPaidSpending = (int) Order::whereBetween('created_at', [$start, $end])
-            ->whereNotNull('customer_id')
-            ->where('status', '!=', 'cancelled')
-            ->where(fn($q) => $q->where('payment_status', 'paid')->orWhere('status', 'completed'))
-            ->sum('total');
-
-        return [
-            'summary' => [
-                'total_customers' => $totalCustomers,
-                'new_customers_in_period' => $newCustomers,
-                'repeat_customers' => $repeatCustomers,
-                'customer_spending_in_period' => $totalPaidSpending,
-            ],
-            'customers' => $topCustomers,
-            'period' => $period,
-        ];
-    }
-
-    /**
-     * Export reports to CSV.
-     */
-    public function exportCsv(string $type, array $period): StreamedResponse
-    {
-        $filename = 'report_' . $type . '_' . $period['start']->format('Ymd') . '_' . $period['end']->format('Ymd') . '.csv';
-
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-        ];
-
-        return response()->streamDownload(function () use ($type, $period) {
-            $handle = fopen('php://output', 'w');
-            // Write UTF-8 BOM for Microsoft Excel compatibility
-            fputs($handle, "\xEF\xBB\xBF");
-
-            switch ($type) {
-                case 'sales':
-                    fputcsv($handle, ['Nomor Pesanan', 'Tanggal & Waktu', 'Pelanggan', 'Metode Layanan', 'Subtotal', 'Biaya Antar', 'Biaya Kemasan', 'Diskon', 'Total', 'Status Pesanan', 'Status Pembayaran', 'Metode Bayar']);
-                    Order::whereBetween('created_at', [$period['start'], $period['end']])
-                        ->orderBy('created_at')
-                        ->chunk(200, function ($orders) use ($handle) {
-                            foreach ($orders as $order) {
-                                fputcsv($handle, [
-                                    $order->order_number,
-                                    $order->created_at->format('Y-m-d H:i:s'),
-                                    $order->customer_name,
-                                    $order->service_method,
-                                    $order->subtotal,
-                                    $order->delivery_fee,
-                                    $order->packaging_fee,
-                                    $order->discount_amount,
-                                    $order->total,
-                                    $order->status,
-                                    $order->payment_status ?? 'unpaid',
-                                    $order->payment_method ?? '-',
-                                ]);
-                            }
-                        });
-                    break;
-
-                case 'products':
-                    fputcsv($handle, ['Nama Menu', 'Varian', 'Jumlah Terjual (Unit)', 'Rata-rata Harga Satuan', 'Total Penjualan (Rp)']);
-                    OrderItem::select(
-                            'order_items.item_name',
-                            'order_items.variant_name',
-                            DB::raw('SUM(order_items.quantity) as total_quantity'),
-                            DB::raw('ROUND(AVG(order_items.unit_price)) as avg_price'),
-                            DB::raw('SUM(order_items.line_total) as total_revenue')
-                        )
-                        ->join('orders', 'orders.id', '=', 'order_items.order_id')
-                        ->where('orders.status', '!=', 'cancelled')
-                        ->whereBetween('orders.created_at', [$period['start'], $period['end']])
-                        ->groupBy('order_items.item_name', 'order_items.variant_name')
-                        ->orderByDesc('total_quantity')
-                        ->chunk(200, function ($rows) use ($handle) {
-                            foreach ($rows as $row) {
-                                fputcsv($handle, [
-                                    $row->item_name,
-                                    $row->variant_name ?: '-',
-                                    $row->total_quantity,
-                                    $row->avg_price,
-                                    $row->total_revenue,
-                                ]);
-                            }
-                        });
-                    break;
-
-                case 'payments':
-                    fputcsv($handle, ['Referensi Pembayaran', 'Nomor Order', 'Metode', 'Nominal', 'Status', 'Tanggal Bayar', 'Waktu']);
-                    Payment::with('order')
-                        ->whereBetween('created_at', [$period['start'], $period['end']])
-                        ->orderBy('created_at')
-                        ->chunk(200, function ($payments) use ($handle) {
-                            foreach ($payments as $p) {
-                                fputcsv($handle, [
-                                    $p->payment_reference,
-                                    $p->order?->order_number ?: '-',
-                                    $p->method_code,
-                                    $p->amount,
-                                    $p->status,
-                                    $p->paid_at ? $p->paid_at->format('Y-m-d H:i:s') : '-',
-                                    $p->created_at->format('Y-m-d H:i:s'),
-                                ]);
-                            }
-                        });
-                    break;
-
-                case 'inventory':
-                    fputcsv($handle, ['Waktu Pergerakan', 'Bahan Baku', 'Tipe Pergerakan', 'Perubahan Jumlah', 'Satuan', 'Saldo Setelah', 'Alasan / Referensi', 'Dicatat Oleh']);
-                    StockMovement::with(['rawMaterial', 'user'])
-                        ->whereBetween('created_at', [$period['start'], $period['end']])
-                        ->orderBy('created_at')
-                        ->chunk(200, function ($movements) use ($handle) {
-                            foreach ($movements as $m) {
-                                fputcsv($handle, [
-                                    $m->created_at->format('Y-m-d H:i:s'),
-                                    $m->rawMaterial?->name ?: '-',
-                                    $m->movement_type,
-                                    $m->quantity_delta,
-                                    $m->unit,
-                                    $m->balance_after,
-                                    $m->reason ?: ($m->reference_type ? class_basename($m->reference_type) . ' #' . $m->reference_id : '-'),
-                                    $m->user?->name ?: 'Sistem',
-                                ]);
-                            }
-                        });
-                    break;
-
-                case 'purchasing':
-                    fputcsv($handle, ['Nomor Penerimaan', 'Nomor PO', 'Supplier', 'Tanggal Diterima', 'Penerima', 'Item Diterima (Qty)', 'Catatan']);
-                    GoodsReceiving::with(['purchaseOrder.supplier', 'receiver', 'items.purchaseOrderItem'])
-                        ->whereBetween('received_at', [$period['start']->toDateString(), $period['end']->toDateString()])
-                        ->orderBy('received_at')
-                        ->chunk(200, function ($receivings) use ($handle) {
-                            foreach ($receivings as $gr) {
-                                $itemDetails = $gr->items->map(function ($i) {
-                                    return ($i->purchaseOrderItem?->rawMaterial?->name ?: 'Item') . ' (' . $i->accepted_quantity . ' ' . $i->purchase_unit . ')';
-                                })->implode('; ');
-
-                                fputcsv($handle, [
-                                    $gr->receiving_number,
-                                    $gr->purchaseOrder?->po_number ?: '-',
-                                    $gr->purchaseOrder?->supplier?->name ?: '-',
-                                    $gr->received_at->format('Y-m-d'),
-                                    $gr->receiver?->name ?: '-',
-                                    $itemDetails,
-                                    $gr->notes ?: '-',
-                                ]);
-                            }
-                        });
-                    break;
-
-                case 'promotions':
-                    fputcsv($handle, ['Waktu Penggunaan', 'Kode Promo', 'Nomor Order', 'Pelanggan', 'Telepon', 'Jumlah Diskon (Rp)', 'Status']);
-                    PromotionUsage::with('order')
-                        ->whereBetween('created_at', [$period['start'], $period['end']])
-                        ->orderBy('created_at')
-                        ->chunk(200, function ($usages) use ($handle) {
-                            foreach ($usages as $u) {
-                                fputcsv($handle, [
-                                    $u->created_at->format('Y-m-d H:i:s'),
-                                    $u->code,
-                                    $u->order?->order_number ?: '-',
-                                    $u->order?->customer_name ?: '-',
-                                    $u->customer_phone ?: '-',
-                                    $u->discount_amount,
-                                    $u->status,
-                                ]);
-                            }
-                        });
-                    break;
-
-                case 'customers':
-                    fputcsv($handle, ['ID', 'Nama Pelanggan', 'Telepon (Masked)', 'Email', 'Status', 'Total Pesanan Periode', 'Total Belanja Berhasil Periode', 'Terdaftar']);
-                    Customer::withCount(['orders' => function ($q) use ($period) {
-                            $q->whereBetween('created_at', [$period['start'], $period['end']]);
-                        }])
-                        ->withSum(['orders as total_spent' => function ($q) use ($period) {
-                            $q->whereBetween('created_at', [$period['start'], $period['end']])
-                                ->where('status', '!=', 'cancelled')
-                                ->where(fn($sub) => $sub->where('payment_status', 'paid')->orWhere('status', 'completed'));
-                        }], 'total')
-                        ->orderByDesc('total_spent')
-                        ->chunk(200, function ($customers) use ($handle) {
-                            foreach ($customers as $c) {
-                                $maskedPhone = strlen($c->phone) > 7
-                                    ? substr($c->phone, 0, 4) . '****' . substr($c->phone, -3)
-                                    : '****';
-
-                                fputcsv($handle, [
-                                    $c->id,
-                                    $c->name,
-                                    $maskedPhone,
-                                    $c->email ?: '-',
-                                    $c->status,
-                                    $c->orders_count,
-                                    (int) $c->total_spent,
-                                    $c->created_at->format('Y-m-d'),
-                                ]);
-                            }
-                        });
-                    break;
-            }
-
-            fclose($handle);
-        }, $filename, $headers);
     }
 }

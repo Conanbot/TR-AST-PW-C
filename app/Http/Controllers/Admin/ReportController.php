@@ -7,7 +7,6 @@ use App\Services\ReportService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
@@ -73,10 +72,8 @@ class ReportController extends Controller
 
     public function purchasing(Request $request, ReportService $service): View
     {
-        $period = $this->validateAndGetPeriod($request, $service);
-        $data = $service->getPurchasingReport($period, 20);
-
-        return view('admin.reports.purchasing', compact('data', 'period'));
+        // Purchasing feature removed — redirect to inventory report
+        return redirect()->route('admin.reports.inventory');
     }
 
     public function customers(Request $request, ReportService $service): View
@@ -85,14 +82,5 @@ class ReportController extends Controller
         $data = $service->getCustomerReport($period, 20);
 
         return view('admin.reports.customers', compact('data', 'period'));
-    }
-
-    public function export(Request $request, string $type, ReportService $service): StreamedResponse
-    {
-        abort_unless(in_array($type, ['sales', 'products', 'payments', 'promotions', 'inventory', 'purchasing', 'customers'], true), 404);
-
-        $period = $this->validateAndGetPeriod($request, $service);
-
-        return $service->exportCsv($type, $period);
     }
 }

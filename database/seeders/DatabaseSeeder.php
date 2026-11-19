@@ -47,6 +47,18 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Demo cashier account
+        User::updateOrCreate(
+            ['username' => 'kasir'],
+            [
+                'name' => 'Kasir Demo',
+                'email' => 'kasir@geprekglo.com',
+                'phone' => '081200000001',
+                'password' => Hash::make('kasir123'),
+                'role' => 'cashier',
+            ]
+        );
+
         // 2. Store Settings
         StoreSetting::updateOrCreate(
             ['id' => 1],

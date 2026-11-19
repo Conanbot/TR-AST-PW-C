@@ -1,143 +1,109 @@
 @php
-    $navigationGroups = [
+    $nav = [
         [
             'label' => 'Dashboard',
+            'icon' => '◈',
             'items' => [
                 ['label' => 'Overview', 'href' => route('admin.dashboard'), 'active' => request()->routeIs('admin.dashboard')],
-                ['label' => 'Sales Summary', 'href' => route('admin.dashboard').'#ia-orders'],
-                ['label' => 'Active Orders', 'href' => route('admin.dashboard').'#ia-orders'],
-                ['label' => 'Quick Actions', 'href' => route('admin.dashboard').'#ia-orders'],
             ],
         ],
         [
-            'label' => 'Orders',
+            'label' => 'Pesanan',
+            'icon' => '◷',
             'items' => [
-                ['label' => 'All Orders', 'href' => route('admin.orders.index'), 'active' => request()->routeIs('admin.orders.*')],
+                ['label' => 'Semua Pesanan', 'href' => route('admin.orders.index'), 'active' => request()->routeIs('admin.orders.*')],
                 ['label' => 'Pending', 'href' => route('admin.orders.index', ['status' => 'pending'])],
-                ['label' => 'Confirmed', 'href' => route('admin.orders.index', ['status' => 'confirmed'])],
-                ['label' => 'Preparing', 'href' => route('admin.orders.index', ['status' => 'preparing'])],
-                ['label' => 'Ready', 'href' => route('admin.orders.index', ['status' => 'ready'])],
-                ['label' => 'Completed', 'href' => route('admin.orders.index', ['status' => 'completed'])],
-                ['label' => 'Cancelled', 'href' => route('admin.orders.index', ['status' => 'cancelled'])],
+                ['label' => 'Diproses', 'href' => route('admin.orders.index', ['status' => 'preparing'])],
+                ['label' => 'Siap', 'href' => route('admin.orders.index', ['status' => 'ready'])],
+                ['label' => 'Selesai', 'href' => route('admin.orders.index', ['status' => 'completed'])],
             ],
         ],
         [
-            'label' => 'Menu Management',
+            'label' => 'Menu',
+            'icon' => '☰',
             'items' => [
-                ['label' => 'Categories', 'href' => null],
-                ['label' => 'Products', 'href' => route('admin.items.index'), 'active' => request()->routeIs('admin.items.*')],
-                ['label' => 'Product Variants', 'href' => route('admin.product-config.index'), 'active' => request()->routeIs('admin.product-config.*')],
-                ['label' => 'Modifier Groups', 'href' => route('admin.product-config.index'), 'active' => request()->routeIs('admin.product-config.*')],
-                ['label' => 'Customization Options', 'href' => route('admin.product-config.index'), 'active' => request()->routeIs('admin.product-config.*')],
+                ['label' => 'Produk', 'href' => route('admin.items.index'), 'active' => request()->routeIs('admin.items.*')],
+                ['label' => 'Varian & Modifier', 'href' => route('admin.product-config.index'), 'active' => request()->routeIs('admin.product-config.*')],
+                ['label' => 'Stok Cepat', 'href' => route('admin.stock.index'), 'active' => request()->routeIs('admin.stock.*')],
             ],
         ],
         [
-            'label' => 'Kitchen',
+            'label' => 'Dapur',
+            'icon' => '♨',
             'items' => [
-                ['label' => 'Cooking Queue', 'href' => route('kitchen.index'), 'active' => request()->routeIs('kitchen.*')],
-                ['label' => 'Preparing Orders', 'href' => route('kitchen.index')],
-                ['label' => 'Ready Orders', 'href' => route('kitchen.index')],
-                ['label' => 'Completed Orders', 'href' => route('admin.orders.index', ['status' => 'completed'])],
+                ['label' => 'Kitchen Display', 'href' => route('kitchen.index'), 'active' => request()->routeIs('kitchen.*')],
+                ['label' => 'Antrian Masak', 'href' => route('kitchen.index')],
             ],
         ],
         [
-            'label' => 'Inventory',
+            'label' => 'Inventori',
+            'icon' => '◫',
             'items' => [
-                ['label' => 'Stock Overview', 'href' => route('admin.stock.index'), 'active' => request()->routeIs('admin.stock.*')],
-                ['label' => 'Ingredients', 'href' => route('admin.inventory.index'), 'active' => request()->routeIs('admin.inventory.index')],
-                ['label' => 'Stock In', 'href' => route('admin.inventory.index').'#movement'],
-                ['label' => 'Stock Out', 'href' => route('admin.inventory.index').'#movement'],
-                ['label' => 'Stock Adjustment', 'href' => route('admin.inventory.index').'#movement'],
-                ['label' => 'Low Stock Alerts', 'href' => route('admin.inventory.index').'#low-stock'],
-                ['label' => 'Recipes', 'href' => route('admin.inventory.recipes'), 'active' => request()->routeIs('admin.inventory.recipes')],
+                ['label' => 'Bahan Baku', 'href' => route('admin.inventory.index'), 'active' => request()->routeIs('admin.inventory.index')],
+                ['label' => 'Resep & BOM', 'href' => route('admin.inventory.recipes'), 'active' => request()->routeIs('admin.inventory.recipes')],
             ],
         ],
         [
-            'label' => 'Purchasing',
+            'label' => 'Promosi',
+            'icon' => '◈',
             'items' => [
-                ['label' => 'Suppliers', 'href' => route('admin.suppliers.index'), 'active' => request()->routeIs('admin.suppliers.*')],
-                ['label' => 'Purchase Orders', 'href' => route('admin.purchasing.index'), 'active' => request()->routeIs('admin.purchasing.*')],
-                ['label' => 'Purchase History', 'href' => route('admin.purchasing.index')],
-                ['label' => 'Goods Received', 'href' => route('admin.purchasing.index')],
+                ['label' => 'Semua Promo', 'href' => route('admin.promos.index'), 'active' => request()->routeIs('admin.promos.*')],
+                ['label' => 'Buat Promo', 'href' => route('admin.promos.create')],
             ],
         ],
         [
-            'label' => 'Promotions',
+            'label' => 'Pelanggan',
+            'icon' => '◉',
             'items' => [
-                ['label' => 'Active Promotions', 'href' => route('admin.promos.index'), 'active' => request()->routeIs('admin.promos.*')],
-                ['label' => 'Create Promotion', 'href' => route('admin.promos.create')],
-                ['label' => 'Discount Rules', 'href' => null],
-                ['label' => 'Promotion History', 'href' => null],
+                ['label' => 'Semua Pelanggan', 'href' => route('admin.customers.index'), 'active' => request()->routeIs('admin.customers.*')],
             ],
         ],
         [
-            'label' => 'Customers & Reviews',
+            'label' => 'Pembayaran',
+            'icon' => '◎',
             'items' => [
-                ['label' => 'Customers', 'href' => route('admin.customers.index'), 'active' => request()->routeIs('admin.customers.*')],
-                ['label' => 'Customer Feedback', 'href' => null],
-                ['label' => 'Google Reviews', 'href' => null],
+                ['label' => 'Transaksi', 'href' => route('admin.payments.index'), 'active' => request()->routeIs('admin.payments.index')],
+                ['label' => 'Pengaturan Bayar', 'href' => route('admin.payments.settings'), 'active' => request()->routeIs('admin.payments.settings')],
             ],
         ],
         [
-            'label' => 'Payments',
+            'label' => 'Pengaturan',
+            'icon' => '⚙',
             'items' => [
-                ['label' => 'Payment Overview', 'href' => route('admin.payments.index'), 'active' => request()->routeIs('admin.payments.index')],
-                ['label' => 'Payment Transactions', 'href' => route('admin.payments.index')],
-                ['label' => 'Pending QRIS Verification', 'href' => route('admin.payments.index', ['status' => 'pending_verification'])],
-                ['label' => 'Payment History', 'href' => route('admin.payments.index')],
-                ['label' => 'Payment Settings', 'href' => route('admin.payments.settings'), 'active' => request()->routeIs('admin.payments.settings')],
+                ['label' => 'Info Toko', 'href' => route('admin.settings.edit'), 'active' => request()->routeIs('admin.settings.*')],
+                ['label' => 'Ganti Password', 'href' => route('admin.password.edit'), 'active' => request()->routeIs('admin.password.*')],
             ],
         ],
         [
-            'label' => 'Store Settings',
+            'label' => 'Laporan',
+            'icon' => '◐',
             'items' => [
-                ['label' => 'Store Information', 'href' => route('admin.settings.edit'), 'active' => request()->routeIs('admin.settings.*')],
-                ['label' => 'Store Status', 'href' => route('admin.dashboard').'#store-status'],
-                ['label' => 'Operating Hours', 'href' => route('admin.settings.edit')],
-                ['label' => 'Store Location', 'href' => route('admin.settings.edit')],
-                ['label' => 'Delivery Radius', 'href' => route('admin.settings.edit')],
-                ['label' => 'Payment Settings', 'href' => route('admin.payments.settings')],
+                ['label' => 'Penjualan', 'href' => route('admin.reports.sales'), 'active' => request()->routeIs('admin.reports.sales')],
+                ['label' => 'Performa Menu', 'href' => route('admin.reports.products'), 'active' => request()->routeIs('admin.reports.products')],
+                ['label' => 'Pembayaran', 'href' => route('admin.reports.payments'), 'active' => request()->routeIs('admin.reports.payments')],
+                ['label' => 'Promosi', 'href' => route('admin.reports.promotions'), 'active' => request()->routeIs('admin.reports.promotions')],
+                ['label' => 'Inventori', 'href' => route('admin.reports.inventory'), 'active' => request()->routeIs('admin.reports.inventory')],
+                ['label' => 'Pelanggan', 'href' => route('admin.reports.customers'), 'active' => request()->routeIs('admin.reports.customers')],
             ],
         ],
         [
-            'label' => 'Reports',
+            'label' => 'Pengguna',
+            'icon' => '◑',
             'items' => [
-                ['label' => 'Sales Reports', 'href' => route('admin.reports.sales'), 'active' => request()->routeIs('admin.reports.sales')],
-                ['label' => 'Product Performance', 'href' => route('admin.reports.products'), 'active' => request()->routeIs('admin.reports.products')],
-                ['label' => 'Payment Reports', 'href' => route('admin.reports.payments'), 'active' => request()->routeIs('admin.reports.payments')],
-                ['label' => 'Promotion Reports', 'href' => route('admin.reports.promotions'), 'active' => request()->routeIs('admin.reports.promotions')],
-                ['label' => 'Inventory Reports', 'href' => route('admin.reports.inventory'), 'active' => request()->routeIs('admin.reports.inventory')],
-                ['label' => 'Purchasing Reports', 'href' => route('admin.reports.purchasing'), 'active' => request()->routeIs('admin.reports.purchasing')],
-                ['label' => 'Customer Reports', 'href' => route('admin.reports.customers'), 'active' => request()->routeIs('admin.reports.customers')],
-            ],
-        ],
-        [
-            'label' => 'User Management',
-            'items' => [
-                ['label' => 'Administrators', 'href' => null],
-                ['label' => 'Cashiers', 'href' => route('admin.cashiers.index'), 'active' => request()->routeIs('admin.cashiers.*')],
-                ['label' => 'Kitchen Staff', 'href' => null],
-                ['label' => 'Roles & Permissions', 'href' => null],
+                ['label' => 'Kasir', 'href' => route('admin.cashiers.index'), 'active' => request()->routeIs('admin.cashiers.*')],
             ],
         ],
     ];
 @endphp
 
 <nav class="admin-nav-groups" aria-label="Navigasi admin">
-    @foreach($navigationGroups as $group)
+    @foreach($nav as $group)
         <div class="admin-nav-group">
             <span class="admin-nav-group-label">{{ $group['label'] }}</span>
             @foreach($group['items'] as $item)
-                @if($item['href'])
-                    <a href="{{ $item['href'] }}" class="admin-nav-item {{ ($item['active'] ?? false) ? 'active' : '' }}">
-                        {{ $item['label'] }}
-                    </a>
-                @else
-                    <span class="admin-nav-item is-planned" aria-disabled="true" title="Fitur direncanakan untuk fase berikutnya">
-                        {{ $item['label'] }}
-                        <small>Segera</small>
-                    </span>
-                @endif
+                <a href="{{ $item['href'] }}" class="admin-nav-item {{ ($item['active'] ?? false) ? 'active' : '' }}">
+                    {{ $item['label'] }}
+                </a>
             @endforeach
         </div>
     @endforeach

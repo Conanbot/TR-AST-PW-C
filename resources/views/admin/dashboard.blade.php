@@ -13,7 +13,7 @@
             </div>
             <h2 style="font-size: 1.5rem; margin-bottom: 4px;">Halo, {{ auth()->user()->name }}!</h2>
             <p class="text-sm text-muted">
-                Pantau omset harian, antrean dapur, ketersediaan stok bahan baku, pengadaan supplier, dan performa pelanggan.
+                Pantau omset harian, antrean dapur, ketersediaan stok bahan baku, dan performa pelanggan.
             </p>
         </div>
 
@@ -47,7 +47,7 @@
         2. Order Status &amp; Active Orders
     </a>
     <a href="#ia-operations" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        3. Inventory &amp; Purchasing
+        3. Inventory
     </a>
     <a href="#ia-customers" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
         4. Customer &amp; Payment Overview
@@ -375,17 +375,17 @@
 </section>
 
 <!-- ==========================================
-     SECTION 3: INVENTORY & PURCHASING DASHBOARDS
+     SECTION 3: INVENTORY DASHBOARD
      ========================================== -->
 <section id="ia-operations" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
         <div>
-            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Supply Chain &amp; Inventory</span>
-            <h3 style="font-size: 1.35rem; margin-top: 2px;">Ringkasan Stok Bahan Baku &amp; Pengadaan PO</h3>
+            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Inventory</span>
+            <h3 style="font-size: 1.35rem; margin-top: 2px;">Ringkasan Stok Bahan Baku</h3>
         </div>
         <div class="flex gap-xs">
             <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary btn-sm">Bahan Baku &amp; Resep</a>
-            <a href="{{ route('admin.purchasing.index') }}" class="btn btn-secondary btn-sm">Purchase Orders</a>
+            <a href="{{ route('admin.reports.inventory') }}" class="btn btn-secondary btn-sm">Laporan Inventori</a>
         </div>
     </div>
 
@@ -393,8 +393,8 @@
         <!-- Inventory Summary Card -->
         <div class="card" style="padding: var(--space-md);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h4 style="font-size:1.1rem;color:#FFFFFF;margin:0;">Status Stok Bahan (Inventory)</h4>
-                <a href="{{ route('admin.reports.inventory') }}" class="btn btn-secondary btn-sm">Laporan Mutasi &rarr;</a>
+                <h4 style="font-size:1.1rem;margin:0;">Status Stok Bahan</h4>
+                <a href="{{ route('admin.reports.inventory') }}" class="btn btn-secondary btn-sm">Laporan &rarr;</a>
             </div>
 
             <div class="grid grid-cols-3 gap-sm" style="margin-bottom:12px;">
@@ -418,10 +418,10 @@
 
             @if($operational['inventory_summary']['low_stock_items']->isNotEmpty())
                 <div style="margin-bottom:12px;background:rgba(231,76,60,0.1);padding:8px 12px;border-radius:var(--radius-sm);border:1px solid rgba(231,76,60,0.3);">
-                    <span class="text-xs" style="color:#e74c3c;font-weight:700;">⚠️ Peringatan Bahan Kritis / Menipis:</span>
+                    <span class="text-xs" style="color:#e74c3c;font-weight:700;">⚠ Bahan Kritis / Menipis:</span>
                     <div class="text-xs" style="margin-top:4px;">
                         @foreach($operational['inventory_summary']['low_stock_items'] as $item)
-                            <div>• <strong>{{ $item->name }}</strong>: Sisa {{ number_format((float)$item->current_stock, 2, ',', '.') }} {{ $item->usage_unit }} (Batas Min: {{ number_format((float)$item->minimum_stock, 2, ',', '.') }})</div>
+                            <div>&bull; <strong>{{ $item->name }}</strong>: Sisa {{ number_format((float)$item->current_stock, 2, ',', '.') }} {{ $item->usage_unit }}</div>
                         @endforeach
                     </div>
                 </div>
@@ -446,51 +446,16 @@
             </div>
         </div>
 
-        <!-- Purchasing Summary Card -->
+        <!-- Inventory Quick Actions -->
         <div class="card" style="padding: var(--space-md);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h4 style="font-size:1.1rem;color:#FFFFFF;margin:0;">Pengadaan &amp; PO (Purchasing)</h4>
-                <a href="{{ route('admin.reports.purchasing') }}" class="btn btn-secondary btn-sm">Laporan Purchasing &rarr;</a>
-            </div>
-
-            <div class="grid grid-cols-4 gap-xs" style="margin-bottom:12px;">
-                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
-                    <div class="text-xs text-muted">Draft</div>
-                    <strong style="font-size:1rem;">{{ $operational['purchasing_summary']['draft'] }}</strong>
-                </div>
-                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
-                    <div class="text-xs text-muted">Ordered</div>
-                    <strong style="font-size:1rem;color:var(--warning);">{{ $operational['purchasing_summary']['ordered'] }}</strong>
-                </div>
-                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
-                    <div class="text-xs text-muted">Parsial</div>
-                    <strong style="font-size:1rem;color:#3498db;">{{ $operational['purchasing_summary']['partially_received'] }}</strong>
-                </div>
-                <div style="background:var(--surface);padding:6px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
-                    <div class="text-xs text-muted">Received</div>
-                    <strong style="font-size:1rem;color:#2ecc71;">{{ $operational['purchasing_summary']['received'] }}</strong>
-                </div>
-            </div>
-
-            <div style="background:var(--surface);padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-                <span class="text-xs text-muted">Total Belanja PO Received:</span>
-                <strong style="color:#2ecc71;font-size:1.1rem;">Rp{{ number_format($operational['purchasing_summary']['total_spend'], 0, ',', '.') }}</strong>
-            </div>
-
-            <h5 style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">Penerimaan Barang (Receivings) Terbaru:</h5>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-                @forelse($operational['purchasing_summary']['latest_receivings'] as $rec)
-                    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:6px 10px;border-radius:var(--radius-sm);font-size:0.8rem;border:1px solid var(--border);">
-                        <div>
-                            <strong>{{ $rec->receiving_number }}</strong>
-                            <small class="text-muted block">{{ $rec->purchaseOrder?->supplier?->name }} &middot; {{ $rec->received_at->format('d/m/Y') }}</small>
-                        </div>
-                        <span class="badge" style="background:rgba(39, 174, 96, 0.15);color:#2ecc71;">Telah Diterima</span>
-                    </div>
-                @empty
-                    <div class="text-xs text-muted" style="text-align:center;padding:10px;">Belum ada penerimaan barang tercatat.</div>
-                @endforelse
-            </div>
+            <h4 style="font-size:1.05rem;margin:0 0 12px;">Tambah Stok Manual</h4>
+            <p class="text-sm text-muted" style="margin-bottom:12px;">Catat penambahan, pengurangan, atau penyesuaian stok bahan baku secara langsung.</p>
+            <a href="{{ route('admin.inventory.index') }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px;">
+                + Catat Pergerakan Stok
+            </a>
+            <a href="{{ route('admin.inventory.recipes') }}" class="btn btn-secondary" style="width:100%;justify-content:center;">
+                Kelola Resep & BOM
+            </a>
         </div>
     </div>
 </section>

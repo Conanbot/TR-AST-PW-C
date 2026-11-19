@@ -11,8 +11,6 @@ use App\Http\Controllers\Admin\ProductConfigurationController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\InventoryController;
-use App\Http\Controllers\Admin\SupplierController;
-use App\Http\Controllers\Admin\PurchaseOrderController;
 use App\Http\Controllers\PromotionCheckoutController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AccessController;
@@ -57,21 +55,34 @@ Route::prefix('akun')->name('account.')->group(function () {
     Route::get('/', [AccessController::class, 'dashboardCustomer'])->middleware(['auth', 'role:customer'])->name('dashboard');
 });
 
+/*
+|--------------------------------------------------------------------------
+| Cashier Routes
+|--------------------------------------------------------------------------
+*/
 Route::prefix('kasir')->name('cashier.')->group(function () {
     Route::get('/login', [AccessController::class, 'showCashierLogin'])->name('login');
     Route::post('/login', [AccessController::class, 'loginCashier'])->middleware('throttle:6,1')->name('login.submit');
     Route::post('/logout', [AccessController::class, 'logout'])->name('logout');
+
     Route::middleware(['auth', 'role:cashier'])->group(function () {
         Route::get('/', [CashierDashboardController::class, 'index'])->name('dashboard');
         Route::post('/orders', [CashierDashboardController::class, 'storeOrder'])->name('orders.store');
         Route::patch('/orders/{order}/status', [CashierDashboardController::class, 'updateStatus'])->name('orders.status');
+
+        // Payment management — handled by cashier
+        Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
         Route::patch('/payments/{payment}/confirm-cash', [AdminPaymentController::class, 'confirmCash'])->name('payments.confirm-cash');
+        Route::patch('/payments/{payment}/verify-qris', [AdminPaymentController::class, 'verifyQris'])->name('payments.verify-qris');
+        Route::get('/payments/{payment}/proof', [AdminPaymentController::class, 'proof'])->name('payments.proof');
+        Route::get('/payment-settings', [AdminPaymentController::class, 'settings'])->name('payments.settings');
+        Route::put('/payment-settings', [AdminPaymentController::class, 'updateSettings'])->name('payments.settings.update');
     });
 });
 
 /*
 |--------------------------------------------------------------------------
-| API Endpoints (PRD Section 4 Interface Contract)
+| API Endpoints
 |--------------------------------------------------------------------------
 */
 Route::get('/api/menu', [ApiController::class, 'menu'])->name('api.menu');
@@ -80,7 +91,7 @@ Route::post('/api/promotions/validate', [PromotionCheckoutController::class, 'ch
 
 /*
 |--------------------------------------------------------------------------
-| Admin Authentication Routes
+| Admin Routes
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -88,16 +99,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1')->name('login.submit');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Admin Protected Routes (Middleware Auth)
-    |--------------------------------------------------------------------------
-    */
     Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
         Route::patch('/store/toggle', [DashboardController::class, 'toggleStore'])->name('store.toggle');
         Route::patch('/orders/{order}/kitchen-status', [DashboardController::class, 'updateKitchenStatus'])->name('orders.kitchen-status');
         Route::post('/orders/{order}/staff-note', [DashboardController::class, 'updateStaffNote'])->name('orders.staff-note');
+
+        // User Management
         Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
         Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
         Route::put('/cashiers/{cashier}/password', [CashierController::class, 'resetPassword'])->name('cashiers.password');
@@ -109,7 +117,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/cuts/{id}/availability', [StockController::class, 'toggleChickenCut'])->name('cuts.availability');
         Route::patch('/drinks/{id}/availability', [StockController::class, 'toggleDrinkOption'])->name('drinks.availability');
 
-        // Inventory foundation: materials, auditable movements, and recipes.
+        // Inventory
         Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
         Route::post('/inventory/materials', [InventoryController::class, 'storeMaterial'])->name('inventory.materials.store');
         Route::put('/inventory/materials/{rawMaterial}', [InventoryController::class, 'updateMaterial'])->name('inventory.materials.update');
@@ -118,23 +126,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/inventory/recipes', [InventoryController::class, 'storeRecipe'])->name('inventory.recipes.store');
         Route::post('/inventory/modifier-recipes', [InventoryController::class, 'storeModifierRecipe'])->name('inventory.modifier-recipes.store');
         Route::delete('/inventory/recipes/{type}/{id}', [InventoryController::class, 'destroyRecipe'])->name('inventory.recipes.destroy');
-
-        Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
-        Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
-        Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
-        Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])->name('suppliers.show');
-        Route::patch('/suppliers/{supplier}/toggle', [SupplierController::class, 'toggle'])->name('suppliers.toggle');
-        Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
-
-        Route::get('/purchasing', [PurchaseOrderController::class, 'index'])->name('purchasing.index');
-        Route::get('/purchasing/create', [PurchaseOrderController::class, 'create'])->name('purchasing.create');
-        Route::post('/purchasing', [PurchaseOrderController::class, 'store'])->name('purchasing.store');
-        Route::get('/purchasing/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('purchasing.edit');
-        Route::put('/purchasing/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('purchasing.update');
-        Route::get('/purchasing/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('purchasing.show');
-        Route::patch('/purchasing/{purchaseOrder}/ordered', [PurchaseOrderController::class, 'markOrdered'])->name('purchasing.ordered');
-        Route::patch('/purchasing/{purchaseOrder}/cancel', [PurchaseOrderController::class, 'cancel'])->name('purchasing.cancel');
-        Route::post('/purchasing/{purchaseOrder}/receive', [PurchaseOrderController::class, 'receive'])->name('purchasing.receive');
 
         // Menu CRUD
         Route::resource('/items', MenuItemController::class);
@@ -154,7 +145,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('/promos', PromoController::class);
         Route::patch('/promos/{promo}/toggle', [PromoController::class, 'toggle'])->name('promos.toggle');
 
-        // Customer Management (Phase 4.4)
+        // Customer Management
         Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
         Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
         Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
@@ -166,18 +157,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
 
-        // Change Password (FR-25)
+        // Change Password
         Route::get('/password', [AuthController::class, 'showChangePassword'])->name('password.edit');
         Route::put('/password', [AuthController::class, 'updatePassword'])->name('password.update');
-        // Payment Settings
-        Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
-        Route::patch('/payments/{payment}/confirm-cash', [AdminPaymentController::class, 'confirmCash'])->name('payments.confirm-cash');
-        Route::patch('/payments/{payment}/verify-qris', [AdminPaymentController::class, 'verifyQris'])->name('payments.verify-qris');
-        Route::get('/payments/{payment}/proof', [AdminPaymentController::class, 'proof'])->name('payments.proof');
-        Route::get('/payment-settings', [AdminPaymentController::class, 'settings'])->name('payments.settings');
-        Route::put('/payment-settings', [AdminPaymentController::class, 'updateSettings'])->name('payments.settings.update');
 
-        // Operational & Business Reports (Phase 4.5)
+        // Business Reports (no Purchasing, no CSV)
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/', [ReportController::class, 'index'])->name('index');
             Route::get('/sales', [ReportController::class, 'sales'])->name('sales');
@@ -185,13 +169,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/payments', [ReportController::class, 'payments'])->name('payments');
             Route::get('/promotions', [ReportController::class, 'promotions'])->name('promotions');
             Route::get('/inventory', [ReportController::class, 'inventory'])->name('inventory');
-            Route::get('/purchasing', [ReportController::class, 'purchasing'])->name('purchasing');
             Route::get('/customers', [ReportController::class, 'customers'])->name('customers');
-            Route::get('/export/{type}', [ReportController::class, 'export'])->name('export');
         });
     });
 });
 
+/*
+|--------------------------------------------------------------------------
+| Shared Routes — Admin, Cashier, Kitchen
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth', 'role.any:admin,cashier,kitchen'])->group(function () {
     Route::get('/admin/orders', [\App\Http\Controllers\Admin\OrderManagementController::class, 'index'])->name('admin.orders.index');
     Route::get('/admin/orders/{order}', [\App\Http\Controllers\Admin\OrderManagementController::class, 'show'])->name('admin.orders.show');

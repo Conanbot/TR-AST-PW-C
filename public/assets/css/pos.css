@@ -468,3 +468,135 @@ html[data-theme="dark"] .status-cancelled { color: #FFB6B7; background: #422226;
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ========================
+   ADMIN UI CLEANUP ADDITIONS
+   Phase Final — UI Redesign
+   ======================== */
+
+/* form-input alias for form-control (many admin views use this class) */
+.form-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  display: block;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--focus-ring);
+}
+.form-input::placeholder { color: var(--text-dim); }
+select.form-input { appearance: auto; cursor: pointer; }
+textarea.form-input { min-height: 90px; resize: vertical; }
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  color: var(--text);
+}
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover td { background: var(--surface-hover); }
+
+/* Admin table alias */
+.admin-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.admin-table th {
+  padding: 10px 14px; text-align: left;
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text-muted);
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.admin-table td {
+  padding: 11px 14px; border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.admin-table tbody tr:last-child td { border-bottom: none; }
+.admin-table tbody tr:hover td { background: var(--surface-hover); }
+
+/* Danger / success button */
+.btn-danger {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--primary-hover);
+  box-shadow: 0 4px 12px var(--primary-glow);
+  transform: translateY(-1px);
+}
+
+/* Badge secondary */
+.badge-secondary {
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+/* Pagination styling */
+.pagination {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+  margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border);
+}
+.pagination a, .pagination span {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 36px; min-height: 36px; padding: 0 10px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
+  background: var(--surface); text-decoration: none;
+  transition: all 0.15s ease;
+}
+.pagination a:hover { border-color: var(--primary); color: var(--primary); }
+.pagination .active, .pagination [aria-current="page"] span {
+  background: var(--primary); color: #fff; border-color: var(--primary);
+}
+.pagination [aria-disabled="true"] span, .pagination .disabled span {
+  opacity: 0.4; cursor: not-allowed;
+}
+
+/* Quick utility */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+.gap-lg { gap: var(--space-lg); }
+.stack-sm { display: grid; gap: var(--space-sm); }
+.stack-md { display: grid; gap: var(--space-md); }
+.surface-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-lg); }
+
+/* Admin sidebar improvement */
+.admin-nav-item { font-size: 0.875rem; font-weight: 500; letter-spacing: 0; }
+.admin-nav-item:hover { background: var(--red-100); color: var(--primary); }
+html[data-theme="dark"] .admin-nav-item:hover { background: #49272A; }
+.admin-nav-item.active { background: var(--red-100); color: var(--primary); font-weight: 700; }
+html[data-theme="dark"] .admin-nav-item.active { background: #49272A; color: #FF9B95; }
+.admin-nav-group-label { font-size: 0.65rem; letter-spacing: 0.1em; }
+
+/* Page heading */
+.page-heading h1 { font-size: clamp(1.5rem, 3vw, 2rem); margin: 4px 0; }
+
+/* Eyebrow */
+.eyebrow { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); }
