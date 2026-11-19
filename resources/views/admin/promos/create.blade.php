@@ -21,6 +21,19 @@
             <label for="subtitle" class="form-label">Keterangan / Deskripsi Promo</label>
             <textarea id="subtitle" name="subtitle" class="form-control" placeholder="Contoh: Dapatkan diskon spesial untuk pemesanan rombongan minimal 20 kotak...">{{ old('subtitle') }}</textarea>
         </div>
+        <div class="grid grid-cols-1 grid-cols-2 gap-md">
+            <div class="form-group"><label for="code" class="form-label">Kode Promo (Opsional)</label><input type="text" id="code" name="code" class="form-control" value="{{ old('code') }}" placeholder="Contoh: GEprek10"></div>
+            <div class="form-group"><label for="discount_type" class="form-label">Tipe Diskon</label><select id="discount_type" name="discount_type" class="form-control"><option value="fixed" @selected(old('discount_type','fixed')==='fixed')>Nominal tetap</option><option value="percentage" @selected(old('discount_type')==='percentage')>Persentase</option><option value="free_delivery" @selected(old('discount_type')==='free_delivery')>Gratis ongkir delivery</option></select></div>
+        </div>
+        <div class="grid grid-cols-1 grid-cols-2 gap-md">
+            <div class="form-group"><label for="discount_value" class="form-label">Nilai Diskon</label><input type="number" id="discount_value" name="discount_value" class="form-control" value="{{ old('discount_value',0) }}" min="0" required></div>
+            <div class="form-group"><label for="minimum_subtotal" class="form-label">Minimum Pembelian</label><input type="number" id="minimum_subtotal" name="minimum_subtotal" class="form-control" value="{{ old('minimum_subtotal',0) }}" min="0"></div>
+        </div>
+        <div class="grid grid-cols-1 grid-cols-2 gap-md">
+            <div class="form-group"><label for="maximum_discount" class="form-label">Maksimum Diskon Percentage</label><input type="number" id="maximum_discount" name="maximum_discount" class="form-control" value="{{ old('maximum_discount') }}" min="0"></div>
+            <div class="form-group"><label for="usage_limit" class="form-label">Batas Pemakaian Total</label><input type="number" id="usage_limit" name="usage_limit" class="form-control" value="{{ old('usage_limit') }}" min="0"></div>
+        </div>
+        <div class="form-group"><label for="per_customer_limit" class="form-label">Batas Pemakaian Per Pelanggan</label><input type="number" id="per_customer_limit" name="per_customer_limit" class="form-control" value="{{ old('per_customer_limit') }}" min="0"></div>
 
         <div class="grid grid-cols-1 grid-cols-2 gap-md">
             <div class="form-group">
@@ -52,6 +65,9 @@
                 <input type="checkbox" name="is_active" value="1" {{ old('is_active', 1) ? 'checked' : '' }}>
                 <span class="text-sm font-semibold">Aktifkan Banner Promo</span>
             </label>
+        </div>
+        <div class="form-group">
+            <label class="form-check"><input type="checkbox" name="stackable" value="1" {{ old('stackable')?'checked':'' }}><span>Dapat dikombinasikan dengan promo lain</span></label>
         </div>
 
         <div class="flex gap-md justify-end" style="margin-top: var(--space-xl); border-top: 1px solid var(--border); padding-top: var(--space-md);">

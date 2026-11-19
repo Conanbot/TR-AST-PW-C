@@ -14,6 +14,8 @@ const Cart = {
     storeLat: -7.3117469,
     storeLng: 110.4851234,
     checkoutKey: null,
+    promoCode: null,
+    promoApplied: null,
     lastCheckout: null
   },
 
@@ -43,6 +45,9 @@ const Cart = {
       localStorage.setItem(this.storageKey, JSON.stringify(items));
       this.updateCartBadge();
       this.renderCartDrawer();
+      if (this.settings.promoCode) {
+        this.validateAppliedPromotion(false);
+      }
     } catch (e) {
       console.error('Error saving cart to localStorage', e);
     }
@@ -113,6 +118,12 @@ const Cart = {
 
   clearCart() {
     localStorage.removeItem(this.storageKey);
+    this.settings.promoCode = null;
+    this.settings.promoApplied = null;
+    const promoInput = document.getElementById('promo-code');
+    if (promoInput) promoInput.value = '';
+    const promoStatus = document.getElementById('promo-status');
+    if (promoStatus) promoStatus.textContent = '';
     this.updateCartBadge();
     this.renderCartDrawer();
   },
@@ -166,6 +177,84 @@ const Cart = {
   getTotalQty() {
     const items = this.getItems();
     return items.reduce((sum, item) => sum + item.qty, 0);
+  },
+
+  async validateAppliedPromotion(showMessage = true) {
+    const code = (document.getElementById('promo-code')?.value || this.settings.promoCode || '').trim();
+    if (!code) return;
+    const items = this.getItems();
+    if (!items.length) {
+      this.removePromotion(false);
+      return;
+    }
+    const serviceMethod = document.querySelector('input[name="service_method"]:checked')?.value || 'dine_in';
+    const customerPhone = document.getElementById('customer-phone')?.value.trim() || null;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+    try {
+      const response = await fetch('/api/promotions/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken || '',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          promo_code: code,
+          service_method: serviceMethod,
+          customer_phone: customerPhone,
+          items: items.map(item => ({
+            id: item.id,
+            qty: item.qty,
+            variant_id: item.variantId,
+            modifier_option_ids: (item.modifiers || []).map(modifier => modifier.optionId),
+            cut: item.cut,
+            drink: item.drink,
+            note: item.note
+          }))
+        })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.valid) {
+        this.settings.promoApplied = null;
+        this.settings.promoCode = null;
+        this.updateCheckoutSummary(this.getSubtotal(), serviceMethod);
+        const statusEl = document.getElementById('promo-status');
+        if (statusEl) {
+          statusEl.textContent = result.reason || 'Promo tidak dapat digunakan.';
+          statusEl.style.color = 'var(--danger)';
+        }
+        if (showMessage) window.showToast(result.reason || 'Promo tidak dapat digunakan.', 'error');
+        return;
+      }
+      this.settings.promoCode = result.code;
+      this.settings.promoApplied = result;
+      const statusEl = document.getElementById('promo-status');
+      if (statusEl) {
+        statusEl.textContent = `Promo diterapkan: -${window.formatRupiah(result.discount)}`;
+        statusEl.style.color = 'var(--text-ok)';
+      }
+      this.updateCheckoutSummary(result.subtotal, serviceMethod);
+      if (showMessage) window.showToast('Kode promo berhasil diterapkan.', 'success');
+    } catch (error) {
+      console.error(error);
+      if (showMessage) window.showToast('Promo belum dapat divalidasi.', 'error');
+    }
+  },
+
+  applyPromotion() {
+    this.validateAppliedPromotion(true);
+  },
+
+  removePromotion(showMessage = true) {
+    this.settings.promoCode = null;
+    this.settings.promoApplied = null;
+    const codeInput = document.getElementById('promo-code');
+    if (codeInput) codeInput.value = '';
+    const statusEl = document.getElementById('promo-status');
+    if (statusEl) statusEl.textContent = '';
+    const serviceMethod = document.querySelector('input[name="service_method"]:checked')?.value || 'dine_in';
+    this.updateCheckoutSummary(this.getSubtotal(), serviceMethod);
+    if (showMessage) window.showToast('Kode promo dihapus.', 'info');
   },
 
   // Haversine formula to compute distance in meters
@@ -277,12 +366,15 @@ const Cart = {
 
   updateCheckoutSummary(subtotal, serviceMethod) {
     const packagingFee = serviceMethod === 'takeaway' ? this.settings.packagingFee : 0;
-    const total = subtotal + packagingFee;
+    const discount = this.settings.promoApplied?.valid ? Number(this.settings.promoApplied.discount || 0) : 0;
+    const total = Math.max(0, subtotal + packagingFee - discount);
     const totalQty = this.getTotalQty();
 
     const subtotalEl = document.getElementById('checkout-subtotal');
     const feeRowEl = document.getElementById('checkout-fee-row');
     const feeEl = document.getElementById('checkout-fee');
+    const discountRowEl = document.getElementById('checkout-discount-row');
+    const discountEl = document.getElementById('checkout-discount');
     const totalEl = document.getElementById('checkout-total');
     const warningEl = document.getElementById('checkout-order-warning');
     const closedWarningEl = document.getElementById('checkout-closed-warning');
@@ -291,6 +383,8 @@ const Cart = {
     if (subtotalEl) subtotalEl.textContent = window.formatRupiah(subtotal);
     if (feeRowEl) feeRowEl.style.display = packagingFee > 0 ? 'flex' : 'none';
     if (feeEl) feeEl.textContent = window.formatRupiah(packagingFee);
+    if (discountRowEl) discountRowEl.style.display = discount > 0 ? 'flex' : 'none';
+    if (discountEl) discountEl.textContent = '-' + window.formatRupiah(discount);
     if (totalEl) totalEl.textContent = window.formatRupiah(total);
 
     // Business Rule 04: >= 20 boxes warning
@@ -432,6 +526,7 @@ const Cart = {
           delivery_lat: deliveryLatInput?.value ? Number(deliveryLatInput.value) : null,
           delivery_lng: deliveryLngInput?.value ? Number(deliveryLngInput.value) : null,
           payment_method: paymentMethod,
+          promo_code: this.settings.promoCode || null,
           order_notes: orderNotes || null,
           items: items.map(item => ({
             id: item.id,

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\PurchaseOrderController;
+use App\Http\Controllers\PromotionCheckoutController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
@@ -73,6 +74,7 @@ Route::prefix('kasir')->name('cashier.')->group(function () {
 */
 Route::get('/api/menu', [ApiController::class, 'menu'])->name('api.menu');
 Route::get('/api/settings', [ApiController::class, 'settings'])->name('api.settings');
+Route::post('/api/promotions/validate', [PromotionCheckoutController::class, 'check'])->name('api.promotions.validate');
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +148,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Promos CRUD
         Route::resource('/promos', PromoController::class);
+        Route::patch('/promos/{promo}/toggle', [PromoController::class, 'toggle'])->name('promos.toggle');
 
         // Store Settings
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');

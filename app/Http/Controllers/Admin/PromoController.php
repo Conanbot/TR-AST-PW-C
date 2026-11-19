@@ -6,14 +6,32 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PromoRequest;
 use App\Models\Promo;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PromoController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $promos = Promo::latest()->paginate(10);
+        $query = Promo::withCount('usages');
+        if ($request->filled('search')) {
+            $search = $request->string('search')->toString();
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('code', 'like', '%' . $search . '%');
+            });
+        }
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status === 'active');
+        }
+        if ($request->filled('from')) {
+            $query->whereDate('end_date', '>=', $request->from);
+        }
+        if ($request->filled('to')) {
+            $query->whereDate('start_date', '<=', $request->to);
+        }
+        $promos = $query->latest()->paginate(10)->withQueryString();
 
         return view('admin.promos.index', compact('promos'));
     }
@@ -27,6 +45,8 @@ class PromoController extends Controller
     {
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active', true);
+        $data['stackable'] = $request->boolean('stackable');
+        $data['code'] = $data['code'] ? strtoupper(trim($data['code'])) : null;
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('promos', 'public');
@@ -51,6 +71,8 @@ class PromoController extends Controller
         $promo = Promo::findOrFail($id);
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
+        $data['stackable'] = $request->boolean('stackable');
+        $data['code'] = $data['code'] ? strtoupper(trim($data['code'])) : null;
 
         if ($request->hasFile('image')) {
             if ($promo->image && Storage::disk('public')->exists($promo->image)) {
@@ -74,14 +96,22 @@ class PromoController extends Controller
     public function destroy(int $id): RedirectResponse
     {
         $promo = Promo::findOrFail($id);
-
-        if ($promo->image && Storage::disk('public')->exists($promo->image)) {
-            Storage::disk('public')->delete($promo->image);
-        }
-
         $promo->delete();
 
         return redirect()->route('admin.promos.index')
-            ->with('success', 'Banner promo berhasil dihapus.');
+            ->with('success', 'Promo dinonaktifkan dan histori penggunaan tetap aman.');
+    }
+
+    public function show(int $id): View
+    {
+        $promo = Promo::with(['usages.order', 'usages.customer'])->findOrFail($id);
+        return view('admin.promos.show', compact('promo'));
+    }
+
+    public function toggle(int $id): RedirectResponse
+    {
+        $promo = Promo::findOrFail($id);
+        $promo->update(['is_active' => !$promo->is_active]);
+        return back()->with('success', 'Status promo diperbarui.');
     }
 }

@@ -83,51 +83,9 @@ class OrderService
             ]);
         }
 
-        $subtotal = 0;
-        $rows = [];
-
-        foreach ($data['items'] as $entry) {
-            $menuItem = $items->get((int) $entry['id']);
-            if (!$menuItem || !$menuItem->is_available) {
-                throw ValidationException::withMessages([
-                    'items' => 'Salah satu menu sudah tidak tersedia. Muat ulang menu lalu coba lagi.',
-                ]);
-            }
-
-            $variant = null;
-            if (!empty($entry['variant_id'])) {
-                $variant = $menuItem->variants->firstWhere('id', (int) $entry['variant_id']);
-                if (!$variant || !$variant->is_available) {
-                    throw ValidationException::withMessages([
-                        'items' => "Varian {$menuItem->name} sudah tidak tersedia.",
-                    ]);
-                }
-            }
-
-            $basePrice = $variant?->price ?? $menuItem->price;
-            $selectedOptionIds = $this->selectedOptionIds($entry);
-            $selectedOptions = $this->validateModifiers($menuItem, $selectedOptionIds);
-            $modifierTotal = (int) $selectedOptions->sum('price_delta');
-            $unitPrice = $basePrice + $modifierTotal;
-            $lineTotal = $unitPrice * (int) $entry['qty'];
-            $subtotal += $lineTotal;
-
-            $rows[] = [
-                'menu_item_id' => $menuItem->id,
-                'variant_id' => $variant?->id,
-                'item_name' => $menuItem->name,
-                'variant_name' => $variant?->name,
-                'quantity' => (int) $entry['qty'],
-                'unit_price' => $unitPrice,
-                'base_price' => $basePrice,
-                'modifier_total' => $modifierTotal,
-                'line_total' => $lineTotal,
-                'chicken_cut' => $entry['cut'] ?? null,
-                'drink_option' => $entry['drink'] ?? null,
-                'note' => $entry['note'] ?? null,
-                'modifiers' => $selectedOptions,
-            ];
-        }
+        $cart = $this->calculateCart($data['items']);
+        $subtotal = $cart['subtotal'];
+        $rows = $cart['rows'];
 
         $packagingFee = $data['service_method'] === 'takeaway'
             ? (int) $settings->packaging_fee
@@ -156,6 +114,7 @@ class OrderService
                 'status' => 'pending',
                 'payment_status' => 'unpaid',
                 'payment_method' => $data['payment_method'] ?? null,
+                'promo_code' => $data['promo_code'] ?? null,
                 'source' => $source,
             ]);
 
@@ -180,12 +139,73 @@ class OrderService
                 }
             }
 
+            app(\App\Services\PromotionService::class)->applyToOrder(
+                $order,
+                $data['promo_code'] ?? null,
+                $customer
+            );
+
             if (!empty($data['payment_method'])) {
                 app(PaymentService::class)->createForOrder($order, $data['payment_method']);
             }
 
             return $order->load(['items.modifiers', 'payments']);
         });
+    }
+
+    public function calculateCart(array $items): array
+    {
+        $menuItems = MenuItem::with(['variants', 'modifierGroups.options'])
+            ->whereIn('id', collect($items)->pluck('id')->unique())
+            ->get()
+            ->keyBy('id');
+
+        $subtotal = 0;
+        $rows = [];
+
+        foreach ($items as $entry) {
+            $menuItem = $menuItems->get((int) $entry['id']);
+            if (!$menuItem || !$menuItem->is_available) {
+                throw ValidationException::withMessages([
+                    'items' => 'Salah satu menu sudah tidak tersedia. Muat ulang menu lalu coba lagi.',
+                ]);
+            }
+
+            $variant = null;
+            if (!empty($entry['variant_id'])) {
+                $variant = $menuItem->variants->firstWhere('id', (int) $entry['variant_id']);
+                if (!$variant || !$variant->is_available) {
+                    throw ValidationException::withMessages([
+                        'items' => "Varian {$menuItem->name} sudah tidak tersedia.",
+                    ]);
+                }
+            }
+
+            $basePrice = $variant?->price ?? $menuItem->price;
+            $selectedOptions = $this->validateModifiers($menuItem, $this->selectedOptionIds($entry));
+            $modifierTotal = (int) $selectedOptions->sum('price_delta');
+            $unitPrice = $basePrice + $modifierTotal;
+            $lineTotal = $unitPrice * (int) $entry['qty'];
+            $subtotal += $lineTotal;
+
+            $rows[] = [
+                'menu_item_id' => $menuItem->id,
+                'variant_id' => $variant?->id,
+                'item_name' => $menuItem->name,
+                'variant_name' => $variant?->name,
+                'quantity' => (int) $entry['qty'],
+                'unit_price' => $unitPrice,
+                'base_price' => $basePrice,
+                'modifier_total' => $modifierTotal,
+                'line_total' => $lineTotal,
+                'chicken_cut' => $entry['cut'] ?? null,
+                'drink_option' => $entry['drink'] ?? null,
+                'note' => $entry['note'] ?? null,
+                'modifiers' => $selectedOptions,
+            ];
+        }
+
+        return ['subtotal' => $subtotal, 'rows' => $rows];
     }
 
     public function whatsappUrl(Order $order, ?string $trackingUrl = null): string
@@ -221,6 +241,7 @@ class OrderService
             . ($order->order_notes ? "\nCatatan Khusus: {$order->order_notes}" : '')
             . ($order->customer_address ? "\nAlamat pengantaran: {$order->customer_address}" : '')
             . "\nSubtotal: Rp" . number_format($order->subtotal, 0, ',', '.')
+            . ($order->promo_code ? "\nPromo: {$order->promo_code}" : '')
             . ($order->discount_amount > 0 ? "\nDiskon: -Rp" . number_format($order->discount_amount, 0, ',', '.') : '')
             . ($order->packaging_fee > 0 ? "\nBiaya kemasan: Rp" . number_format($order->packaging_fee, 0, ',', '.') : '')
             . ($order->delivery_fee > 0 ? "\nBiaya antar: Rp" . number_format($order->delivery_fee, 0, ',', '.') : '')

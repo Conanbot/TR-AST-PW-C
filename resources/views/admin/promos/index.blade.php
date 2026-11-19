@@ -8,6 +8,14 @@
         <h2 style="font-size: 1.4rem; margin-bottom: 4px;">🎉 Manajemen Banner Promo</h2>
         <p class="text-sm text-muted">Atur banner promosi dan penawaran spesial yang tampil di halaman beranda.</p>
     </div>
+
+    <form method="GET" action="{{ route('admin.promos.index') }}" class="card" style="padding:var(--space-md);display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:var(--space-lg);">
+    <input class="form-control" name="search" value="{{ request('search') }}" placeholder="Cari nama atau kode promo">
+    <select class="form-control" name="status"><option value="">Semua status</option><option value="active" @selected(request('status')==='active')>Aktif</option><option value="inactive" @selected(request('status')==='inactive')>Nonaktif</option></select>
+    <input class="form-control" type="date" name="from" value="{{ request('from') }}" placeholder="Dari">
+    <input class="form-control" type="date" name="to" value="{{ request('to') }}" placeholder="Sampai">
+    <button class="btn btn-secondary" style="grid-column:1/-1">Filter promo</button>
+    </form>
     <a href="{{ route('admin.promos.create') }}" class="btn btn-primary">
         + Tambah Banner Promo
     </a>
@@ -19,8 +27,10 @@
             <tr>
                 <th style="width: 70px;">Banner</th>
                 <th>Judul Promo</th>
+                <th>Kode / Tipe</th>
                 <th>Keterangan / Subtitle</th>
                 <th>Status</th>
+                <th>Kuota</th>
                 <th>Periode Tayang</th>
                 <th style="text-align: right;">Aksi</th>
             </tr>
@@ -40,6 +50,7 @@
                 <td>
                     <strong style="color: var(--text);">{{ $promo->title }}</strong>
                 </td>
+                <td><strong>{{ $promo->code ?: '-' }}</strong><div class="text-xs text-muted">{{ $promo->discount_type }}</div></td>
                 <td style="max-width: 320px; font-size: 0.85rem; color: var(--text-muted);">
                     {{ $promo->subtitle ?? '-' }}
                 </td>
@@ -48,6 +59,7 @@
                         {{ $promo->is_active ? 'Aktif' : 'Nonaktif' }}
                     </span>
                 </td>
+                <td class="text-xs text-muted">{{ $promo->usage_limit ? $promo->usages_count.' / '.$promo->usage_limit.' terpakai' : 'Tanpa batas' }}</td>
                 <td class="text-xs text-muted">
                     @if($promo->start_date || $promo->end_date)
                         {{ $promo->start_date ? $promo->start_date->format('d M Y') : 'Sekarang' }}
@@ -59,6 +71,8 @@
                 </td>
                 <td style="text-align: right;">
                     <div class="flex gap-xs justify-end" style="justify-content: flex-end;">
+                        <a href="{{ route('admin.promos.show', $promo->id) }}" class="btn btn-secondary btn-sm" style="padding: 4px 10px;">Detail</a>
+                        <form action="{{ route('admin.promos.toggle', $promo->id) }}" method="POST" style="margin:0;">@csrf @method('PATCH')<button type="submit" class="btn btn-secondary btn-sm" style="padding:4px 10px;">{{ $promo->is_active?'Nonaktifkan':'Aktifkan' }}</button></form>
                         <a href="{{ route('admin.promos.edit', $promo->id) }}" class="btn btn-secondary btn-sm" style="padding: 4px 10px;">
                             Ubah
                         </a>
@@ -74,7 +88,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">
                     Belum ada banner promo yang dibuat.
                 </td>
             </tr>

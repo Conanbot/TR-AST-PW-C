@@ -31,6 +31,8 @@ class Order extends Model
         'status',
         'payment_status',
         'payment_method',
+        'promo_id',
+        'promo_code',
         'kitchen_status',
         'source',
     ];
@@ -78,6 +80,11 @@ class Order extends Model
     public function latestPayment()
     {
         return $this->hasOne(Payment::class)->latestOfMany();
+    }
+
+    public function promotionUsage()
+    {
+        return $this->hasOne(PromotionUsage::class);
     }
 
     public function getFormattedTotalAttribute(): string

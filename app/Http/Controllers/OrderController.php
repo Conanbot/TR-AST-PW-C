@@ -18,6 +18,7 @@ class OrderController extends Controller
             'customer_name' => ['required', 'string', 'max:120'],
             'customer_phone' => ['nullable', 'string', 'max:30'],
             'checkout_key' => ['nullable', 'string', 'max:100'],
+            'promo_code' => ['nullable', 'string', 'max:50'],
             'service_method' => ['required', 'in:dine_in,takeaway,delivery'],
             'table_number' => ['nullable', 'string', 'max:20'],
             'order_notes' => ['nullable', 'string', 'max:255'],

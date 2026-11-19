@@ -284,6 +284,16 @@
                     </script>
                 </div>
 
+                    <div class="form-group" style="margin-top:16px;">
+                        <label for="promo-code" class="form-label">Kode Promo</label>
+                        <div style="display:flex;gap:8px;">
+                            <input type="text" id="promo-code" class="form-control" placeholder="Masukkan kode promo" maxlength="50" style="text-transform:uppercase;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="Cart.applyPromotion()">Terapkan</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="Cart.removePromotion()">Hapus</button>
+                        </div>
+                        <div id="promo-status" class="text-sm" style="margin-top:6px;min-height:18px;"></div>
+                    </div>
+
                 <div style="margin-top: 16px; padding: 14px; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px;">
                     <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
                         <span class="text-muted">Subtotal Menu:</span>
@@ -292,6 +302,10 @@
                     <div id="checkout-fee-row" style="display: none; justify-content: space-between; font-size: 0.9rem;">
                         <span class="text-muted">Biaya Kemasan:</span>
                         <span id="checkout-fee" style="font-weight: 600;">Rp0</span>
+                    </div>
+                    <div id="checkout-discount-row" style="display: none; justify-content: space-between; font-size: 0.9rem;">
+                        <span class="text-muted">Diskon Promo:</span>
+                        <span id="checkout-discount" style="font-weight: 600;">-Rp0</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 1.05rem; font-weight: 700; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px;">
                         <span>Total Pesanan:</span>
