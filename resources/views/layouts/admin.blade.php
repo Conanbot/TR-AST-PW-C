@@ -164,8 +164,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>
             </button>
-            <a class="brand-lockup" href="{{ route('admin.dashboard') }}">
-                <span class="brand-mark">G</span><span>Geprek <b>GLO</b></span>
+            <a href="{{ route('admin.dashboard') }}" style="display: inline-block;">
+                <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
             </a>
             <button type="button" id="header-store-toggle-btn"
                     class="store-state {{ $storeIsOpen ? 'is-open' : 'is-closed' }}"
@@ -198,8 +198,8 @@
     {{-- ─── Mobile Drawer ─── --}}
     <div id="admin-mobile-drawer" class="admin-mobile-drawer" aria-label="Menu admin">
         <div class="admin-drawer-heading">
-            <a class="brand-lockup" href="{{ route('admin.dashboard') }}">
-                <span class="brand-mark">G</span><span>Menu <b>admin</b></span>
+            <a href="{{ route('admin.dashboard') }}" style="display: inline-block;">
+                <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
             </a>
             <button type="button" id="admin-mobile-close" class="close-btn" aria-label="Tutup menu">×</button>
         </div>
