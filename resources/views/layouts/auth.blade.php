@@ -17,7 +17,7 @@
     <main class="auth-layout">
         <section class="auth-story">
             <a href="{{ route('home') }}" style="display: inline-block;">
-                <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 52px; width: auto; object-fit: contain;">
+                <img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 52px; width: auto; object-fit: contain;">
             </a>
             <div class="auth-story-copy">
                 <span class="eyebrow">Blotongan, Salatiga</span>

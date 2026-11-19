@@ -27,7 +27,7 @@
         <div class="container flex items-center justify-between">
             <div class="flex items-center gap-md">
                 <a href="{{ route('home') }}" class="flex items-center gap-sm" style="text-decoration: none;">
-                    <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 44px; width: auto; object-fit: contain;">
+                    <img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 44px; width: auto; object-fit: contain;">
                 </a>
 
                 @php
@@ -93,7 +93,7 @@
 
     <div id="mobile-nav" class="mobile-nav">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 44px; width: auto; object-fit: contain;">
+            <img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 44px; width: auto; object-fit: contain;">
             <button type="button" id="mobile-nav-close" class="close-btn" aria-label="Tutup Menu">&times;</button>
         </div>
         <div class="flex flex-col gap-md" style="font-size: 1.2rem;">
@@ -344,7 +344,7 @@
         <div class="container">
             <div class="grid grid-cols-1 grid-cols-2 grid-cols-4 gap-lg" style="margin-bottom: var(--space-xl);">
                 <div class="footer-brand">
-                    <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 52px; width: auto; object-fit: contain; margin-bottom: 10px;">
+                    <img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 52px; width: auto; object-fit: contain; margin-bottom: 10px;">
                     <p class="text-muted text-sm" style="margin-top: 10px; max-width: 440px; line-height: 1.6;">
                         Kuliner ayam crispy renyah dan ayam geprek sambal cabai segar khas Blotongan, Salatiga. Dikelola langsung dengan sepenuh hati oleh Ibu Catur Legawaningsih untuk menyajikan kelezatan higienis, pedas mantap, dan terjangkau bagi semua.
                     </p>

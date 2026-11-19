@@ -165,7 +165,7 @@
                 </svg>
             </button>
             <a href="{{ route('admin.dashboard') }}" style="display: inline-block;">
-                <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
+                <img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
             </a>
             <button type="button" id="header-store-toggle-btn"
                     class="store-state {{ $storeIsOpen ? 'is-open' : 'is-closed' }}"
@@ -199,7 +199,7 @@
     <div id="admin-mobile-drawer" class="admin-mobile-drawer" aria-label="Menu admin">
         <div class="admin-drawer-heading">
             <a href="{{ route('admin.dashboard') }}" style="display: inline-block;">
-                <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
+                <img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
             </a>
             <button type="button" id="admin-mobile-close" class="close-btn" aria-label="Tutup menu">×</button>
         </div>

@@ -17,7 +17,7 @@
 <body class="console-page cashier-page">
     <header class="console-header" style="position:sticky;top:0;z-index:20;">
         <a href="{{ route('cashier.dashboard') }}" style="display: inline-block;">
-            <img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
+            <img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;">
         </a>
         <nav class="console-nav" aria-label="Navigasi kasir">
             <a href="{{ route('cashier.dashboard') }}"

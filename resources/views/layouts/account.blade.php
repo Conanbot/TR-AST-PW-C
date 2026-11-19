@@ -15,7 +15,7 @@
 </head>
 <body class="console-page account-page">
     <header class="console-header">
-        <a href="{{ route('home') }}" style="display: inline-block;"><img src="{{ asset('assets/img/brand/logo.jpg') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;"></a>
+        <a href="{{ route('home') }}" style="display: inline-block;"><img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;"></a>
         <nav class="console-nav" aria-label="Navigasi akun"><a class="active" href="{{ route('account.dashboard') }}">Pesanan saya</a><a href="{{ route('menu') }}">Pesan menu</a></nav>
         <div class="console-actions">
             <span class="user-chip"><span class="avatar-dot">{{ mb_substr(auth()->user()->name, 0, 1) }}</span><span>{{ auth()->user()->name }}</span></span>
