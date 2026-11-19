@@ -14,23 +14,27 @@
 </div>
 
 <!-- Filter Bar -->
-<div class="card" style="padding: var(--space-md); margin-bottom: var(--space-lg);">
-    <form method="GET" action="{{ route('admin.items.index') }}" class="flex gap-sm flex-wrap items-center">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu..." class="form-control" style="max-width: 280px;">
-        <select name="category_id" class="form-control" style="max-width: 200px;">
+<x-filter-panel :action="route('admin.items.index')">
+    <div class="fp-field fp-field-lg">
+        <label class="fp-label">Cari nama menu</label>
+        <input class="fp-input" type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama menu...">
+    </div>
+    <div class="fp-field fp-field-md">
+        <label class="fp-label">Kategori</label>
+        <select class="fp-select" name="category_id">
             <option value="">Semua Kategori</option>
             @foreach($categories as $cat)
-                <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
-                    {{ $cat->name }}
-                </option>
+                <option value="{{ $cat->id }}" @selected(request('category_id') == $cat->id)>{{ $cat->name }}</option>
             @endforeach
         </select>
-        <button type="submit" class="btn btn-secondary btn-sm">Filter</button>
-        @if(request()->hasAny(['search', 'category_id']))
-            <a href="{{ route('admin.items.index') }}" class="btn btn-secondary btn-sm text-dim">Reset</a>
+    </div>
+    <x-slot name="buttons">
+        <button class="fp-btn-primary" type="submit">Filter</button>
+        @if(request()->anyFilled(['search','category_id']))
+            <a href="{{ route('admin.items.index') }}" class="fp-btn-reset">Reset</a>
         @endif
-    </form>
-</div>
+    </x-slot>
+</x-filter-panel>
 
 <!-- Table of Menu Items -->
 <div class="card" style="padding: var(--space-md); overflow-x: auto;">

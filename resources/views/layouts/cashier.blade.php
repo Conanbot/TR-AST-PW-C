@@ -32,7 +32,11 @@
         </nav>
         <div class="console-actions">
             <span class="user-chip">
-                <span class="avatar-dot">{{ mb_substr(auth()->user()->name, 0, 1) }}</span>
+                <img src="{{ asset('assets/img/avatar-placeholder.svg') }}"
+                     alt="Avatar"
+                     class="avatar-img"
+                     width="34" height="34"
+                     style="width:34px;height:34px;border-radius:50%;object-fit:cover;background:#e0e0e0;flex:0 0 34px;">
                 <span>{{ auth()->user()->name }}</span>
             </span>
             <button class="theme-toggle" type="button" data-theme-toggle

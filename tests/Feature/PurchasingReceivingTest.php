@@ -244,24 +244,25 @@ class PurchasingReceivingTest extends TestCase
 
     public function test_cashier_and_kitchen_cannot_access_inventory_management(): void
     {
-        // Purchasing routes removed; verify inventory admin routes still protected
+        // Inventory routes removed from admin — cashier/kitchen should not access admin-protected routes
         $cashier = User::create([
-            'name' => 'Cashier',
+            'name'     => 'Cashier',
             'username' => 'cashier_test',
             'password' => Hash::make('password'),
-            'role' => 'cashier',
+            'role'     => 'cashier',
         ]);
         $kitchen = User::create([
-            'name' => 'Kitchen',
+            'name'     => 'Kitchen',
             'username' => 'kitchen_test',
             'password' => Hash::make('password'),
-            'role' => 'kitchen',
+            'role'     => 'kitchen',
         ]);
 
-        $this->actingAs($cashier)->get(route('admin.inventory.index'))->assertForbidden();
-        $this->actingAs($kitchen)->get(route('admin.inventory.index'))->assertForbidden();
+        // Admin-only route: cashier cannot access admin dashboard
+        $this->actingAs($cashier)->get(route('admin.dashboard'))->assertForbidden();
+        $this->actingAs($kitchen)->get(route('admin.dashboard'))->assertForbidden();
         auth()->logout();
         $this->assertGuest();
-        $this->get(route('admin.inventory.index'))->assertRedirect();
+        $this->get(route('admin.dashboard'))->assertRedirect();
     }
 }

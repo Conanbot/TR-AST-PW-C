@@ -12,12 +12,11 @@
 <div class="report-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--space-lg);border-bottom:1px solid var(--border);padding-bottom:12px;">
     @php
         $tabs = [
-            ['type' => 'sales', 'label' => 'Penjualan', 'route' => 'admin.reports.sales'],
-            ['type' => 'products', 'label' => 'Menu', 'route' => 'admin.reports.products'],
-            ['type' => 'payments', 'label' => 'Pembayaran', 'route' => 'admin.reports.payments'],
-            ['type' => 'promotions', 'label' => 'Promosi', 'route' => 'admin.reports.promotions'],
-            ['type' => 'inventory', 'label' => 'Inventori', 'route' => 'admin.reports.inventory'],
-            ['type' => 'customers', 'label' => 'Pelanggan', 'route' => 'admin.reports.customers'],
+            ['type' => 'sales',      'label' => 'Penjualan',   'route' => 'admin.reports.sales'],
+            ['type' => 'products',   'label' => 'Menu',         'route' => 'admin.reports.products'],
+            ['type' => 'payments',   'label' => 'Pembayaran',   'route' => 'admin.reports.payments'],
+            ['type' => 'promotions', 'label' => 'Promosi',      'route' => 'admin.reports.promotions'],
+            ['type' => 'customers',  'label' => 'Pelanggan',    'route' => 'admin.reports.customers'],
         ];
     @endphp
     @foreach($tabs as $tab)

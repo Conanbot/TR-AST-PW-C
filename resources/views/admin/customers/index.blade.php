@@ -11,56 +11,68 @@
     </div>
 </div>
 
-<div class="grid grid-cols-1 grid-cols-2 gap-md" style="margin-bottom:var(--space-lg);">
-    <section class="card" style="padding:var(--space-md);">
-        <h3>Filter & Pencarian</h3>
-        <form method="GET" action="{{ route('admin.customers.index') }}" style="display:grid;gap:12px;margin-top:12px;">
-            <input class="form-input" name="search" value="{{ request('search') }}" placeholder="Cari nama, telepon, atau email...">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <select class="form-input" name="status">
-                    <option value="">Semua status</option>
-                    <option value="active" @selected(request('status') === 'active')>Aktif</option>
-                    <option value="inactive" @selected(request('status') === 'inactive')>Nonaktif</option>
-                </select>
-                <div style="display:flex;gap:6px;">
-                    <button type="submit" class="btn btn-primary" style="flex:1;">Filter</button>
-                    @if(request()->hasAny(['search', 'status', 'date_from', 'date_to']))
-                        <a href="{{ route('admin.customers.index') }}" class="btn btn-secondary">Reset</a>
-                    @endif
-                </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <div>
-                    <label class="text-xs text-muted" style="display:block;margin-bottom:4px;">Pesanan Dari</label>
-                    <input class="form-input" type="date" name="date_from" value="{{ request('date_from') }}">
-                </div>
-                <div>
-                    <label class="text-xs text-muted" style="display:block;margin-bottom:4px;">Pesanan Sampai</label>
-                    <input class="form-input" type="date" name="date_to" value="{{ request('date_to') }}">
-                </div>
-            </div>
-        </form>
-    </section>
+<x-filter-panel :action="route('admin.customers.index')">
+    <div class="fp-field fp-field-lg">
+        <label class="fp-label">Cari pelanggan</label>
+        <input class="fp-input" name="search" value="{{ request('search') }}" placeholder="Nama, telepon, atau email...">
+    </div>
+    <div class="fp-field fp-field-sm">
+        <label class="fp-label">Status</label>
+        <select class="fp-select" name="status">
+            <option value="">Semua Status</option>
+            <option value="active"   @selected(request('status') === 'active')>Aktif</option>
+            <option value="inactive" @selected(request('status') === 'inactive')>Nonaktif</option>
+        </select>
+    </div>
+    <div class="fp-field fp-field-sm">
+        <label class="fp-label">Daftar dari</label>
+        <input class="fp-input" type="date" name="date_from" value="{{ request('date_from') }}">
+    </div>
+    <div class="fp-field fp-field-sm">
+        <label class="fp-label">Daftar sampai</label>
+        <input class="fp-input" type="date" name="date_to" value="{{ request('date_to') }}">
+    </div>
+    <x-slot name="buttons">
+        <button class="fp-btn-primary" type="submit">Filter</button>
+        @if(request()->anyFilled(['search','status','date_from','date_to']))
+            <a href="{{ route('admin.customers.index') }}" class="fp-btn-reset">Reset</a>
+        @endif
+    </x-slot>
+</x-filter-panel>
 
-    <section class="card" style="padding:var(--space-md);">
-        <h3>Tambah Pelanggan Baru</h3>
-        <form method="POST" action="{{ route('admin.customers.store') }}" style="display:grid;gap:10px;margin-top:12px;">
-            @csrf
-            <input class="form-input" name="name" placeholder="Nama lengkap pelanggan *" required value="{{ old('name') }}">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <input class="form-input" name="phone" placeholder="Nomor telepon (WhatsApp) *" required value="{{ old('phone') }}">
-                <input class="form-input" type="email" name="email" placeholder="Email (opsional)" value="{{ old('email') }}">
+<div class="card" style="padding:var(--space-md);margin-bottom:var(--space-lg);">
+    <h3 style="margin-bottom:14px;">Tambah Pelanggan Baru</h3>
+    <form method="POST" action="{{ route('admin.customers.store') }}" style="display:grid;gap:10px;">
+        @csrf
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;flex-wrap:wrap;">
+            <div>
+                <label class="fp-label">Nama lengkap *</label>
+                <input class="fp-input" name="name" placeholder="Nama pelanggan" required value="{{ old('name') }}">
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                <select class="form-input" name="status" required>
-                    <option value="active" @selected(old('status', 'active') === 'active')>Status: Aktif</option>
-                    <option value="inactive" @selected(old('status') === 'inactive')>Status: Nonaktif</option>
+            <div>
+                <label class="fp-label">Nomor telepon *</label>
+                <input class="fp-input" name="phone" placeholder="081234567890" required value="{{ old('phone') }}">
+            </div>
+            <div>
+                <label class="fp-label">Email</label>
+                <input class="fp-input" type="email" name="email" placeholder="Email (opsional)" value="{{ old('email') }}">
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+                <label class="fp-label">Status</label>
+                <select class="fp-select" name="status" required>
+                    <option value="active"   @selected(old('status','active') === 'active')>Aktif</option>
+                    <option value="inactive" @selected(old('status') === 'inactive')>Nonaktif</option>
                 </select>
-                <input class="form-input" name="notes" placeholder="Catatan internal admin (opsional)" value="{{ old('notes') }}">
             </div>
-            <button type="submit" class="btn btn-secondary">Simpan Data Pelanggan</button>
-        </form>
-    </section>
+            <div>
+                <label class="fp-label">Catatan internal</label>
+                <input class="fp-input" name="notes" placeholder="Catatan (opsional)" value="{{ old('notes') }}">
+            </div>
+        </div>
+        <div><button type="submit" class="btn btn-primary">Simpan Data Pelanggan</button></div>
+    </form>
 </div>
 
 <section class="card" style="padding:var(--space-md);overflow-x:auto;">

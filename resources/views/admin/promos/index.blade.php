@@ -3,23 +3,42 @@
 @section('title', 'Manajemen Promo — Panel Admin Geprek GLO')
 
 @section('content')
-<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: var(--space-lg);">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: var(--space-md);">
     <div>
-        <h2 style="font-size: 1.4rem; margin-bottom: 4px;">🎉 Manajemen Banner Promo</h2>
+        <h2 style="font-size: 1.4rem; margin-bottom: 4px;">Manajemen Banner Promo</h2>
         <p class="text-sm text-muted">Atur banner promosi dan penawaran spesial yang tampil di halaman beranda.</p>
     </div>
-
-    <form method="GET" action="{{ route('admin.promos.index') }}" class="card" style="padding:var(--space-md);display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;margin-bottom:var(--space-lg);">
-    <input class="form-control" name="search" value="{{ request('search') }}" placeholder="Cari nama atau kode promo">
-    <select class="form-control" name="status"><option value="">Semua status</option><option value="active" @selected(request('status')==='active')>Aktif</option><option value="inactive" @selected(request('status')==='inactive')>Nonaktif</option></select>
-    <input class="form-control" type="date" name="from" value="{{ request('from') }}" placeholder="Dari">
-    <input class="form-control" type="date" name="to" value="{{ request('to') }}" placeholder="Sampai">
-    <button class="btn btn-secondary" style="grid-column:1/-1">Filter promo</button>
-    </form>
-    <a href="{{ route('admin.promos.create') }}" class="btn btn-primary">
-        + Tambah Banner Promo
-    </a>
+    <a href="{{ route('admin.promos.create') }}" class="btn btn-primary">+ Tambah Promo</a>
 </div>
+
+<x-filter-panel :action="route('admin.promos.index')">
+    <div class="fp-field fp-field-lg">
+        <label class="fp-label">Cari nama / kode promo</label>
+        <input class="fp-input" name="search" value="{{ request('search') }}" placeholder="Nama promo atau kode...">
+    </div>
+    <div class="fp-field fp-field-sm">
+        <label class="fp-label">Status</label>
+        <select class="fp-select" name="status">
+            <option value="">Semua Status</option>
+            <option value="active"   @selected(request('status') === 'active')>Aktif</option>
+            <option value="inactive" @selected(request('status') === 'inactive')>Nonaktif</option>
+        </select>
+    </div>
+    <div class="fp-field fp-field-sm">
+        <label class="fp-label">Berlaku dari</label>
+        <input class="fp-input" type="date" name="from" value="{{ request('from') }}">
+    </div>
+    <div class="fp-field fp-field-sm">
+        <label class="fp-label">Berlaku sampai</label>
+        <input class="fp-input" type="date" name="to" value="{{ request('to') }}">
+    </div>
+    <x-slot name="buttons">
+        <button class="fp-btn-primary" type="submit">Filter</button>
+        @if(request()->anyFilled(['search','status','from','to']))
+            <a href="{{ route('admin.promos.index') }}" class="fp-btn-reset">Reset</a>
+        @endif
+    </x-slot>
+</x-filter-panel>
 
 <div class="card" style="padding: var(--space-md); overflow-x: auto;">
     <table class="admin-table">

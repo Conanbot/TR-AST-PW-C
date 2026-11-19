@@ -13,7 +13,7 @@
             </div>
             <h2 style="font-size: 1.5rem; margin-bottom: 4px;">Halo, {{ auth()->user()->name }}!</h2>
             <p class="text-sm text-muted">
-                Pantau omset harian, antrean dapur, ketersediaan stok bahan baku, dan performa pelanggan.
+                Pantau omset harian, antrean dapur, dan performa pelanggan.
             </p>
         </div>
 
@@ -46,11 +46,8 @@
     <a href="#ia-orders" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
         2. Order Status &amp; Active Orders
     </a>
-    <a href="#ia-operations" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        3. Inventory
-    </a>
     <a href="#ia-customers" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        4. Customer &amp; Payment Overview
+        3. Customer &amp; Payment Overview
     </a>
     <a href="#ia-kitchen" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
         5. Kitchen (Cooking Queue)
@@ -375,93 +372,7 @@
 </section>
 
 <!-- ==========================================
-     SECTION 3: INVENTORY DASHBOARD
-     ========================================== -->
-<section id="ia-operations" style="margin-bottom: var(--space-2xl);">
-    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
-        <div>
-            <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Inventory</span>
-            <h3 style="font-size: 1.35rem; margin-top: 2px;">Ringkasan Stok Bahan Baku</h3>
-        </div>
-        <div class="flex gap-xs">
-            <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary btn-sm">Bahan Baku &amp; Resep</a>
-            <a href="{{ route('admin.reports.inventory') }}" class="btn btn-secondary btn-sm">Laporan Inventori</a>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 grid-cols-2 gap-lg">
-        <!-- Inventory Summary Card -->
-        <div class="card" style="padding: var(--space-md);">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <h4 style="font-size:1.1rem;margin:0;">Status Stok Bahan</h4>
-                <a href="{{ route('admin.reports.inventory') }}" class="btn btn-secondary btn-sm">Laporan &rarr;</a>
-            </div>
-
-            <div class="grid grid-cols-3 gap-sm" style="margin-bottom:12px;">
-                <div style="background:var(--surface);padding:8px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
-                    <div class="text-xs text-muted">Total Bahan</div>
-                    <strong style="font-size:1.1rem;">{{ $operational['inventory_summary']['total_materials'] }}</strong>
-                </div>
-                <div style="background:var(--surface);padding:8px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
-                    <div class="text-xs text-muted">Stok Rendah</div>
-                    <strong style="font-size:1.1rem;color:{{ $operational['inventory_summary']['low_stock_count'] > 0 ? '#e74c3c' : '#2ecc71' }};">
-                        {{ $operational['inventory_summary']['low_stock_count'] }}
-                    </strong>
-                </div>
-                <div style="background:var(--surface);padding:8px;border-radius:var(--radius-sm);text-align:center;border:1px solid var(--border);">
-                    <div class="text-xs text-muted">Stok Habis</div>
-                    <strong style="font-size:1.1rem;color:{{ $operational['inventory_summary']['out_of_stock_count'] > 0 ? '#e74c3c' : 'inherit' }};">
-                        {{ $operational['inventory_summary']['out_of_stock_count'] }}
-                    </strong>
-                </div>
-            </div>
-
-            @if($operational['inventory_summary']['low_stock_items']->isNotEmpty())
-                <div style="margin-bottom:12px;background:rgba(231,76,60,0.1);padding:8px 12px;border-radius:var(--radius-sm);border:1px solid rgba(231,76,60,0.3);">
-                    <span class="text-xs" style="color:#e74c3c;font-weight:700;">⚠ Bahan Kritis / Menipis:</span>
-                    <div class="text-xs" style="margin-top:4px;">
-                        @foreach($operational['inventory_summary']['low_stock_items'] as $item)
-                            <div>&bull; <strong>{{ $item->name }}</strong>: Sisa {{ number_format((float)$item->current_stock, 2, ',', '.') }} {{ $item->usage_unit }}</div>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-
-            <h5 style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;">5 Mutasi Stok Terakhir:</h5>
-            <div style="display:flex;flex-direction:column;gap:6px;">
-                @forelse($operational['inventory_summary']['latest_movements'] as $mv)
-                    @php $isPos = (float)$mv->quantity_delta > 0; @endphp
-                    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface);padding:6px 10px;border-radius:var(--radius-sm);font-size:0.8rem;border:1px solid var(--border);">
-                        <div>
-                            <strong>{{ $mv->rawMaterial?->name }}</strong>
-                            <small class="text-muted block">{{ $mv->movement_type }} &middot; {{ $mv->created_at->format('H:i') }}</small>
-                        </div>
-                        <strong style="color:{{ $isPos ? '#2ecc71' : '#e74c3c' }};">
-                            {{ $isPos ? '+' : '' }}{{ number_format((float)$mv->quantity_delta, 2, ',', '.') }} {{ $mv->unit }}
-                        </strong>
-                    </div>
-                @empty
-                    <div class="text-xs text-muted" style="text-align:center;padding:10px;">Belum ada mutasi stok.</div>
-                @endforelse
-            </div>
-        </div>
-
-        <!-- Inventory Quick Actions -->
-        <div class="card" style="padding: var(--space-md);">
-            <h4 style="font-size:1.05rem;margin:0 0 12px;">Tambah Stok Manual</h4>
-            <p class="text-sm text-muted" style="margin-bottom:12px;">Catat penambahan, pengurangan, atau penyesuaian stok bahan baku secara langsung.</p>
-            <a href="{{ route('admin.inventory.index') }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px;">
-                + Catat Pergerakan Stok
-            </a>
-            <a href="{{ route('admin.inventory.recipes') }}" class="btn btn-secondary" style="width:100%;justify-content:center;">
-                Kelola Resep & BOM
-            </a>
-        </div>
-    </div>
-</section>
-
-<!-- ==========================================
-     SECTION 4: CUSTOMER, PAYMENT & PROMO OVERVIEWS
+     SECTION 3: CUSTOMER, PAYMENT & PROMO OVERVIEWS
      ========================================== -->
 <section id="ia-customers" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
