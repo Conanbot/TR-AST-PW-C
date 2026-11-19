@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\ProductConfigurationController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\PurchaseOrderController;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\Cashier\DashboardController as CashierDashboardController;
@@ -110,6 +112,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/inventory/recipes', [InventoryController::class, 'storeRecipe'])->name('inventory.recipes.store');
         Route::post('/inventory/modifier-recipes', [InventoryController::class, 'storeModifierRecipe'])->name('inventory.modifier-recipes.store');
         Route::delete('/inventory/recipes/{type}/{id}', [InventoryController::class, 'destroyRecipe'])->name('inventory.recipes.destroy');
+
+        Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+        Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
+        Route::put('/suppliers/{supplier}', [SupplierController::class, 'update'])->name('suppliers.update');
+        Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])->name('suppliers.show');
+        Route::patch('/suppliers/{supplier}/toggle', [SupplierController::class, 'toggle'])->name('suppliers.toggle');
+        Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+
+        Route::get('/purchasing', [PurchaseOrderController::class, 'index'])->name('purchasing.index');
+        Route::get('/purchasing/create', [PurchaseOrderController::class, 'create'])->name('purchasing.create');
+        Route::post('/purchasing', [PurchaseOrderController::class, 'store'])->name('purchasing.store');
+        Route::get('/purchasing/{purchaseOrder}/edit', [PurchaseOrderController::class, 'edit'])->name('purchasing.edit');
+        Route::put('/purchasing/{purchaseOrder}', [PurchaseOrderController::class, 'update'])->name('purchasing.update');
+        Route::get('/purchasing/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('purchasing.show');
+        Route::patch('/purchasing/{purchaseOrder}/ordered', [PurchaseOrderController::class, 'markOrdered'])->name('purchasing.ordered');
+        Route::patch('/purchasing/{purchaseOrder}/cancel', [PurchaseOrderController::class, 'cancel'])->name('purchasing.cancel');
+        Route::post('/purchasing/{purchaseOrder}/receive', [PurchaseOrderController::class, 'receive'])->name('purchasing.receive');
 
         // Menu CRUD
         Route::resource('/items', MenuItemController::class);

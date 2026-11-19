@@ -55,10 +55,10 @@
         [
             'label' => 'Purchasing',
             'items' => [
-                ['label' => 'Suppliers', 'href' => null],
-                ['label' => 'Purchase Orders', 'href' => null],
-                ['label' => 'Purchase History', 'href' => null],
-                ['label' => 'Goods Received', 'href' => null],
+                ['label' => 'Suppliers', 'href' => route('admin.suppliers.index'), 'active' => request()->routeIs('admin.suppliers.*')],
+                ['label' => 'Purchase Orders', 'href' => route('admin.purchasing.index'), 'active' => request()->routeIs('admin.purchasing.*')],
+                ['label' => 'Purchase History', 'href' => route('admin.purchasing.index')],
+                ['label' => 'Goods Received', 'href' => route('admin.purchasing.index')],
             ],
         ],
         [
