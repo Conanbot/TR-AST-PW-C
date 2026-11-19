@@ -8,8 +8,6 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Promo;
 use App\Models\PromotionUsage;
-use App\Models\RawMaterial;
-use App\Models\StockMovement;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -231,20 +229,9 @@ class ReportService
                 ->first(),
         ];
 
-        // 7. Inventory Dashboard Summary
-        $materials = RawMaterial::all();
-        $lowStockMaterials = $materials->filter(fn($m) => (float) $m->current_stock <= (float) $m->minimum_stock);
-        $outOfStockMaterials = $materials->filter(fn($m) => (float) $m->current_stock <= 0);
+        // 7. Inventory Dashboard Summary — removed (feature disabled)
 
-        $inventorySummary = [
-            'total_materials' => $materials->count(),
-            'low_stock_count' => $lowStockMaterials->count(),
-            'out_of_stock_count' => $outOfStockMaterials->count(),
-            'low_stock_items' => $lowStockMaterials->take(5),
-            'latest_movements' => StockMovement::with(['rawMaterial', 'user'])->latest()->take(5)->get(),
-        ];
-
-        // 8. Customer Overview (renumbered from 9)
+        // 8. Customer Overview
         $customerSummary = [
             'total_customers' => Customer::count(),
             'new_this_month' => Customer::where('created_at', '>=', now()->startOfMonth())->count(),
@@ -277,7 +264,6 @@ class ReportService
             'top_selling_products' => $topSellingProducts,
             'payment_summary' => $paymentSummary,
             'promotion_summary' => $promotionSummary,
-            'inventory_summary' => $inventorySummary,
             'customer_summary' => $customerSummary,
         ];
     }

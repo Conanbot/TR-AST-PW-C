@@ -16,18 +16,25 @@ class KitchenController extends Controller
         return view('kitchen.index');
     }
 
-    public function feed(): JsonResponse
+    public function feed(Request $request): JsonResponse
     {
-        $orders = Order::with('items.modifiers')
-            ->whereIn('status', ['confirmed', 'preparing', 'ready'])
-            ->latest()
-            ->get()
-            ->groupBy('status');
+        $allowedStatuses = ['confirmed', 'preparing', 'ready'];
+
+        $query = Order::with('items.modifiers')
+            ->whereIn('status', $allowedStatuses)
+            ->latest();
+
+        // Optional single-status filter from query string (?status=preparing)
+        if ($request->filled('status') && in_array($request->string('status')->toString(), $allowedStatuses, true)) {
+            $query->where('status', $request->string('status'));
+        }
+
+        $orders = $query->get()->groupBy('status');
 
         return response()->json([
-            'new' => $this->cards($orders->get('confirmed', collect())),
+            'new'       => $this->cards($orders->get('confirmed', collect())),
             'preparing' => $this->cards($orders->get('preparing', collect())),
-            'ready' => $this->cards($orders->get('ready', collect())),
+            'ready'     => $this->cards($orders->get('ready', collect())),
         ]);
     }
 
@@ -42,23 +49,26 @@ class KitchenController extends Controller
         return back()->with('success', "Pesanan {$order->order_number} diperbarui.");
     }
 
-    private function cards($orders)
+    private function cards($orders): array
     {
-        return $orders->map(fn (Order $order) => [
-            'id' => $order->id,
-            'order_number' => $order->order_number,
-            'created_at' => $order->created_at->toIso8601String(),
-            'wait_minutes' => $order->created_at->diffInMinutes(now()),
+        return $orders->map(fn(Order $order) => [
+            'id'            => $order->id,
+            'order_number'  => $order->order_number,
+            'status'        => $order->status,
+            'created_at'    => $order->created_at->toIso8601String(),
+            'wait_minutes'  => $order->created_at->diffInMinutes(now()),
             'customer_note' => $order->order_notes,
-            'items' => $order->items->map(fn ($item) => [
-                'name' => $item->item_name,
-                'quantity' => $item->quantity,
-                'variant' => $item->variant_name,
-                'cut' => $item->chicken_cut,
-                'drink' => $item->drink_option,
-                'modifiers' => $item->modifiers->map(fn ($modifier) => $modifier->option_name)->values(),
-                'note' => $item->note,
-            ])->values(),
-        ])->values();
+            'table'         => $order->table_number,
+            'service_label' => ucfirst(str_replace('_', ' ', $order->service_method)),
+            'items'         => $order->items->map(fn($item) => [
+                'name'      => $item->item_name,
+                'quantity'  => $item->quantity,
+                'variant'   => $item->variant_name,
+                'cut'       => $item->chicken_cut,
+                'drink'     => $item->drink_option,
+                'modifiers' => $item->modifiers->map(fn($m) => $m->option_name)->values()->toArray(),
+                'note'      => $item->note,
+            ])->values()->toArray(),
+        ])->values()->toArray();
     }
 }

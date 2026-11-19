@@ -45,7 +45,7 @@ class OrderStatusService
             }
 
             if ($toStatus === 'preparing') {
-                app(\App\Services\InventoryService::class)->consumeOrder($lockedOrder, $actor);
+                // Inventory integration removed — stock deduction no longer performed
             }
 
             if ($toStatus === 'cancelled' && blank($note)) {

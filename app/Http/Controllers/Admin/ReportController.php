@@ -62,18 +62,16 @@ class ReportController extends Controller
         return view('admin.reports.promotions', compact('data', 'period'));
     }
 
-    public function inventory(Request $request, ReportService $service): View
+    public function inventory(Request $request, ReportService $service): RedirectResponse
     {
-        $period = $this->validateAndGetPeriod($request, $service);
-        $data = $service->getInventoryReport($period, 20);
-
-        return view('admin.reports.inventory', compact('data', 'period'));
+        // Inventory feature removed — redirect to sales
+        return redirect()->route('admin.reports.sales');
     }
 
-    public function purchasing(Request $request, ReportService $service): View
+    public function purchasing(Request $request, ReportService $service): RedirectResponse
     {
-        // Purchasing feature removed — redirect to inventory report
-        return redirect()->route('admin.reports.inventory');
+        // Purchasing feature removed — redirect to sales
+        return redirect()->route('admin.reports.sales');
     }
 
     public function customers(Request $request, ReportService $service): View

@@ -3,9 +3,27 @@
 @section('title', 'Detail ' . $order->order_number . ' — Geprek GLO')
 
 @section('content')
+@php
+    $statusColors = [
+        'pending'   => ['bg'=>'#f39c1222','text'=>'#f39c12','border'=>'#f39c1244'],
+        'confirmed' => ['bg'=>'#3498db22','text'=>'#3498db','border'=>'#3498db44'],
+        'preparing' => ['bg'=>'#9b59b622','text'=>'#9b59b6','border'=>'#9b59b644'],
+        'ready'     => ['bg'=>'#2ecc7122','text'=>'#2ecc71','border'=>'#2ecc7144'],
+        'completed' => ['bg'=>'#27ae6022','text'=>'#27ae60','border'=>'#27ae6044'],
+        'cancelled' => ['bg'=>'#e74c3c22','text'=>'#e74c3c','border'=>'#e74c3c44'],
+    ];
+    $sc = $statusColors[$order->status] ?? ['bg'=>'var(--surface)','text'=>'var(--text-muted)','border'=>'var(--border)'];
+@endphp
+
 <div class="page-heading">
-    <div><a href="{{ route('admin.orders.index') }}" class="text-muted">← Semua pesanan</a><h1>{{ $order->order_number }}</h1><p class="text-muted">{{ $order->created_at->format('d F Y, H:i') }} · {{ ucfirst(str_replace('_', ' ', $order->service_method)) }}</p></div>
-    <span class="badge badge-promo">{{ ucfirst($order->status) }}</span>
+    <div>
+        <a href="{{ route('admin.orders.index') }}" class="text-muted" style="font-size:0.85rem;">← Semua pesanan</a>
+        <h1 style="margin-top:4px;">{{ $order->order_number }}</h1>
+        <p class="text-muted">{{ $order->created_at->format('d F Y, H:i') }} · {{ ucfirst(str_replace('_', ' ', $order->service_method)) }}</p>
+    </div>
+    <span class="badge" style="background:{{ $sc['bg'] }};color:{{ $sc['text'] }};border:1px solid {{ $sc['border'] }};font-size:0.85rem;padding:6px 14px;">
+        {{ ucfirst($order->status) }}
+    </span>
 </div>
 
 <div class="grid grid-2 gap-lg">

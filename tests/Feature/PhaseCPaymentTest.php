@@ -40,8 +40,9 @@ class PhaseCPaymentTest extends TestCase
         $order = $this->order('takeaway', 'cash_pickup');
         $payment = app(PaymentService::class)->createForOrder($order, 'cash_pickup');
 
+        // Payment management moved to cashier routes — kitchen (non-cashier) cannot access
         $this->actingAs($kitchen)
-            ->patch("/admin/payments/{$payment->id}/confirm-cash", ['amount' => $order->total])
+            ->patch("/kasir/payments/{$payment->id}/confirm-cash", ['amount' => $order->total])
             ->assertForbidden();
     }
 
