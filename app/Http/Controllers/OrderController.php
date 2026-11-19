@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\OrderService;
 use App\Services\OrderAccessService;
 use App\Services\PaymentService;
+use App\Models\Order;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -15,6 +17,7 @@ class OrderController extends Controller
         $data = $request->validate([
             'customer_name' => ['required', 'string', 'max:120'],
             'customer_phone' => ['nullable', 'string', 'max:30'],
+            'checkout_key' => ['nullable', 'string', 'max:100'],
             'service_method' => ['required', 'in:dine_in,takeaway,delivery'],
             'table_number' => ['nullable', 'string', 'max:20'],
             'order_notes' => ['nullable', 'string', 'max:255'],
@@ -38,7 +41,20 @@ class OrderController extends Controller
         $data['payment_method'] ??= 'cash_pickup';
 
         $customer = $request->user()?->role === 'customer' ? $request->user() : null;
-        $order = $orders->create($data, $customer, null, 'online');
+        try {
+            $order = $orders->create($data, $customer, null, 'online');
+        } catch (QueryException $exception) {
+            $isCheckoutKeyConflict = !empty($data['checkout_key'])
+                && str_contains($exception->getMessage(), 'checkout_key');
+
+            if (!$isCheckoutKeyConflict) {
+                throw $exception;
+            }
+
+            $order = Order::where('checkout_key', $data['checkout_key'])->firstOrFail()
+                ->load(['items.modifiers', 'payments']);
+        }
+
         $token = $access->issue($order);
 
         return response()->json([

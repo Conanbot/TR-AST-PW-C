@@ -140,6 +140,16 @@
 
                 <div id="checkout-order-warning" style="display: none; background: rgba(243,156,18,0.15); border: 1px solid rgba(243,156,18,0.4); border-radius: var(--radius-md); padding: 10px 14px; font-size: 0.85rem; margin-top: 14px;"></div>
 
+                <div id="checkout-result" style="display: none; margin-top: 14px; padding: 14px; background: rgba(46, 125, 50, 0.12); border: 1px solid rgba(46, 125, 50, 0.35); border-radius: var(--radius-md);">
+                    <strong>Pesanan berhasil dicatat.</strong>
+                    <p id="checkout-result-number" class="text-sm" style="margin: 6px 0;"></p>
+                    <p class="text-xs text-muted" style="margin: 0 0 10px;">WhatsApp belum berarti pesan sudah terkirim. Gunakan tombol di bawah untuk membuka kembali pesan order yang sama.</p>
+                    <div class="flex items-center gap-sm" style="flex-wrap: wrap;">
+                        <a id="checkout-result-tracking" class="btn btn-secondary btn-sm" target="_blank" rel="noopener noreferrer">Lihat tracking</a>
+                        <button type="button" id="checkout-result-whatsapp" class="btn btn-wa btn-sm" onclick="Cart.retryWhatsApp()">Buka WhatsApp</button>
+                    </div>
+                </div>
+
                 <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div class="form-group">

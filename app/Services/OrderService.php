@@ -14,6 +14,14 @@ class OrderService
 {
     public function create(array $data, ?User $customer, ?User $cashier, string $source): Order
     {
+        if (!empty($data['checkout_key'])) {
+            $existing = Order::where('checkout_key', $data['checkout_key'])->first();
+
+            if ($existing) {
+                return $existing->load(['items.modifiers', 'payments']);
+            }
+        }
+
         $settings = StoreSetting::current();
         $items = MenuItem::with(['variants', 'modifierGroups.options'])
             ->whereIn('id', collect($data['items'])->pluck('id')->unique())
@@ -153,6 +161,7 @@ class OrderService
 
             $order->update([
                 'order_number' => 'GLO-' . now()->format('ymd') . '-' . str_pad((string) $order->id, 4, '0', STR_PAD_LEFT),
+                'checkout_key' => $data['checkout_key'] ?? null,
             ]);
 
             foreach ($rows as $row) {
@@ -203,10 +212,12 @@ class OrderService
             default => 'Pesan antar',
         };
         $message = "Halo Geprek GLO, saya ingin memesan:\n\n" . $lines->implode("\n")
-            . "\n\nNomor pesanan: {$order->order_number}"
+            . "\n\nPESANAN BARU — AYAM GEPREK GLO BLOTONGAN"
+            . "\nNomor order: {$order->order_number}"
             . "\nLayanan: {$service}"
             . ($order->table_number ? "\nNomor Meja: {$order->table_number}" : '')
             . "\nNama pemesan: {$order->customer_name}"
+            . ($order->customer_phone ? "\nTelepon: {$order->customer_phone}" : '')
             . ($order->order_notes ? "\nCatatan Khusus: {$order->order_notes}" : '')
             . ($order->customer_address ? "\nAlamat pengantaran: {$order->customer_address}" : '')
             . "\nSubtotal: Rp" . number_format($order->subtotal, 0, ',', '.')
@@ -214,10 +225,21 @@ class OrderService
             . ($order->packaging_fee > 0 ? "\nBiaya kemasan: Rp" . number_format($order->packaging_fee, 0, ',', '.') : '')
             . ($order->delivery_fee > 0 ? "\nBiaya antar: Rp" . number_format($order->delivery_fee, 0, ',', '.') : '')
             . "\nTotal: Rp" . number_format($order->total, 0, ',', '.')
+            . "\nPembayaran: " . $this->paymentLabel($order->payment_method)
             . ($trackingUrl ? "\nLacak pesanan: " . $trackingUrl : '')
             . "\n\nMohon konfirmasi pesanan saya. Terima kasih!";
 
         return 'https://wa.me/' . $settings->wa_number . '?text=' . urlencode($message);
+    }
+
+    private function paymentLabel(?string $paymentMethod): string
+    {
+        return match ($paymentMethod) {
+            'cash_pickup' => 'Cash on Pickup',
+            'qris' => 'QRIS',
+            'cod' => 'Cash on Delivery',
+            default => 'Belum dipilih',
+        };
     }
 
     private function selectedOptionIds(array $entry): array

@@ -12,13 +12,20 @@ const Cart = {
     deliveryEnabled: false,
     deliveryRadiusM: 800,
     storeLat: -7.3117469,
-    storeLng: 110.4851234
+    storeLng: 110.4851234,
+    checkoutKey: null,
+    lastCheckout: null
   },
 
   init(settingsOverride = {}) {
     this.settings = { ...this.settings, ...settingsOverride };
+    this.settings.checkoutKey = null;
+    this.settings.lastCheckout = this.readCheckoutReceipt();
     this.updateCartBadge();
     this.renderCartDrawer();
+    if (this.settings.lastCheckout?.order_number) {
+      this.showCheckoutResult(this.settings.lastCheckout);
+    }
   },
 
   getItems() {
@@ -108,6 +115,47 @@ const Cart = {
     localStorage.removeItem(this.storageKey);
     this.updateCartBadge();
     this.renderCartDrawer();
+  },
+
+  readCheckoutReceipt() {
+    try {
+      const receipt = sessionStorage.getItem('geprek_glo_checkout_receipt');
+      return receipt ? JSON.parse(receipt) : null;
+    } catch (error) {
+      console.error('Error reading checkout receipt', error);
+      return null;
+    }
+  },
+
+  saveCheckoutReceipt(receipt) {
+    try {
+      sessionStorage.setItem('geprek_glo_checkout_receipt', JSON.stringify(receipt));
+    } catch (error) {
+      console.error('Error saving checkout receipt', error);
+    }
+  },
+
+  showCheckoutResult(result) {
+    const resultEl = document.getElementById('checkout-result');
+    const numberEl = document.getElementById('checkout-result-number');
+    const trackingEl = document.getElementById('checkout-result-tracking');
+
+    if (!resultEl || !numberEl || !trackingEl) return;
+
+    numberEl.textContent = `Nomor order: ${result.order_number}`;
+    trackingEl.href = result.tracking_url;
+    resultEl.style.display = 'block';
+  },
+
+  retryWhatsApp() {
+    const receipt = this.settings.lastCheckout || this.readCheckoutReceipt();
+
+    if (!receipt?.whatsapp_url) {
+      window.showToast('Data WhatsApp order belum tersedia. Muat ulang halaman lalu coba lagi.', 'error');
+      return;
+    }
+
+    window.open(receipt.whatsapp_url, '_blank', 'noopener,noreferrer');
   },
 
   getSubtotal() {
@@ -351,6 +399,8 @@ const Cart = {
       .map(cb => cb.value);
     const orderNotes = selectedNoteTags.join(', ');
 
+    const checkoutButton = document.getElementById('btn-checkout-wa');
+    if (checkoutButton) checkoutButton.disabled = true;
     const checkoutWindow = window.open('about:blank', '_blank');
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
     const ordersUrl = document.querySelector('meta[name="orders-url"]')?.content;
@@ -358,6 +408,11 @@ const Cart = {
     try {
       if (!csrfToken || !ordersUrl) {
         throw new Error('Informasi checkout belum tersedia. Muat ulang halaman lalu coba lagi.');
+      }
+
+      if (!this.settings.checkoutKey) {
+        this.settings.checkoutKey = window.crypto?.randomUUID?.()
+          || `checkout-${Date.now()}-${Math.random().toString(36).slice(2)}`;
       }
 
       const response = await fetch(ordersUrl, {
@@ -370,6 +425,7 @@ const Cart = {
         body: JSON.stringify({
           customer_name: customerName,
           customer_phone: customerPhone || null,
+          checkout_key: this.settings.checkoutKey,
           service_method: serviceMethod,
           table_number: (serviceMethod === 'dine_in' && tableNumber) ? tableNumber : null,
           customer_address: customerAddress || null,
@@ -395,18 +451,27 @@ const Cart = {
         throw new Error(firstError || result.message || 'Pesanan belum dapat disimpan.');
       }
 
+      const receipt = {
+        ...result,
+        checkout_key: this.settings.checkoutKey
+      };
+      this.settings.lastCheckout = receipt;
+      this.saveCheckoutReceipt(receipt);
+
       const waUrl = result.whatsapp_url;
       if (checkoutWindow) {
         checkoutWindow.location = waUrl;
-      } else {
-        window.location.assign(waUrl);
       }
       this.clearCart();
+      this.showCheckoutResult(result);
       window.showToast(`Pesanan ${result.order_number} tersimpan. Lanjutkan konfirmasi di WhatsApp.`, 'success');
     } catch (error) {
       if (checkoutWindow) checkoutWindow.close();
+      this.settings.checkoutKey = null;
       console.error('Order checkout failed.', error);
       window.showToast(error.message || 'Pesanan gagal disimpan. Coba lagi.', 'error');
+    } finally {
+      if (checkoutButton) checkoutButton.disabled = false;
     }
   }
 };
