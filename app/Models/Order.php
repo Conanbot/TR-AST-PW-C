@@ -11,6 +11,7 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'checkout_key',
+        'customer_id',
         'user_id',
         'cashier_id',
         'customer_name',
@@ -46,6 +47,11 @@ class Order extends Model
         'delivery_lat' => 'float',
         'delivery_lng' => 'float',
     ];
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
     public function user(): BelongsTo
     {

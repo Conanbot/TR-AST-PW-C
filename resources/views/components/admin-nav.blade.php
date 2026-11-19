@@ -73,7 +73,7 @@
         [
             'label' => 'Customers & Reviews',
             'items' => [
-                ['label' => 'Customers', 'href' => null],
+                ['label' => 'Customers', 'href' => route('admin.customers.index'), 'active' => request()->routeIs('admin.customers.*')],
                 ['label' => 'Customer Feedback', 'href' => null],
                 ['label' => 'Google Reviews', 'href' => null],
             ],

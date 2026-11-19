@@ -38,7 +38,7 @@ class OrderManagementController extends Controller
 
     public function show(Order $order): View
     {
-        $order->load(['items.modifiers', 'items.variant', 'statusHistories.changedBy']);
+        $order->load(['items.modifiers', 'items.variant', 'statusHistories.changedBy', 'customer']);
 
         return view('admin.orders.show', compact('order'));
     }

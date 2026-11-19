@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CashierController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MenuItemController;
 use App\Http\Controllers\Admin\PromoController;
@@ -149,6 +150,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Promos CRUD
         Route::resource('/promos', PromoController::class);
         Route::patch('/promos/{promo}/toggle', [PromoController::class, 'toggle'])->name('promos.toggle');
+
+        // Customer Management (Phase 4.4)
+        Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+        Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+        Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+        Route::patch('/customers/{customer}/toggle', [CustomerController::class, 'toggleStatus'])->name('customers.toggle');
+        Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
         // Store Settings
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');

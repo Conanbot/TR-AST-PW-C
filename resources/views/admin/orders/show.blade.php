@@ -33,6 +33,11 @@
             <div><dt class="text-muted text-xs">WhatsApp</dt><dd>{{ $order->customer_phone ?: 'Tidak diisi' }}</dd></div>
             <div><dt class="text-muted text-xs">Alamat</dt><dd>{{ $order->customer_address ?: 'Tidak berlaku' }}</dd></div>
             <div><dt class="text-muted text-xs">Catatan</dt><dd>{{ $order->order_notes ?: 'Tidak ada' }}</dd></div>
+            @if($order->customer_id && auth()->user()?->role === 'admin')
+                <div style="margin-top: 10px;">
+                    <a href="{{ route('admin.customers.show', $order->customer_id) }}" class="btn btn-secondary btn-sm">Lihat Profil Pelanggan</a>
+                </div>
+            @endif
         </dl>
         @if(!in_array($order->status, ['completed', 'cancelled']))
             <form method="POST" action="{{ route('admin.orders.transition', $order) }}" style="margin-top: 20px;" class="stack-sm">

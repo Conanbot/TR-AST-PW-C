@@ -95,7 +95,10 @@ class OrderService
         $total = $subtotal + $packagingFee + $deliveryFee - $discountAmount;
 
         return DB::transaction(function () use ($data, $customer, $cashier, $source, $subtotal, $packagingFee, $discountAmount, $deliveryFee, $total, $rows) {
+            $customerRecord = app(\App\Services\CustomerService::class)->resolveCustomerForOrder($data, $customer);
+
             $order = Order::create([
+                'customer_id' => $customerRecord?->id,
                 'user_id' => $customer?->id,
                 'cashier_id' => $cashier?->id,
                 'customer_name' => $data['customer_name'],

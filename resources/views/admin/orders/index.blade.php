@@ -23,7 +23,14 @@
         @forelse($orders as $order)
             <tr>
                 <td><strong>{{ $order->order_number }}</strong></td>
-                <td>{{ $order->customer_name }}<br><small class="text-muted">{{ $order->customer_phone }}</small></td>
+                <td>
+                    @if($order->customer_id && auth()->user()?->role === 'admin')
+                        <a href="{{ route('admin.customers.show', $order->customer_id) }}" style="color:inherit;text-decoration:underline;font-weight:600;">{{ $order->customer_name }}</a>
+                    @else
+                        {{ $order->customer_name }}
+                    @endif
+                    <br><small class="text-muted">{{ $order->customer_phone }}</small>
+                </td>
                 <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
                 <td>{{ ucfirst(str_replace('_', ' ', $order->service_method)) }}</td>
                 <td>{{ $order->items_count }}</td>
