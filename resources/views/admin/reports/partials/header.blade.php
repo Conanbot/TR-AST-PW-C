@@ -7,7 +7,7 @@
         <p class="text-muted">{{ $subtitle }}</p>
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
-        @if(in_array($type, ['sales', 'products', 'payments', 'inventory', 'purchasing', 'customers']))
+        @if(in_array($type, ['sales', 'products', 'payments', 'promotions', 'inventory', 'purchasing', 'customers']))
             <a href="{{ route('admin.reports.export', array_merge(['type' => $type], request()->all())) }}" class="btn btn-secondary btn-sm" title="Unduh data dalam format CSV">
                 📥 Ekspor CSV
             </a>

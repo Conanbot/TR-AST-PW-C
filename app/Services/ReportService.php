@@ -807,6 +807,26 @@ class ReportService
                         });
                     break;
 
+                case 'promotions':
+                    fputcsv($handle, ['Waktu Penggunaan', 'Kode Promo', 'Nomor Order', 'Pelanggan', 'Telepon', 'Jumlah Diskon (Rp)', 'Status']);
+                    PromotionUsage::with('order')
+                        ->whereBetween('created_at', [$period['start'], $period['end']])
+                        ->orderBy('created_at')
+                        ->chunk(200, function ($usages) use ($handle) {
+                            foreach ($usages as $u) {
+                                fputcsv($handle, [
+                                    $u->created_at->format('Y-m-d H:i:s'),
+                                    $u->code,
+                                    $u->order?->order_number ?: '-',
+                                    $u->order?->customer_name ?: '-',
+                                    $u->customer_phone ?: '-',
+                                    $u->discount_amount,
+                                    $u->status,
+                                ]);
+                            }
+                        });
+                    break;
+
                 case 'customers':
                     fputcsv($handle, ['ID', 'Nama Pelanggan', 'Telepon (Masked)', 'Email', 'Status', 'Total Pesanan Periode', 'Total Belanja Berhasil Periode', 'Terdaftar']);
                     Customer::withCount(['orders' => function ($q) use ($period) {

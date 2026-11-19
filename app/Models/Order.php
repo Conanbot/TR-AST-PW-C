@@ -48,6 +48,11 @@ class Order extends Model
         'delivery_lng' => 'float',
     ];
 
+    public function promo(): BelongsTo
+    {
+        return $this->belongsTo(Promo::class);
+    }
+
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);

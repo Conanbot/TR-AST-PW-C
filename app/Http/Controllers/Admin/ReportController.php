@@ -89,7 +89,7 @@ class ReportController extends Controller
 
     public function export(Request $request, string $type, ReportService $service): StreamedResponse
     {
-        abort_unless(in_array($type, ['sales', 'products', 'payments', 'inventory', 'purchasing', 'customers'], true), 404);
+        abort_unless(in_array($type, ['sales', 'products', 'payments', 'promotions', 'inventory', 'purchasing', 'customers'], true), 404);
 
         $period = $this->validateAndGetPeriod($request, $service);
 

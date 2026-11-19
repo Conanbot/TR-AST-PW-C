@@ -46,7 +46,7 @@ class PromoController extends Controller
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active', true);
         $data['stackable'] = $request->boolean('stackable');
-        $data['code'] = $data['code'] ? strtoupper(trim($data['code'])) : null;
+        $data['code'] = !empty($data['code']) ? strtoupper(trim($data['code'])) : null;
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('promos', 'public');
@@ -72,7 +72,7 @@ class PromoController extends Controller
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
         $data['stackable'] = $request->boolean('stackable');
-        $data['code'] = $data['code'] ? strtoupper(trim($data['code'])) : null;
+        $data['code'] = !empty($data['code']) ? strtoupper(trim($data['code'])) : null;
 
         if ($request->hasFile('image')) {
             if ($promo->image && Storage::disk('public')->exists($promo->image)) {

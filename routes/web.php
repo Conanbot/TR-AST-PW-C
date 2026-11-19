@@ -100,6 +100,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/orders/{order}/staff-note', [DashboardController::class, 'updateStaffNote'])->name('orders.staff-note');
         Route::get('/cashiers', [CashierController::class, 'index'])->name('cashiers.index');
         Route::post('/cashiers', [CashierController::class, 'store'])->name('cashiers.store');
+        Route::put('/cashiers/{cashier}/password', [CashierController::class, 'resetPassword'])->name('cashiers.password');
+        Route::delete('/cashiers/{cashier}', [CashierController::class, 'destroy'])->name('cashiers.destroy');
 
         // Stock quick toggles
         Route::get('/stock', [StockController::class, 'index'])->name('stock.index');

@@ -35,4 +35,26 @@ class CashierController extends Controller
 
         return redirect()->route('admin.cashiers.index')->with('success', 'Akun kasir berhasil dibuat.');
     }
+
+    public function resetPassword(Request $request, User $cashier): RedirectResponse
+    {
+        abort_unless($cashier->role === 'cashier', 403);
+
+        $data = $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $cashier->update(['password' => Hash::make($data['password'])]);
+
+        return redirect()->route('admin.cashiers.index')->with('success', 'Password kasir ' . $cashier->name . ' berhasil diubah.');
+    }
+
+    public function destroy(User $cashier): RedirectResponse
+    {
+        abort_unless($cashier->role === 'cashier', 403);
+
+        $cashier->delete();
+
+        return redirect()->route('admin.cashiers.index')->with('success', 'Akun kasir ' . $cashier->name . ' berhasil dihapus.');
+    }
 }

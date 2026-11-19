@@ -286,7 +286,7 @@ class GeprekGloTest extends TestCase
         // Delete
         $resDelete = $this->delete("/admin/promos/{$promo->id}");
         $resDelete->assertRedirect('/admin/promos');
-        $this->assertDatabaseMissing('promos', ['id' => $promo->id]);
+        $this->assertSoftDeleted('promos', ['id' => $promo->id]);
     }
 
     /**

@@ -10,7 +10,7 @@ use App\Services\OrderService;
 use App\Services\OrderStatusService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\ValidationException;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class DashboardController extends Controller

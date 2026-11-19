@@ -12,6 +12,14 @@ class PromoRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'discount_type' => $this->input('discount_type') ?: 'fixed',
+            'discount_value' => $this->input('discount_value') !== null && $this->input('discount_value') !== '' ? (int)$this->input('discount_value') : 0,
+        ]);
+    }
+
     public function rules(): array
     {
         return [

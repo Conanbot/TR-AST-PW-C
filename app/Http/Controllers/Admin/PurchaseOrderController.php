@@ -215,7 +215,8 @@ class PurchaseOrderController extends Controller
 
     private function nextPoNumber(): string
     {
-        $count = PurchaseOrder::count() + 1;
-        return 'PO-' . now()->format('ymd') . '-' . str_pad((string) $count, 4, '0', STR_PAD_LEFT);
+        $maxId = PurchaseOrder::max('id') ?? 0;
+        $seq = $maxId + 1;
+        return 'PO-' . now()->format('ymd') . '-' . str_pad((string) $seq, 4, '0', STR_PAD_LEFT);
     }
 }
