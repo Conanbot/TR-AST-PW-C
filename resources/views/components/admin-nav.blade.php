@@ -6,11 +6,6 @@
             'label' => 'Overview',
             'items' => [
                 ['label' => 'Dashboard', 'href' => route('admin.dashboard'), 'active' => $r->routeIs('admin.dashboard')],
-            ],
-        ],
-        [
-            'label' => 'Pesanan',
-            'items' => [
                 [
                     'label'  => 'Pesanan',
                     'href'   => route('admin.orders.index'),

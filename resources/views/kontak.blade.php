@@ -43,7 +43,7 @@
                 <!-- Alamat Lengkap & Petunjuk Arah -->
                 <div class="card" style="padding: var(--space-lg);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                        <span style="font-size: 1.4rem;">📍</span>
+                        <i class="fa-solid fa-location-dot" aria-hidden="true" style="font-size: 1.4rem;"></i>
                         <h3 style="font-size: 1.2rem;">Alamat Kedai</h3>
                     </div>
                     <p class="text-muted" style="line-height: 1.6; margin-bottom: 14px;">
@@ -63,7 +63,7 @@
                 <!-- Jam Operasional -->
                 <div class="card" style="padding: var(--space-lg);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                        <span style="font-size: 1.4rem;">⏰</span>
+                        <i class="fa-solid fa-clock" aria-hidden="true" style="font-size: 1.4rem;"></i>
                         <h3 style="font-size: 1.2rem;">Jam Operasional</h3>
                     </div>
                     <p class="text-muted" style="line-height: 1.6; margin-bottom: 6px;">
@@ -77,7 +77,7 @@
                 <!-- WhatsApp & Media Sosial (FR-12, FR-13) -->
                 <div class="card" style="padding: var(--space-lg);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
-                        <span style="font-size: 1.4rem;">💬</span>
+                        <i class="fa-solid fa-comment-dots" aria-hidden="true" style="font-size: 1.4rem;"></i>
                         <h3 style="font-size: 1.2rem;">Hubungi Kami Langsung</h3>
                     </div>
                     <p class="text-sm text-muted" style="line-height: 1.5; margin-bottom: 14px;">
@@ -92,7 +92,7 @@
                         </a>
 
                         <a href="{{ $settings->review_url ?? 'https://maps.google.com/?q=Blotongan+Salatiga' }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-                            ⭐ Beri Ulasan di Google Review
+                            <i class="fa-solid fa-star" aria-hidden="true"></i> Beri Ulasan di Google Review
                         </a>
                     </div>
                 </div>

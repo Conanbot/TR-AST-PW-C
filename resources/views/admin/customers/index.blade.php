@@ -100,7 +100,7 @@
                         @endif
                         @if($customer->notes)
                             <div class="text-xs text-muted" style="font-style:italic;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ $customer->notes }}">
-                                📝 {{ $customer->notes }}
+                                <i class="fa-solid fa-note-sticky" aria-hidden="true"></i> {{ $customer->notes }}
                             </div>
                         @endif
                     </td>

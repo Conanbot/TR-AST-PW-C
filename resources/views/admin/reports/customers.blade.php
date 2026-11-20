@@ -49,7 +49,7 @@
 <section class="card" style="padding:var(--space-md);overflow-x:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <h3>Peringkat Kontribusi Pelanggan</h3>
-        <small class="text-muted">🔒 Nomor telepon disamarkan demi kepatuhan privasi data pelanggan.</small>
+        <small class="text-muted"><i class="fa-solid fa-lock" aria-hidden="true"></i> Nomor telepon disamarkan demi kepatuhan privasi data pelanggan.</small>
     </div>
 
     <table class="table" style="width:100%;font-size:0.9rem;">

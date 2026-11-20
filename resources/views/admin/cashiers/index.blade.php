@@ -25,7 +25,7 @@
         <div class="panel-heading"><div><span class="eyebrow">Tim aktif</span><h2>Daftar kasir</h2></div><span class="count-badge">{{ $cashiers->count() }}</span></div>
         @forelse($cashiers as $cashier)
             <div class="staff-row" style="align-items:flex-start; gap:0.75rem;">
-                <span class="avatar-dot">{{ mb_substr($cashier->name, 0, 1) }}</span>
+                <img src="{{ asset('assets/img/avatar-placeholder.svg') }}" alt="" class="staff-avatar" width="50" height="50">
                 <div style="flex:1; min-width:0;">
                     <strong>{{ $cashier->name }}</strong>
                     <span>{{ '@' . $cashier->username }}</span>

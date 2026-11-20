@@ -66,7 +66,7 @@
             </div>
             <div class="text-xs text-muted" style="display:flex;gap:12px;margin-top:8px;">
                 <span>✓ {{ $method->paid_count }} Berhasil</span>
-                <span>⏳ {{ $method->pending_count }} Pending</span>
+                <span><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> {{ $method->pending_count }} Pending</span>
                 @if($method->rejected_count > 0)
                     <span style="color:#e74c3c;">✕ {{ $method->rejected_count }} Ditolak</span>
                 @endif

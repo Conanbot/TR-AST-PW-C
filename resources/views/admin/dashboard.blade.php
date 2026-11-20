@@ -56,7 +56,7 @@
         6. Menu &amp; Add-Ons
     </a>
     <a href="{{ route('admin.reports.index') }}" class="btn btn-primary btn-sm" style="border-radius: var(--radius-sm); margin-left: auto;">
-        📊 Buka Laporan Bisnis Lengkap &rarr;
+        <i class="fa-solid fa-chart-column" aria-hidden="true"></i> Buka Laporan Bisnis Lengkap &rarr;
     </a>
 </div>
 

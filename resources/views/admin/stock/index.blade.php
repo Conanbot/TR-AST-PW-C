@@ -4,7 +4,7 @@
 
 @section('content')
 <div style="margin-bottom: var(--space-lg);">
-    <h2 style="font-size: 1.4rem; margin-bottom: 4px;">⚡ Kelola Ketersediaan Stok Cepat</h2>
+    <h2 style="font-size: 1.4rem; margin-bottom: 4px;"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Kelola Ketersediaan Stok Cepat</h2>
     <p class="text-sm text-muted">
         Ubah status menu, potongan ayam, dan minuman menjadi Tersedia atau Habis hanya dengan satu ketukan.
     </p>

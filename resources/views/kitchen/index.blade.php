@@ -108,7 +108,7 @@
                 <div style="text-align:right;">
                     ${statusBadge(order.status)}
                     <div class="text-xs" style="margin-top:4px;color:${isLate ? '#e74c3c' : 'var(--text-muted)'};">
-                        ${isLate ? '⚠ ' : ''}${wait} menit lalu
+                        ${isLate ? '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> ' : ''}${wait} menit lalu
                     </div>
                 </div>
             </div>

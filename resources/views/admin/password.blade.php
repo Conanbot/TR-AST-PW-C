@@ -4,7 +4,7 @@
 
 @section('content')
 <div style="margin-bottom: var(--space-lg);">
-    <h2 style="font-size: 1.4rem; margin-bottom: 4px;">🔐 Ubah Password Admin</h2>
+    <h2 style="font-size: 1.4rem; margin-bottom: 4px;"><i class="fa-solid fa-lock-keyhole" aria-hidden="true"></i> Ubah Password Admin</h2>
     <p class="text-sm text-muted">
         Perbarui kata sandi akun administrator untuk menjaga keamanan akses ke panel pengelolaan Geprek GLO.
     </p>

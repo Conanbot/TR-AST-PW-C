@@ -9,7 +9,7 @@
         <span class="badge badge-out-of-stock">Habis</span>
     @else
         @if($bestSeller)
-            <span class="badge badge-best-seller">⭐ Best Seller</span>
+            <span class="badge badge-best-seller"><i class="fa-solid fa-star" aria-hidden="true"></i> Best Seller</span>
         @endif
         @if($package)
             <span class="badge badge-promo">Paket Hemat</span>

@@ -151,7 +151,7 @@
                 </div>
 
                 <div class="card" style="padding: var(--space-md);">
-                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🥘</div>
+                    <div style="font-size: 1.8rem; margin-bottom: 8px;"><i class="fa-solid fa-bowl-food" aria-hidden="true"></i></div>
                     <h4 style="margin-bottom: 6px; font-size: 1rem;">Ayam Geprek Bakar</h4>
                     <p class="text-xs text-muted" style="line-height: 1.5;">
                         Kombinasi istimewa antara rasa pedas ulekan cabai geprek dengan karamelisasi bumbu bakar panggangan yang menggoyang lidah.
