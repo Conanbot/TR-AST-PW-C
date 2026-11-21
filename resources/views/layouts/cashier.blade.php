@@ -37,7 +37,6 @@
                 class="{{ request()->routeIs('cashier.payments.*') ? 'active' : '' }}">
                 Pembayaran
             </a>
-            <a href="{{ route('menu') }}" target="_blank" rel="noreferrer">Katalog Publik</a>
             @if(auth()->user()?->role === 'admin')
             <a href="{{ route('admin.dashboard') }}">Panel Admin</a>
             @endif

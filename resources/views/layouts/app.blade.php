@@ -267,7 +267,7 @@
                             <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
                                 <input type="radio" name="payment_method" value="qris">
                                 <div><strong>QRIS</strong>
-                                    <div class="text-xs text-muted">Scan QRIS dan unggah bukti pembayaran untuk verifikasi.</div>
+                                    <div class="text-xs text-muted">Scan QRIS dan kirim bukti pembayaran ke WA owner setelah klik Pesan via WhatsApp.</div>
                                 </div>
                             </label>
                             <div id="qris-preview-container" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; text-align:center;">
@@ -279,7 +279,7 @@
                                      alt="QRIS {{ $settings->qris_merchant_name ?: 'Geprek GLO' }}"
                                      style="width:180px; max-width:100%; height:auto; border-radius:10px; background:#fff; padding:8px; border:1px solid var(--border); display:inline-block;">
                                 <div class="text-xs text-muted" style="margin-top:8px; line-height:1.4;">
-                                    {{ $settings->qris_instructions ?: 'Scan QRIS sesuai nominal total pesanan. Setelah checkout, Anda dapat mengunggah bukti pembayaran pada halaman tracking.' }}
+                                    {{ $settings->qris_instructions ?: 'Scan kode QRIS sesuai nominal total pesanan, kirim ke WA owner setelah klik Pesan via WhatsApp.' }}
                                 </div>
                             </div>
                             @endif

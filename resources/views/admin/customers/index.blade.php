@@ -40,38 +40,39 @@
     </x-slot>
 </x-filter-panel>
 
-<div class="card" style="padding:var(--space-md);margin-bottom:var(--space-lg);">
-    <h3 style="margin-bottom:14px;">Tambah Pelanggan Baru</h3>
-    <form method="POST" action="{{ route('admin.customers.store') }}" style="display:grid;gap:10px;">
+<div class="card" style="padding:var(--space-lg);margin-bottom:var(--space-lg);max-width:600px;">
+    <h3 style="margin-bottom:16px;">Tambah Pelanggan Baru</h3>
+    <form method="POST" action="{{ route('admin.customers.store') }}" style="display:flex;flex-direction:column;gap:14px;">
         @csrf
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;flex-wrap:wrap;">
-            <div>
-                <label class="fp-label">Nama lengkap *</label>
-                <input class="fp-input" name="name" placeholder="Nama pelanggan" required value="{{ old('name') }}">
-            </div>
-            <div>
-                <label class="fp-label">Nomor telepon *</label>
-                <input class="fp-input" name="phone" placeholder="081234567890" required value="{{ old('phone') }}">
-            </div>
-            <div>
-                <label class="fp-label">Email</label>
-                <input class="fp-input" type="email" name="email" placeholder="Email (opsional)" value="{{ old('email') }}">
-            </div>
+        <div>
+            <label class="fp-label">Nama lengkap *</label>
+            <input class="fp-input" name="name" placeholder="Nama pelanggan" required value="{{ old('name') }}">
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div>
-                <label class="fp-label">Status</label>
-                <select class="fp-select" name="status" required>
-                    <option value="active"   @selected(old('status','active') === 'active')>Aktif</option>
-                    <option value="inactive" @selected(old('status') === 'inactive')>Nonaktif</option>
-                </select>
-            </div>
-            <div>
-                <label class="fp-label">Catatan internal</label>
-                <input class="fp-input" name="notes" placeholder="Catatan (opsional)" value="{{ old('notes') }}">
-            </div>
+        <div>
+            <label class="fp-label">Nomor telepon *</label>
+            <input class="fp-input" name="phone" placeholder="081234567890" required value="{{ old('phone') }}">
         </div>
-        <div><button type="submit" class="btn btn-primary">Simpan Data Pelanggan</button></div>
+        <div>
+            <label class="fp-label">Email</label>
+            <input class="fp-input" type="email" name="email" placeholder="Email (opsional)" value="{{ old('email') }}">
+        </div>
+        <div>
+            <label class="fp-label">Status</label>
+            <select class="fp-select" name="status" required>
+                <option value="active"   @selected(old('status','active') === 'active')>Aktif</option>
+                <option value="inactive" @selected(old('status') === 'inactive')>Nonaktif</option>
+            </select>
+        </div>
+        <div>
+            <label class="fp-label">Catatan internal</label>
+            <input class="fp-input" name="notes" placeholder="Catatan (opsional)" value="{{ old('notes') }}">
+        </div>
+        <div style="margin-top:4px;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                Simpan Data Pelanggan
+            </button>
+        </div>
     </form>
 </div>
 
