@@ -99,8 +99,8 @@
                 {{ $operational['sales_summary']['order_count'] }} Pesanan
             </div>
             <div class="text-xs text-dim" style="margin-top: 2px;">
-                <span style="color:#10b981;">✓ {{ $operational['sales_summary']['completed_count'] }} selesai</span> ·
-                <span style="color:#ef4444;">✕ {{ $operational['sales_summary']['cancelled_count'] }} batal</span>
+                <span style="color:#10b981;"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> {{ $operational['sales_summary']['completed_count'] }} selesai</span> ·
+                <span style="color:#ef4444;"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> {{ $operational['sales_summary']['cancelled_count'] }} batal</span>
             </div>
         </div>
 

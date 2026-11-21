@@ -51,10 +51,7 @@
                     </p>
                     <div class="flex gap-sm flex-wrap">
                         <a href="{{ $settings->maps_url ?? 'https://maps.google.com/?q=Blotongan+Salatiga' }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-                            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
+                            <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
                             Buka Petunjuk Arah Google Maps
                         </a>
                     </div>
@@ -84,11 +81,9 @@
                         Untuk pemesanan jumlah banyak, konfirmasi pesanan, atau pertanyaan seputar lokasi:
                     </p>
                     <div class="flex flex-col gap-sm">
-                        <a href="https://wa.me/{{ $settings->wa_number ?? '6281268177729' }}" target="_blank" rel="noopener noreferrer" class="btn btn-wa">
-                            <svg style="width: 20px; height: 20px;" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.634.07-1.745-.39-1.284-.533-2.115-1.841-2.18-1.926-.065-.086-.519-.691-.519-1.319 0-.628.327-.936.443-1.063.116-.127.253-.159.338-.159s.169.004.243.008c.079.004.184-.03.288.22.109.262.373.91.406.977.034.068.056.147.011.235-.044.088-.067.143-.133.22-.066.077-.14.172-.199.231-.067.066-.137.138-.059.271.078.133.346.571.743.924.512.456.943.597 1.077.663.134.067.213.056.292-.034.08-.09.342-.397.433-.533.091-.136.183-.113.305-.068.122.045.775.366.909.433.134.067.223.1.256.155.033.057.033.328-.111.733z"/>
-                            </svg>
-                            Chat WhatsApp (+{{ $settings->wa_number ?? '6281268177729' }})
+                        <a href="https://wa.me/{{ $settings->wa_number ?? '6281268177729' }}" target="_blank" rel="noopener noreferrer" class="btn btn-wa" title="Hubungi via WhatsApp">
+                            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                            Chat WhatsApp
                         </a>
 
                         <a href="{{ $settings->review_url ?? 'https://maps.google.com/?q=Blotongan+Salatiga' }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">

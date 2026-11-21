@@ -35,7 +35,7 @@
             <label for="password_confirmation" class="form-label">Ulangi Kata Sandi <span class="text-primary">*</span></label>
             <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" autocomplete="new-password" placeholder="Ulangi kata sandi Anda" minlength="8" required>
         </div>
-        <button type="submit" class="btn btn-primary auth-submit">Daftar Akun Sekarang <span aria-hidden="true">→</span></button>
+        <button type="submit" class="btn btn-primary auth-submit">Daftar Akun Sekarang <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
     </form>
     <p class="auth-signup">Sudah pernah mendaftar? <a href="{{ route('account.login') }}">Masuk ke akun di sini</a></p>
 @endsection

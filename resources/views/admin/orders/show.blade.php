@@ -17,7 +17,7 @@
 
 <div class="page-heading">
     <div>
-        <a href="{{ route('admin.orders.index') }}" class="text-muted" style="font-size:0.85rem;">← Semua pesanan</a>
+        <a href="{{ route('admin.orders.index') }}" class="text-muted" style="font-size:0.85rem;"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Semua pesanan</a>
         <h1 style="margin-top:4px;">{{ $order->order_number }}</h1>
         <p class="text-muted">{{ $order->created_at->format('d F Y, H:i') }} · {{ ucfirst(str_replace('_', ' ', $order->service_method)) }}</p>
     </div>
@@ -73,7 +73,7 @@
     <div class="stack-sm" style="margin-top: 16px;">
         @forelse($order->statusHistories->sortByDesc('created_at') as $history)
             <div class="flex justify-between" style="border-top: 1px solid var(--border); padding-top: 10px; gap: 12px;">
-                <span>{{ ucfirst($history->from_status) }} → <strong>{{ ucfirst($history->to_status) }}</strong>@if($history->note) · {{ $history->note }}@endif</span>
+                <span>{{ ucfirst($history->from_status) }} <i class="fa-solid fa-arrow-right" aria-hidden="true" style="font-size:0.75em;margin:0 4px;"></i> <strong>{{ ucfirst($history->to_status) }}</strong>@if($history->note) · {{ $history->note }}@endif</span>
                 <small class="text-muted">{{ $history->created_at->format('d/m H:i') }}</small>
             </div>
         @empty

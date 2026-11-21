@@ -123,7 +123,7 @@
         @empty
             <tr>
                 <td colspan="9" style="text-align:center;padding:48px 20px;color:var(--text-muted);">
-                    <div style="font-size:1.5rem;margin-bottom:8px;opacity:0.4;">◫</div>
+                    <div style="font-size:1.5rem;margin-bottom:8px;opacity:0.4;"><i class="fa-solid fa-receipt" aria-hidden="true"></i></div>
                     <strong>Belum ada pesanan sesuai filter.</strong>
                     @if(request()->anyFilled(['search','status','service_method','date_from','date_to']))
                         <div style="margin-top:12px;">

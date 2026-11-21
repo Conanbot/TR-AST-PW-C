@@ -11,7 +11,7 @@
         <h1>Pengaturan Metode Pembayaran</h1>
         <p class="text-muted">Aktifkan metode dan konfigurasi QRIS.</p>
     </div>
-    <a href="{{ $isCashier ? route('cashier.payments.index') : '#' }}" class="btn btn-secondary">← Kembali ke Pembayaran</a>
+    <a href="{{ $isCashier ? route('cashier.payments.index') : '#' }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kembali ke Pembayaran</a>
 </div>
 
 <form method="POST"

@@ -65,10 +65,10 @@
                 Rp{{ number_format($method->paid_amount, 0, ',', '.') }}
             </div>
             <div class="text-xs text-muted" style="display:flex;gap:12px;margin-top:8px;">
-                <span>✓ {{ $method->paid_count }} Berhasil</span>
+                <span><i class="fa-solid fa-circle-check" aria-hidden="true" style="color:#10b981;"></i> {{ $method->paid_count }} Berhasil</span>
                 <span><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i> {{ $method->pending_count }} Pending</span>
                 @if($method->rejected_count > 0)
-                    <span style="color:#e74c3c;">✕ {{ $method->rejected_count }} Ditolak</span>
+                    <span style="color:#e74c3c;"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> {{ $method->rejected_count }} Ditolak</span>
                 @endif
             </div>
         </div>

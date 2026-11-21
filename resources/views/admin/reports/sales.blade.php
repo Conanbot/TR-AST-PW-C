@@ -52,11 +52,11 @@
     </div>
     <div class="card" style="padding:var(--space-sm) var(--space-md);">
         <span class="text-xs text-muted">Order Selesai (Completed):</span>
-        <strong style="font-size:1.1rem;display:block;color:#10b981;">✓ {{ $data['summary']['completed_orders'] }} Pesanan</strong>
+        <strong style="font-size:1.1rem;display:block;color:#10b981;"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> {{ $data['summary']['completed_orders'] }} Pesanan</strong>
     </div>
     <div class="card" style="padding:var(--space-sm) var(--space-md);">
         <span class="text-xs text-muted">Order Dibatalkan (Cancelled):</span>
-        <strong style="font-size:1.1rem;display:block;color:#ef4444;">✕ {{ $data['summary']['cancelled_orders'] }} Pesanan</strong>
+        <strong style="font-size:1.1rem;display:block;color:#ef4444;"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> {{ $data['summary']['cancelled_orders'] }} Pesanan</strong>
     </div>
     <div class="card" style="padding:var(--space-sm) var(--space-md);">
         <span class="text-xs text-muted">Unpaid / Pending Amount:</span>

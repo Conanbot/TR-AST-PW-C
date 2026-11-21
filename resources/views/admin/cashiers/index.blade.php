@@ -58,7 +58,7 @@
                 </form>
             </div>
         @empty
-            <div class="empty-state"><span class="empty-state-mark" aria-hidden="true">＋</span><h3>Belum ada akun kasir</h3><p>Buat akun pertama untuk membuka akses kasir.</p></div>
+            <div class="empty-state"><span class="empty-state-mark" aria-hidden="true"><i class="fa-solid fa-user-plus"></i></span><h3>Belum ada akun kasir</h3><p>Buat akun pertama untuk membuka akses kasir.</p></div>
         @endforelse
     </section>
 </div>

@@ -26,7 +26,7 @@
                 {{ $f['label'] }}
             </a>
         @endforeach
-        <button onclick="window.kdsRefresh()" class="btn btn-secondary btn-sm" title="Refresh sekarang">↺ Refresh</button>
+        <button onclick="window.kdsRefresh()" class="btn btn-secondary btn-sm" title="Refresh sekarang"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Refresh</button>
     </div>
 </div>
 
@@ -37,7 +37,7 @@
 </div>
 
 <div id="kds-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted);">
-    <div style="font-size:2rem;margin-bottom:12px;">✓</div>
+    <div style="font-size:2rem;margin-bottom:12px;color:var(--ok);"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
     <h3>Tidak ada pesanan aktif</h3>
     <p class="text-sm">Semua pesanan sudah selesai atau belum ada pesanan masuk.</p>
 </div>
@@ -81,7 +81,7 @@
                 <button class="btn btn-sm" style="background:#2ecc71;color:#fff;" type="submit">Tandai Ready</button>
             </form>`;
         }
-        return `<span class="text-xs text-muted" style="color:#2ecc71;font-weight:700;">✓ Siap diambil</span>`;
+        return `<span class="text-xs text-muted" style="color:#2ecc71;font-weight:700;"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Siap diambil</span>`;
     }
 
     function renderCard(order) {

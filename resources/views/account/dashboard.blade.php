@@ -9,7 +9,7 @@
         <h1>Halo, {{ auth()->user()->name }}!</h1>
         <p>Pesanan yang dibuat saat masuk ke akun akan tersimpan di sini.</p>
     </div>
-    <a href="{{ route('menu') }}" class="btn btn-primary">Pesan menu <span aria-hidden="true">→</span></a>
+    <a href="{{ route('menu') }}" class="btn btn-primary">Pesan menu <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
 </section>
 
 <section class="account-orders">
@@ -36,7 +36,7 @@
         </article>
     @empty
         <div class="empty-state account-empty">
-            <span class="empty-state-mark" aria-hidden="true">＋</span>
+            <span class="empty-state-mark" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
             <h3>Belum ada pesanan</h3>
             <p>Pesanan Anda akan tampil di sini setelah checkout saat sudah masuk ke akun.</p>
             <a href="{{ route('menu') }}" class="btn btn-primary">Lihat menu</a>

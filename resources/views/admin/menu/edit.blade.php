@@ -58,7 +58,7 @@
 
                 <div>
                     @if($item->image)
-                        <span class="text-sm text-ok">✓ Foto kustom terpasang</span>
+                        <span class="text-sm text-ok"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Foto kustom terpasang</span>
                         <div style="margin-top: 6px;">
                             <label class="form-check" style="font-size: 0.85rem; color: #FF7B89;">
                                 <input type="checkbox" name="remove_image" value="1">

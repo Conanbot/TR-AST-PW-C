@@ -90,7 +90,7 @@
             @csrf
             <div class="ticket-heading">
                 <div><span class="eyebrow">Pesanan baru</span><h2>Rincian order</h2></div>
-                <span class="order-icon" aria-hidden="true">＋</span>
+                <span class="order-icon" aria-hidden="true"><i class="fa-solid fa-plus"></i></span>
             </div>
             <div class="form-group">
                 <label class="form-label" for="cashier-customer-name">Nama pelanggan</label>
@@ -111,12 +111,12 @@
             <input type="hidden" name="payment_method" value="cash_pickup">
             <input type="hidden" name="items" id="cashier-order-items">
             <div class="ticket-items" id="cashier-order-items-list" aria-live="polite">
-                <div class="ticket-empty"><span class="ticket-empty-mark" aria-hidden="true">＋</span><p>Belum ada menu.<br>Pilih menu untuk mulai.</p></div>
+                <div class="ticket-empty"><span class="ticket-empty-mark" aria-hidden="true"><i class="fa-solid fa-plus"></i></span><p>Belum ada menu.<br>Pilih menu untuk mulai.</p></div>
             </div>
             <div class="ticket-total">
                 <span>Subtotal</span><strong id="cashier-order-total">Rp0</strong>
             </div>
-            <button type="submit" class="btn btn-primary order-submit" id="cashier-submit" disabled>Kirim pesanan ke dapur <span aria-hidden="true">→</span></button>
+            <button type="submit" class="btn btn-primary order-submit" id="cashier-submit" disabled>Kirim pesanan ke dapur <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
             <p class="ticket-note">Harga diambil langsung dari katalog kedai.</p>
         </form>
 
@@ -144,7 +144,7 @@
                     </div>
                 </article>
             @empty
-                <div class="empty-state"><span class="empty-state-mark" aria-hidden="true">✓</span><h3>Belum ada antrean</h3><p>Pesanan baru akan muncul di sini.</p></div>
+                <div class="empty-state"><span class="empty-state-mark" aria-hidden="true"><i class="fa-solid fa-check"></i></span><h3>Belum ada antrean</h3><p>Pesanan baru akan muncul di sini.</p></div>
             @endforelse
         </section>
     </aside>
@@ -170,8 +170,8 @@
         const items = [...cart.values()];
         itemsField.value = JSON.stringify(items.map(({id, qty, note}) => ({id, qty, note})));
         itemsList.innerHTML = items.length
-            ? items.map(item => `<div class="ticket-line"><div><strong>${escapeHtml(item.name)}</strong><span>${formatRupiah(item.price)} / item</span></div><div class="quantity-control"><button type="button" data-change="-1" data-id="${item.id}" aria-label="Kurangi ${escapeHtml(item.name)}">−</button><span>${item.qty}</span><button type="button" data-change="1" data-id="${item.id}" aria-label="Tambah ${escapeHtml(item.name)}">+</button></div></div>`).join('')
-            : '<div class="ticket-empty"><span class="ticket-empty-mark" aria-hidden="true">＋</span><p>Belum ada menu.<br>Pilih menu untuk mulai.</p></div>';
+            ? items.map(item => `<div class="ticket-line"><div><strong>${escapeHtml(item.name)}</strong><span>${formatRupiah(item.price)} / item</span></div><div class="quantity-control"><button type="button" data-change="-1" data-id="${item.id}" aria-label="Kurangi ${escapeHtml(item.name)}"><i class="fa-solid fa-minus" aria-hidden="true"></i></button><span>${item.qty}</span><button type="button" data-change="1" data-id="${item.id}" aria-label="Tambah ${escapeHtml(item.name)}"><i class="fa-solid fa-plus" aria-hidden="true"></i></button></div></div>`).join('')
+            : '<div class="ticket-empty"><span class="ticket-empty-mark" aria-hidden="true"><i class="fa-solid fa-plus"></i></span><p>Belum ada menu.<br>Pilih menu untuk mulai.</p></div>';
         const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
         totalLabel.textContent = formatRupiah(total);
         submitButton.disabled = items.length === 0;

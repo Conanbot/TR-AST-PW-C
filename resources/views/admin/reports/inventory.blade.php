@@ -66,7 +66,7 @@
 <section class="card" style="padding:var(--space-md);margin-bottom:var(--space-lg);overflow-x:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <h3>Katalog Stok Bahan Saat Ini</h3>
-        <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary btn-sm">Kelola di Inventory →</a>
+        <a href="{{ route('admin.inventory.index') }}" class="btn btn-secondary btn-sm">Kelola di Inventory <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
     </div>
     <table class="table" style="width:100%;font-size:0.9rem;">
         <thead>

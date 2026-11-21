@@ -61,7 +61,7 @@
                 </div>
                 <div>
                     @if($promo->image)
-                        <span class="text-sm text-ok">✓ Banner kustom terpasang</span>
+                        <span class="text-sm text-ok"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Banner kustom terpasang</span>
                         <div style="margin-top: 6px;">
                             <label class="form-check" style="font-size: 0.85rem; color: #FF7B89;">
                                 <input type="checkbox" name="remove_image" value="1">

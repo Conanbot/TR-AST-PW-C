@@ -6,7 +6,7 @@
 <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:var(--space-lg);flex-wrap:wrap;">
     <div>
         <div class="text-xs text-muted" style="margin-bottom:4px;">
-            <a href="{{ route('admin.customers.index') }}" class="text-muted" style="text-decoration:none;">← Kembali ke Direktori Pelanggan</a>
+            <a href="{{ route('admin.customers.index') }}" class="text-muted" style="text-decoration:none;"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kembali ke Direktori Pelanggan</a>
         </div>
         <h1 style="display:inline-flex;align-items:center;gap:10px;margin:0;">
             {{ $customer->name }}
@@ -51,8 +51,8 @@
             {{ $statistics['total_orders'] }}
         </div>
         <div class="text-xs text-muted" style="margin-top:4px;">
-            <span style="color:#10b981;">✓ {{ $statistics['completed_orders'] }} selesai</span> ·
-            <span style="color:#ef4444;">✕ {{ $statistics['cancelled_orders'] }} dibatalkan</span>
+            <span style="color:#10b981;"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> {{ $statistics['completed_orders'] }} selesai</span> ·
+            <span style="color:#ef4444;"><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> {{ $statistics['cancelled_orders'] }} dibatalkan</span>
         </div>
     </div>
     <div class="card" style="padding:var(--space-md);">

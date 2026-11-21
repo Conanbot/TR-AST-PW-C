@@ -27,7 +27,7 @@
             <input type="password" id="password" name="password" class="form-control" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
         </div>
         <label class="form-check auth-remember"><input type="checkbox" name="remember"><span>Ingat perangkat ini</span></label>
-        <button type="submit" class="btn btn-primary auth-submit">Masuk ke panel admin <span aria-hidden="true">→</span></button>
+        <button type="submit" class="btn btn-primary auth-submit">Masuk ke panel admin <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
     </form>
 
     <div class="auth-switch">

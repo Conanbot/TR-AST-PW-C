@@ -33,9 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Theme preference could not be saved.', error);
     }
     themeButtons.forEach(button => {
-      button.setAttribute('aria-pressed', String(theme === 'dark'));
-      button.setAttribute('aria-label', theme === 'dark' ? 'Gunakan tema terang' : 'Gunakan tema gelap');
-      button.title = theme === 'dark' ? 'Gunakan tema terang' : 'Gunakan tema gelap';
+      const isDark = theme === 'dark';
+      button.setAttribute('aria-pressed', String(isDark));
+      button.setAttribute('aria-label', isDark ? 'Gunakan tema terang' : 'Gunakan tema gelap');
+      button.title = isDark ? 'Gunakan tema terang' : 'Gunakan tema gelap';
+      const icon = button.querySelector('[data-theme-icon]');
+      if (icon) {
+        icon.classList.remove('fa-moon', 'fa-sun');
+        icon.classList.add(isDark ? 'fa-sun' : 'fa-moon');
+      }
     });
   };
   applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
