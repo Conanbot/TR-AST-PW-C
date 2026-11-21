@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -38,7 +37,7 @@ class AccessController extends Controller
                   ->orWhere('username', $credentials['email']);
             })->first();
 
-        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+        if (!$user || !hash_equals((string) $user->password, (string) $credentials['password'])) {
             throw ValidationException::withMessages([
                 'email' => 'Email/No. WhatsApp atau kata sandi tidak cocok dengan akun pelanggan.',
             ]);
@@ -72,7 +71,7 @@ class AccessController extends Controller
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'username' => $username,
-            'password' => Hash::make($data['password']),
+            'password' => $data['password'],
             'role' => 'customer',
         ]);
 
@@ -102,12 +101,17 @@ class AccessController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (!Auth::attempt($credentials + ['role' => 'cashier'], $request->boolean('remember'))) {
+        $user = User::where('role', 'cashier')
+            ->where('username', $credentials['username'])
+            ->first();
+
+        if (!$user || !hash_equals((string) $user->password, (string) $credentials['password'])) {
             throw ValidationException::withMessages([
                 'username' => 'Username atau kata sandi kasir tidak cocok.',
             ]);
         }
 
+        Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
         return redirect()->intended(route('cashier.dashboard'));

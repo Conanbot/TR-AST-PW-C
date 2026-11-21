@@ -51,7 +51,9 @@
             <nav class="flex items-center gap-sm" style="display: none;" id="desktop-nav">
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
                 <a href="{{ route('profil') }}" class="nav-link {{ request()->routeIs('profil') ? 'active' : '' }}">Profil</a>
+                @auth
                 <a href="{{ route('menu') }}" class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Katalog Menu</a>
+                @endauth
                 <a href="{{ route('kontak') }}" class="nav-link {{ request()->routeIs('kontak') ? 'active' : '' }}">Lokasi & Kontak</a>
                 @if(auth()->check() && auth()->user()->role === 'customer')
                 <a href="{{ route('account.dashboard') }}" class="nav-link">Akun saya</a>
@@ -96,11 +98,13 @@
                     Daftar
                 </a>
                 @endif
+                @auth
                 <button type="button" class="btn btn-secondary btn-sm" onclick="openCartModal()" aria-label="Buka Keranjang Pesanan" style="position: relative;">
                     <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
                     <span style="display: none; @media (min-width: 640px) { display: inline; }">Keranjang</span>
                     <span class="cart-count-badge badge badge-best-seller" style="display: none; padding: 2px 6px; font-size: 0.7rem;">0</span>
                 </button>
+                @endauth
 
                 <button type="button" id="nav-toggle-btn" class="btn btn-secondary btn-sm" aria-label="Menu Navigasi">
                     <i class="fa-solid fa-bars" aria-hidden="true"></i>
@@ -117,7 +121,9 @@
         <div class="flex flex-col gap-md" style="font-size: 1.2rem;">
             <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
             <a href="{{ route('profil') }}" class="nav-link {{ request()->routeIs('profil') ? 'active' : '' }}">Profil Usaha</a>
+            @auth
             <a href="{{ route('menu') }}" class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Katalog Menu</a>
+            @endauth
             <a href="{{ route('kontak') }}" class="nav-link {{ request()->routeIs('kontak') ? 'active' : '' }}">Lokasi & Kontak</a>
             <a href="{{ route('account.login') }}" class="nav-link">Masuk pelanggan</a>
             <a href="{{ route('cashier.login') }}" class="nav-link">Portal kasir</a>
@@ -488,6 +494,10 @@
         }
 
         function openCartModal() {
+            if (!window.isUserLoggedIn) {
+                openAuthRequiredModal();
+                return;
+            }
             const modal = document.getElementById('cart-modal');
             if (modal) {
                 modal.classList.add('open');

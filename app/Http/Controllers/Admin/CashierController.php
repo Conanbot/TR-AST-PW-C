@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class CashierController extends Controller
@@ -29,7 +28,7 @@ class CashierController extends Controller
         User::create([
             'name' => $data['name'],
             'username' => $data['username'],
-            'password' => Hash::make($data['password']),
+            'password' => $data['password'],
             'role' => 'cashier',
         ]);
 
@@ -44,7 +43,7 @@ class CashierController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $cashier->update(['password' => Hash::make($data['password'])]);
+        $cashier->update(['password' => $data['password']]);
 
         return redirect()->route('admin.cashiers.index')->with('success', 'Password kasir ' . $cashier->name . ' berhasil diubah.');
     }

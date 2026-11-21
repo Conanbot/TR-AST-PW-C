@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,12 @@ class AuthController extends Controller
 
         $remember = $request->boolean('remember');
 
-        if (Auth::attempt($credentials + ['role' => 'admin'], $remember)) {
+        $user = User::where('role', 'admin')
+            ->where('username', $credentials['username'])
+            ->first();
+
+        if ($user && hash_equals((string) $user->password, (string) $credentials['password'])) {
+            Auth::login($user, $remember);
             $request->session()->regenerate();
 
             return redirect()->intended(route('admin.dashboard'))
@@ -67,11 +73,10 @@ class AuthController extends Controller
     public function updatePassword(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'current_password' => ['required', 'string', 'current_password'],
+            'current_password' => ['required', 'string'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
         ], [
             'current_password.required' => 'Password saat ini wajib diisi.',
-            'current_password.current_password' => 'Password saat ini yang Anda masukkan salah.',
             'password.required' => 'Password baru wajib diisi.',
             'password.min' => 'Password baru minimal 6 karakter.',
             'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
@@ -79,8 +84,14 @@ class AuthController extends Controller
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
+        if (!hash_equals((string) $user->password, (string) $validated['current_password'])) {
+            throw ValidationException::withMessages([
+                'current_password' => 'Password saat ini yang Anda masukkan salah.',
+            ]);
+        }
+
         $user->update([
-            'password' => \Illuminate\Support\Facades\Hash::make($validated['password']),
+            'password' => $validated['password'],
         ]);
 
         return redirect()->route('admin.password.edit')

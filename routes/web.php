@@ -32,9 +32,9 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/profil', [ProfileController::class, 'index'])->name('profil');
-Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+Route::get('/menu', [MenuController::class, 'index'])->middleware('auth')->name('menu');
 Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
-Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:10,1')->name('orders.store');
+Route::post('/orders', [OrderController::class, 'store'])->middleware(['auth', 'throttle:10,1'])->name('orders.store');
 Route::get('/orders/{orderNumber}/track/{token}', [OrderTrackingController::class, 'show'])
     ->middleware('throttle:30,1')
     ->name('orders.track');

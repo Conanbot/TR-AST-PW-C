@@ -9,6 +9,12 @@
         <p>Silakan masuk terlebih dahulu untuk mulai memilih menu makanan, minuman, dan melakukan pemesanan.</p>
     </div>
 
+    @if(session('info'))
+        <div class="alert alert-info" role="status">{{ session('info') }}</div>
+    @elseif(session()->has('url.intended') && str_contains(session('url.intended'), '/menu'))
+        <div class="alert alert-info" role="status">Silakan masuk ke akun Anda terlebih dahulu untuk mengakses Katalog Menu dan memesan.</div>
+    @endif
+
     @if(session('success'))
         <div class="alert alert-success" role="alert" style="background: rgba(39, 174, 96, 0.15); border: 1px solid var(--ok); color: #2ecc71; padding: 12px 14px; border-radius: var(--radius-md); font-size: 0.9rem; margin-bottom: 16px;">
             {{ session('success') }}

@@ -15,7 +15,6 @@ use App\Models\Promo;
 use App\Models\StoreSetting;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,7 +30,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Admin Geprek GLO',
                 'email' => 'admin@geprekglo.com',
                 'phone' => '081268177729',
-                'password' => Hash::make('admin123'),
+                'password' => 'admin123',
                 'role' => 'admin',
             ]
         );
@@ -42,7 +41,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Budi Santoso',
                 'email' => 'pelanggan@gmail.com',
                 'phone' => '081234567890',
-                'password' => Hash::make('password123'),
+                'password' => 'password123',
                 'role' => 'customer',
             ]
         );
@@ -54,7 +53,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Kasir Demo',
                 'email' => 'kasir@geprekglo.com',
                 'phone' => '081200000001',
-                'password' => Hash::make('kasir123'),
+                'password' => 'kasir123',
                 'role' => 'cashier',
             ]
         );
