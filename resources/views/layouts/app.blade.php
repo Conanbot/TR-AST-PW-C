@@ -25,9 +25,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <link rel="stylesheet" href="{{ asset('assets/css/tokens.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/pos.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/glo.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/tokens.css') }}?v={{ filemtime(public_path('assets/css/tokens.css')) }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/pos.css') }}?v={{ filemtime(public_path('assets/css/pos.css')) }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/glo.css') }}?v={{ filemtime(public_path('assets/css/glo.css')) }}">
     @stack('styles')
 </head>
 
@@ -73,7 +73,6 @@
             <div class="flex items-center gap-sm">
                 <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema">
                     <i class="fa-solid fa-moon" data-theme-icon aria-hidden="true"></i>
-                    <span class="theme-toggle-label"></span>
                 </button>
                 @if(auth()->check() && auth()->user()->role === 'customer')
                 <a href="{{ route('account.dashboard') }}" class="btn btn-secondary btn-sm account-shortcut" title="Lihat Akun &amp; Riwayat Pesanan">
@@ -450,7 +449,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
     <script src="{{ asset('assets/js/cart.js') }}"></script>
     <script>
         window.isUserLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
