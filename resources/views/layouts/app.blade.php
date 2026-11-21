@@ -379,12 +379,11 @@
         </div>
     </div>
 
+    @auth
     <div id="cart-floating-bar" class="cart-floating-bar" style="display: none;" onclick="openCartModal()">
         <div class="flex items-center gap-sm">
-            <span class="badge badge-best-seller" style="font-size: 0.8rem; padding: 4px 8px;">
-                <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l2.4 11.2a2 2 0 002 1.6h7.8a2 2 0 001.9-1.4L21 7H6M10 20h.01M18 20h.01" />
-                </svg>
+            <span class="badge badge-best-seller" style="font-size: 0.85rem; padding: 6px 8px;">
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
             </span>
             <div>
                 <div class="floating-cart-count" style="font-weight: 700; font-size: 0.95rem; color: #FFFFFF;">0 menu</div>
@@ -396,6 +395,7 @@
             <span class="btn btn-primary btn-sm" style="border-radius: var(--radius-pill); padding: 4px 12px;">Lihat</span>
         </div>
     </div>
+    @endauth
 
     <footer class="site-footer">
         <div class="container">
@@ -490,7 +490,7 @@
     </div>
 
     <script src="{{ asset('assets/js/app.js') }}?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
-    <script src="{{ asset('assets/js/cart.js') }}"></script>
+    <script src="{{ asset('assets/js/cart.js') }}?v={{ filemtime(public_path('assets/js/cart.js')) }}"></script>
     <script>
         window.isUserLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
         window.currentUser = @json(auth()->user());

@@ -22,6 +22,17 @@ const Cart = {
   init(settingsOverride = {}) {
     this.settings = { ...this.settings, ...settingsOverride };
     this.settings.checkoutKey = null;
+
+    if (!window.isUserLoggedIn) {
+      try {
+        localStorage.removeItem(this.storageKey);
+        localStorage.removeItem('geprek_glo_last_checkout');
+      } catch (e) {}
+      const floatingBar = document.getElementById('cart-floating-bar');
+      if (floatingBar) floatingBar.style.display = 'none';
+      return;
+    }
+
     this.settings.lastCheckout = this.readCheckoutReceipt();
     this.updateCartBadge();
     this.renderCartDrawer();
