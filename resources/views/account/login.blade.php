@@ -1,12 +1,11 @@
 @extends('layouts.auth')
 
-@section('title', 'Masuk Pelanggan — Geprek GLO')
+@section('title', 'Masuk — Geprek GLO')
 
 @section('auth-form')
     <div class="auth-heading">
-        <span class="role-pill role-pill-customer">Akun pelanggan</span>
         <h2>Masuk ke Akun Anda</h2>
-        <p>Silakan masuk terlebih dahulu untuk mulai memilih menu makanan, minuman, dan melakukan pemesanan.</p>
+        <p>Silakan masuk dengan email atau nomor WhatsApp Anda untuk melanjutkan.</p>
     </div>
 
     @if(session('info'))
@@ -39,13 +38,8 @@
             <input type="password" id="password" name="password" class="form-control" autocomplete="current-password" placeholder="Masukkan kata sandi" required>
         </div>
         <label class="form-check auth-remember"><input type="checkbox" name="remember"><span>Ingat saya di perangkat ini</span></label>
-        <button type="submit" class="btn btn-primary auth-submit">Masuk &amp; Mulai Pilih Menu <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+        <button type="submit" class="btn btn-primary auth-submit">Masuk <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
     </form>
 
     <p class="auth-signup">Belum punya akun? <a href="{{ route('account.register') }}">Daftar akun baru di sini</a></p>
-    <div class="auth-switch">
-        <a href="{{ route('admin.login') }}">Masuk sebagai admin</a>
-        <span>·</span>
-        <a href="{{ route('cashier.login') }}">Masuk sebagai kasir</a>
-    </div>
 @endsection

@@ -4,8 +4,7 @@
 
 @section('auth-form')
     <div class="auth-heading">
-        <span class="role-pill role-pill-customer">Akun pelanggan</span>
-        <h2>Buat akun pelanggan</h2>
+        <h2>Buat akun baru</h2>
         <p>Daftarkan akun Anda terlebih dahulu. Setelah berhasil mendaftar, silakan masuk untuk mulai memilih menu dan memesan.</p>
     </div>
 

@@ -19,8 +19,8 @@
     <form action="{{ route('admin.login.submit') }}" method="POST" class="auth-form">
         @csrf
         <div class="form-group">
-            <label for="username" class="form-label">Username admin</label>
-            <input type="text" id="username" name="username" class="form-control" value="{{ old('username') }}" autocomplete="username" placeholder="Masukkan username" required autofocus>
+            <label for="email" class="form-label">Email admin</label>
+            <input type="text" id="email" name="email" class="form-control" value="{{ old('email') }}" autocomplete="email" placeholder="admin@geprekglo.com" required autofocus>
         </div>
         <div class="form-group">
             <div class="form-label-row"><label for="password" class="form-label">Kata sandi</label></div>

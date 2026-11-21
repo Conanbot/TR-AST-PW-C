@@ -219,8 +219,16 @@
         }
 
         .btn-primary [style*="color: #FFFFFF"],
-        .btn-primary [style*="color: #fff"] {
-            color: #fff !important;
+        .btn-primary [style*="color: #fff"],
+        .btn[style*="color: #fff"],
+        .btn[style*="color:#fff"],
+        .btn[style*="color: #FFFFFF"],
+        .btn[style*="color:#FFFFFF"],
+        .badge[style*="color: #fff"],
+        .badge[style*="color:#fff"],
+        .badge[style*="color: #FFFFFF"],
+        .badge[style*="color:#FFFFFF"] {
+            color: #FFFFFF !important;
         }
     </style>
     @stack('styles')
@@ -299,7 +307,10 @@
             </div>
             <div class="admin-sidebar-bottom">
                 <span class="sidebar-note" style="color:var(--text-dim);font-size:0.75rem;line-height:1.5;">Panel pengelola Geprek GLO</span>
-                <a href="{{ route('cashier.login') }}" class="btn btn-secondary btn-sm">Buka portal kasir</a>
+                <a href="{{ route('cashier.dashboard') }}" class="btn btn-secondary btn-sm">
+                    <i class="fa-solid fa-cash-register" aria-hidden="true"></i>
+                    Buka portal kasir
+                </a>
             </div>
         </aside>
 
@@ -327,7 +338,7 @@
         </main>
     </div>
 
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
     <script>
         // ── Mobile drawer ───────────────────────────────────
         document.addEventListener('DOMContentLoaded', () => {

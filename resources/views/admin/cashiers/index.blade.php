@@ -14,7 +14,7 @@
         <form action="{{ route('admin.cashiers.store') }}" method="POST" class="staff-form">
             @csrf
             <div class="form-group"><label class="form-label" for="cashier-name">Nama kasir</label><input class="form-control" id="cashier-name" name="name" value="{{ old('name') }}" required></div>
-            <div class="form-group"><label class="form-label" for="cashier-username">Username</label><input class="form-control" id="cashier-username" name="username" value="{{ old('username') }}" autocomplete="off" required></div>
+            <div class="form-group"><label class="form-label" for="cashier-email">Email</label><input class="form-control" id="cashier-email" type="email" name="email" value="{{ old('email') }}" autocomplete="off" placeholder="kasir@geprekglo.com" required></div>
             <div class="form-group"><label class="form-label" for="cashier-password">Kata sandi sementara</label><input class="form-control" id="cashier-password" type="password" name="password" minlength="8" autocomplete="new-password" required></div>
             <div class="form-group"><label class="form-label" for="cashier-password-confirmation">Ulangi kata sandi</label><input class="form-control" id="cashier-password-confirmation" type="password" name="password_confirmation" minlength="8" autocomplete="new-password" required></div>
             <button class="btn btn-primary" type="submit">Buat akun kasir</button>
@@ -28,7 +28,7 @@
                 <img src="{{ asset('assets/img/avatar-placeholder.svg') }}" alt="" class="staff-avatar" width="50" height="50">
                 <div style="flex:1; min-width:0;">
                     <strong>{{ $cashier->name }}</strong>
-                    <span>{{ '@' . $cashier->username }}</span>
+                    <span>{{ $cashier->email }}</span>
                 </div>
                 <span class="role-pill role-pill-cashier">Kasir</span>
 

@@ -47,7 +47,6 @@
                 <a class="auth-back" href="{{ route('home') }}"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Kembali ke beranda</a>
                 <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema">
                     <i class="fa-solid fa-moon" data-theme-icon aria-hidden="true"></i>
-                    <span class="theme-toggle-label"></span>
                 </button>
             </div>
             <div class="auth-form-wrap">
@@ -56,7 +55,7 @@
             <p class="auth-help">Butuh bantuan? Tanyakan langsung kepada tim Geprek GLO.</p>
         </section>
     </main>
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
 </body>
 
 </html>

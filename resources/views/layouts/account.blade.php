@@ -24,11 +24,18 @@
 
 <body class="console-page account-page">
     <header class="console-header">
-        <a href="{{ route('home') }}" style="display: inline-block;"><img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;"></a>
-        <nav class="console-nav" aria-label="Navigasi akun"><a class="active" href="{{ route('account.dashboard') }}">Pesanan saya</a><a href="{{ route('menu') }}">Pesan menu</a></nav>
+        <a href="{{ route('menu') }}" style="display: inline-block;"><img src="{{ asset('assets/img/brand/logo.png') }}" alt="Geprek GLO" style="height: 38px; width: auto; object-fit: contain;"></a>
+        <nav class="console-nav" aria-label="Navigasi akun">
+            <a class="{{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ route('menu') }}">Katalog Menu</a>
+            <a class="{{ request()->routeIs('account.orders') ? 'active' : '' }}" href="{{ route('account.orders') }}">Riwayat Pesanan</a>
+            <a class="{{ request()->routeIs('account.dashboard') ? 'active' : '' }}" href="{{ route('account.dashboard') }}">Akun saya</a>
+        </nav>
         <div class="console-actions">
-            <span class="user-chip"><span class="avatar-dot">{{ mb_substr(auth()->user()->name, 0, 1) }}</span><span>{{ auth()->user()->name }}</span></span>
-            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema"><i class="fa-solid fa-moon" data-theme-icon aria-hidden="true"></i><span class="theme-toggle-label"></span></button>
+            <button class="theme-toggle" type="button" data-theme-toggle aria-label="Ganti tema" title="Ganti tema"><i class="fa-solid fa-moon" data-theme-icon aria-hidden="true"></i></button>
+            <a href="{{ route('account.dashboard') }}" class="btn btn-secondary btn-sm account-shortcut" title="Lihat Akun &amp; Riwayat Pesanan">
+                <i class="fa-solid fa-user" aria-hidden="true"></i>
+                {{ Str::limit(auth()->user()->name, 16) }}
+            </a>
             <form action="{{ route('account.logout') }}" method="POST">@csrf<button class="btn btn-secondary btn-sm" type="submit"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Keluar</button></form>
         </div>
     </header>
@@ -36,7 +43,7 @@
         @if(session('success'))<div class="alert alert-success" role="status">{{ session('success') }}</div>@endif
         @yield('content')
     </main>
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
 </body>
 
 </html>

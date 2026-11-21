@@ -16,8 +16,8 @@
     <form action="{{ route('cashier.login.submit') }}" method="POST" class="auth-form">
         @csrf
         <div class="form-group">
-            <label for="username" class="form-label">Username kasir</label>
-            <input type="text" id="username" name="username" class="form-control" value="{{ old('username') }}" autocomplete="username" placeholder="Masukkan username" required autofocus>
+            <label for="email" class="form-label">Email kasir</label>
+            <input type="text" id="email" name="email" class="form-control" value="{{ old('email') }}" autocomplete="email" placeholder="kasir@geprekglo.com" required autofocus>
         </div>
         <div class="form-group">
             <label for="password" class="form-label">Kata sandi</label>

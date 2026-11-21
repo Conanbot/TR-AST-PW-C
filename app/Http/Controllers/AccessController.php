@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Services\OrderAccessService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -30,21 +31,30 @@ class AccessController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        $user = User::where('role', 'customer')
-            ->where(function ($q) use ($credentials) {
+        $user = User::where(function ($q) use ($credentials) {
                 $q->where('email', $credentials['email'])
                   ->orWhere('phone', $credentials['email'])
-                  ->orWhere('username', $credentials['email']);
+                  ->orWhere('name', $credentials['email']);
             })->first();
 
         if (!$user || !hash_equals((string) $user->password, (string) $credentials['password'])) {
             throw ValidationException::withMessages([
-                'email' => 'Email/No. WhatsApp atau kata sandi tidak cocok dengan akun pelanggan.',
+                'email' => 'Email/No. WhatsApp atau kata sandi tidak cocok.',
             ]);
         }
 
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
+
+        if ($user->role === 'admin') {
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Selamat datang kembali di Panel Admin Geprek GLO.');
+        }
+
+        if ($user->role === 'cashier') {
+            return redirect()->route('cashier.dashboard')
+                ->with('success', 'Selamat datang kembali, ' . $user->name . '.');
+        }
 
         $redirectTo = $request->input('redirect') ?: route('menu');
         return redirect()->intended($redirectTo)->with('success', 'Selamat datang kembali, ' . $user->name . '! Akun Anda aktif. Silakan pilih menu favorit Anda.');
@@ -59,18 +69,10 @@ class AccessController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $baseUsername = Str::slug(Str::before($data['email'], '@')) ?: 'pelanggan';
-        $username = $baseUsername;
-        $suffix = 1;
-        while (User::where('username', $username)->exists()) {
-            $username = $baseUsername . $suffix++;
-        }
-
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
-            'username' => $username,
             'password' => $data['password'],
             'role' => 'customer',
         ]);
@@ -81,33 +83,90 @@ class AccessController extends Controller
 
     public function dashboardCustomer(Request $request): View
     {
+        $user = $request->user();
+        $totalOrders = Order::where('user_id', $user->id)->count();
+
+        return view('account.dashboard', compact('user', 'totalOrders'));
+    }
+
+    public function updateCustomerProfile(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'max:30'],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email ini sudah digunakan akun lain.',
+            'password.min' => 'Kata sandi baru minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+        ]);
+
+        $updatePayload = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? null,
+        ];
+
+        if (!empty($data['password'])) {
+            $updatePayload['password'] = $data['password'];
+        }
+
+        $user->update($updatePayload);
+
+        return redirect()->route('account.dashboard')->with('success', 'Profil akun berhasil diperbarui.');
+    }
+
+    public function ordersCustomer(Request $request): View
+    {
         $orders = Order::with('items')
             ->where('user_id', $request->user()->id)
             ->latest()
-            ->paginate(6);
+            ->paginate(8);
 
-        return view('account.dashboard', compact('orders'));
+        return view('account.orders', compact('orders'));
+    }
+
+    public function trackCustomerOrder(Request $request, Order $order, OrderAccessService $access): RedirectResponse
+    {
+        abort_unless((int) $order->user_id === (int) $request->user()->id, 403);
+
+        $token = $access->issue($order);
+
+        return redirect()->route('orders.track', [
+            'orderNumber' => $order->order_number,
+            'token' => $token,
+        ]);
     }
 
     public function showCashierLogin(): View|RedirectResponse
     {
-        return Auth::check() ? $this->redirectForRole(Auth::user()->role) : view('cashier.login');
+        return Auth::check() ? $this->redirectForRole(Auth::user()->role) : redirect()->route('account.login');
     }
 
     public function loginCashier(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'username' => ['required', 'string'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
         $user = User::where('role', 'cashier')
-            ->where('username', $credentials['username'])
+            ->where(function ($q) use ($credentials) {
+                $q->where('email', $credentials['email'])
+                  ->orWhere('name', $credentials['email']);
+            })
             ->first();
 
         if (!$user || !hash_equals((string) $user->password, (string) $credentials['password'])) {
             throw ValidationException::withMessages([
-                'username' => 'Username atau kata sandi kasir tidak cocok.',
+                'email' => 'Email atau kata sandi kasir tidak cocok.',
             ]);
         }
 

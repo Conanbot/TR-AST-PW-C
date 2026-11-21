@@ -51,7 +51,12 @@ Route::prefix('akun')->name('account.')->group(function () {
     Route::get('/daftar', [AccessController::class, 'showCustomerRegister'])->name('register');
     Route::post('/daftar', [AccessController::class, 'registerCustomer'])->middleware('throttle:6,1')->name('register.submit');
     Route::post('/logout', [AccessController::class, 'logout'])->name('logout');
-    Route::get('/', [AccessController::class, 'dashboardCustomer'])->middleware(['auth', 'role:customer'])->name('dashboard');
+    Route::middleware(['auth', 'role:customer'])->group(function () {
+        Route::get('/', [AccessController::class, 'dashboardCustomer'])->name('dashboard');
+        Route::put('/profil', [AccessController::class, 'updateCustomerProfile'])->name('profile.update');
+        Route::get('/riwayat', [AccessController::class, 'ordersCustomer'])->name('orders');
+        Route::get('/riwayat/{order}/tracking', [AccessController::class, 'trackCustomerOrder'])->name('orders.track');
+    });
 });
 
 /*
@@ -64,7 +69,7 @@ Route::prefix('kasir')->name('cashier.')->group(function () {
     Route::post('/login', [AccessController::class, 'loginCashier'])->middleware('throttle:6,1')->name('login.submit');
     Route::post('/logout', [AccessController::class, 'logout'])->name('logout');
 
-    Route::middleware(['auth', 'role:cashier'])->group(function () {
+    Route::middleware(['auth', 'role.any:admin,cashier'])->group(function () {
         Route::get('/', [CashierDashboardController::class, 'index'])->name('dashboard');
         Route::post('/orders', [CashierDashboardController::class, 'storeOrder'])->name('orders.store');
         Route::patch('/orders/{order}/status', [CashierDashboardController::class, 'updateStatus'])->name('orders.status');

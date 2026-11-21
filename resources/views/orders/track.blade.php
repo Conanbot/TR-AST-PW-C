@@ -42,12 +42,10 @@
             <p><strong>{{ strtoupper(str_replace('_', ' ', $order->payment_method ?: 'unpaid')) }}</strong> · <span>{{ ucfirst(str_replace('_', ' ', $order->payment_status ?: 'unpaid')) }}</span></p>
             <p class="text-muted">Tagihan: {{ $order->formatted_total }}</p>
             @if($order->payment_method === 'qris')
-                @if($paymentSettings->qris_image)
-                    <img src="{{ asset('storage/' . $paymentSettings->qris_image) }}" alt="QRIS {{ $paymentSettings->qris_merchant_name }}" style="max-width:240px;width:100%;border-radius:12px;">
-                @else
-                    <p class="text-muted">Gambar QRIS belum tersedia.</p>
-                @endif
-                @if($paymentSettings->qris_instructions)<p>{{ $paymentSettings->qris_instructions }}</p>@endif
+                <img src="{{ !empty($paymentSettings->qris_image) ? asset('storage/' . $paymentSettings->qris_image) : asset('assets/img/qris-placeholder.png') }}"
+                     alt="QRIS {{ $paymentSettings->qris_merchant_name ?: 'Geprek GLO' }}"
+                     style="max-width:240px;width:100%;border-radius:12px;background:#fff;padding:10px;border:1px solid var(--border);">
+                @if($paymentSettings->qris_instructions)<p style="margin-top:8px;">{{ $paymentSettings->qris_instructions }}</p>@endif
                 @if($payment && $payment->status !== 'paid')
                     <form method="POST" action="{{ route('orders.payment-proof', ['orderNumber' => $order->order_number, 'token' => request()->route('token')]) }}" enctype="multipart/form-data" class="stack-sm" style="margin-top:12px;">
                         @csrf

@@ -25,10 +25,9 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Admin & Demo Customer User
         User::updateOrCreate(
-            ['username' => 'admin'],
+            ['email' => 'admin@geprekglo.com'],
             [
                 'name' => 'Admin Geprek GLO',
-                'email' => 'admin@geprekglo.com',
                 'phone' => '081268177729',
                 'password' => 'admin123',
                 'role' => 'admin',
@@ -36,10 +35,9 @@ class DatabaseSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['username' => 'pelanggan'],
+            ['email' => 'pelanggan@gmail.com'],
             [
                 'name' => 'Budi Santoso',
-                'email' => 'pelanggan@gmail.com',
                 'phone' => '081234567890',
                 'password' => 'password123',
                 'role' => 'customer',
@@ -48,10 +46,9 @@ class DatabaseSeeder extends Seeder
 
         // Demo cashier account
         User::updateOrCreate(
-            ['username' => 'kasir'],
+            ['email' => 'kasir@geprekglo.com'],
             [
                 'name' => 'Kasir Demo',
-                'email' => 'kasir@geprekglo.com',
                 'phone' => '081200000001',
                 'password' => 'kasir123',
                 'role' => 'cashier',
@@ -433,7 +430,7 @@ class DatabaseSeeder extends Seeder
         );
 
         // 9. Sample Active & Kitchen Orders (Information Architecture demo)
-        $customerUser = User::where('username', 'pelanggan')->first();
+        $customerUser = User::where('email', 'pelanggan@gmail.com')->first();
         $sampleAyam = MenuItem::where('name', 'Paket Super Komplit')->first();
         $sampleGeprek = MenuItem::where('name', 'Paket Geprek Telur')->first();
         $sampleEsTeh = MenuItem::where('name', 'Es Teh Jumbo')->first();

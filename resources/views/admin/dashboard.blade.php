@@ -549,7 +549,7 @@
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="kitchen_status" value="ready">
-                        <button type="submit" class="btn btn-sm" style="width: 100%; font-size: 0.8rem; background: #27ae60; color: #fff;">Siap Disajikan &check;</button>
+                        <button type="submit" class="btn btn-wa btn-sm" style="width: 100%; font-size: 0.82rem;">Siap Disajikan</button>
                     </form>
                 </div>
                 @empty

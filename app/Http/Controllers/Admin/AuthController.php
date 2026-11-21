@@ -22,23 +22,26 @@ class AuthController extends Controller
             });
         }
 
-        return view('admin.login');
+        return redirect()->route('account.login');
     }
 
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'username' => ['required', 'string'],
+            'email' => ['required', 'string'],
             'password' => ['required', 'string'],
         ], [
-            'username.required' => 'Username wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
             'password.required' => 'Password wajib diisi.',
         ]);
 
         $remember = $request->boolean('remember');
 
         $user = User::where('role', 'admin')
-            ->where('username', $credentials['username'])
+            ->where(function ($q) use ($credentials) {
+                $q->where('email', $credentials['email'])
+                  ->orWhere('name', $credentials['email']);
+            })
             ->first();
 
         if ($user && hash_equals((string) $user->password, (string) $credentials['password'])) {
@@ -50,7 +53,7 @@ class AuthController extends Controller
         }
 
         throw ValidationException::withMessages([
-            'username' => 'Username atau password yang Anda masukkan tidak sesuai.',
+            'email' => 'Email atau password yang Anda masukkan tidak sesuai.',
         ]);
     }
 

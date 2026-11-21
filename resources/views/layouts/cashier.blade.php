@@ -38,6 +38,9 @@
                 Pembayaran
             </a>
             <a href="{{ route('menu') }}" target="_blank" rel="noreferrer">Katalog Publik</a>
+            @if(auth()->user()?->role === 'admin')
+            <a href="{{ route('admin.dashboard') }}">Panel Admin</a>
+            @endif
         </nav>
         <div class="console-actions">
             <span class="user-chip">
@@ -70,7 +73,7 @@
         @endif
         @yield('content')
     </main>
-    <script src="{{ asset('assets/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/app.js') }}?v={{ filemtime(public_path('assets/js/app.js')) }}"></script>
     @stack('scripts')
 </body>
 

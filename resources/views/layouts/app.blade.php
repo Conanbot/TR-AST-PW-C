@@ -49,14 +49,17 @@
             </div>
 
             <nav class="flex items-center gap-sm" style="display: none;" id="desktop-nav">
+                @if(auth()->check() && auth()->user()->role === 'customer')
+                <a href="{{ route('menu') }}" class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Katalog Menu</a>
+                <a href="{{ route('account.orders') }}" class="nav-link {{ request()->routeIs('account.orders') ? 'active' : '' }}">Riwayat Pesanan</a>
+                <a href="{{ route('account.dashboard') }}" class="nav-link {{ request()->routeIs('account.dashboard') ? 'active' : '' }}">Akun saya</a>
+                @else
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
                 <a href="{{ route('profil') }}" class="nav-link {{ request()->routeIs('profil') ? 'active' : '' }}">Profil</a>
                 @auth
                 <a href="{{ route('menu') }}" class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Katalog Menu</a>
                 @endauth
                 <a href="{{ route('kontak') }}" class="nav-link {{ request()->routeIs('kontak') ? 'active' : '' }}">Lokasi & Kontak</a>
-                @if(auth()->check() && auth()->user()->role === 'customer')
-                <a href="{{ route('account.dashboard') }}" class="nav-link">Akun saya</a>
                 @endif
             </nav>
 
@@ -79,7 +82,7 @@
                 @if(auth()->check() && auth()->user()->role === 'customer')
                 <a href="{{ route('account.dashboard') }}" class="btn btn-secondary btn-sm account-shortcut" title="Lihat Akun &amp; Riwayat Pesanan">
                     <i class="fa-solid fa-user" aria-hidden="true"></i>
-                    {{ Str::limit(auth()->user()->name, 12) }}
+                    {{ Str::limit(auth()->user()->name, 16) }}
                 </a>
                 <form action="{{ route('account.logout') }}" method="POST" style="display: inline;">
                     @csrf
@@ -119,6 +122,11 @@
             <button type="button" id="mobile-nav-close" class="close-btn" aria-label="Tutup Menu">&times;</button>
         </div>
         <div class="flex flex-col gap-md" style="font-size: 1.2rem;">
+            @if(auth()->check() && auth()->user()->role === 'customer')
+            <a href="{{ route('menu') }}" class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}">Katalog Menu</a>
+            <a href="{{ route('account.orders') }}" class="nav-link {{ request()->routeIs('account.orders') ? 'active' : '' }}">Riwayat Pesanan</a>
+            <a href="{{ route('account.dashboard') }}" class="nav-link {{ request()->routeIs('account.dashboard') ? 'active' : '' }}">Akun saya</a>
+            @else
             <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
             <a href="{{ route('profil') }}" class="nav-link {{ request()->routeIs('profil') ? 'active' : '' }}">Profil Usaha</a>
             @auth
@@ -128,6 +136,7 @@
             <a href="{{ route('account.login') }}" class="nav-link">Masuk pelanggan</a>
             <a href="{{ route('cashier.login') }}" class="nav-link">Portal kasir</a>
             <a href="{{ route('admin.login') }}" class="nav-link">Portal admin</a>
+            @endif
         </div>
         <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);">
             <div class="text-sm text-muted" style="margin-bottom: 8px;">Status Kedai Hari Ini:</div>
@@ -258,9 +267,21 @@
                             <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
                                 <input type="radio" name="payment_method" value="qris">
                                 <div><strong>QRIS</strong>
-                                    <div class="text-xs text-muted">Upload bukti manual untuk diverifikasi admin.</div>
+                                    <div class="text-xs text-muted">Scan QRIS dan unggah bukti pembayaran untuk verifikasi.</div>
                                 </div>
                             </label>
+                            <div id="qris-preview-container" style="display:none; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; text-align:center;">
+                                <div class="text-xs text-muted" style="margin-bottom:8px; font-weight:600;">
+                                    <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+                                    {{ $settings->qris_merchant_name ?: 'QRIS Geprek GLO Salatiga' }}
+                                </div>
+                                <img src="{{ !empty($settings->qris_image) ? asset('storage/' . $settings->qris_image) : asset('assets/img/qris-placeholder.png') }}"
+                                     alt="QRIS {{ $settings->qris_merchant_name ?: 'Geprek GLO' }}"
+                                     style="width:180px; max-width:100%; height:auto; border-radius:10px; background:#fff; padding:8px; border:1px solid var(--border); display:inline-block;">
+                                <div class="text-xs text-muted" style="margin-top:8px; line-height:1.4;">
+                                    {{ $settings->qris_instructions ?: 'Scan QRIS sesuai nominal total pesanan. Setelah checkout, Anda dapat mengunggah bukti pembayaran pada halaman tracking.' }}
+                                </div>
+                            </div>
                             @endif
                             @if($settings->delivery_enabled ?? false)
                             <label class="form-check" style="background:var(--surface);padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-md);">
@@ -306,6 +327,12 @@
                                 }
                                 if (tableBox) {
                                     tableBox.style.display = e.target.value === 'dine_in' ? 'block' : 'none';
+                                }
+                            }
+                            if (e.target.name === 'payment_method') {
+                                const qrisBox = document.getElementById('qris-preview-container');
+                                if (qrisBox) {
+                                    qrisBox.style.display = e.target.value === 'qris' ? 'block' : 'none';
                                 }
                             }
                         });
@@ -389,11 +416,18 @@
                 <div>
                     <h4 style="font-size: 1rem; margin-bottom: 12px; color: #FFFFFF;">Navigasi</h4>
                     <div class="flex flex-col gap-sm text-sm text-muted">
+                        @if(auth()->check() && auth()->user()->role === 'customer')
+                        <a href="{{ route('menu') }}" class="hover-white">Katalog Menu</a>
+                        <a href="{{ route('account.orders') }}" class="hover-white">Riwayat Pesanan</a>
+                        <a href="{{ route('account.dashboard') }}" class="hover-white">Akun saya</a>
+                        @else
                         <a href="{{ route('home') }}" class="hover-white">Beranda</a>
-                        <a href="{{ route('profil') }}" class="hover-white">Profil Usaha</a>
-                        <a href="{{ route('menu') }}" class="hover-white">Katalog Menu & Paket</a>
-                        <a href="{{ route('kontak') }}" class="hover-white">Lokasi & Jam Buka</a>
-                        <a href="{{ route('admin.login') }}" class="text-dim" style="margin-top: 6px;">Portal Admin</a>
+                        <a href="{{ route('profil') }}" class="hover-white">Profil</a>
+                        @auth
+                        <a href="{{ route('menu') }}" class="hover-white">Katalog Menu</a>
+                        @endauth
+                        <a href="{{ route('kontak') }}" class="hover-white">Lokasi &amp; Kontak</a>
+                        @endif
                     </div>
                 </div>
 

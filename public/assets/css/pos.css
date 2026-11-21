@@ -117,29 +117,46 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .site-header { position: sticky; top: 0; z-index: 20; }
 .site-header .container { min-height: 72px; }
-.site-header a:not(.btn-primary):not(.btn-wa), .brand-lockup { color: var(--text); }
+.site-header a:not(.btn-primary):not(.btn-wa):not(.nav-link), .brand-lockup { color: var(--text); }
 .site-header a.btn-primary,
 .site-header a.btn-primary:hover,
 .site-header a.btn-primary i,
 .btn-primary,
 .btn-primary i { color: #FFFFFF !important; }
 .nav-link,
-.site-header .nav-link {
+.site-header a.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
   font-family: var(--font-heading);
-  font-size: 0.96rem;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--text-muted);
-  transition: color 0.16s ease;
+  transition: color 0.16s ease, background 0.16s ease;
 }
 .nav-link.active,
 .nav-link:hover,
-.site-header .nav-link.active,
-.site-header .nav-link:hover {
+.site-header a.nav-link.active,
+.site-header a.nav-link:hover {
   color: var(--primary);
+  background: var(--red-100);
+}
+html[data-theme="dark"] .nav-link.active,
+html[data-theme="dark"] .nav-link:hover,
+html[data-theme="dark"] .site-header a.nav-link.active,
+html[data-theme="dark"] .site-header a.nav-link:hover {
+  color: #FF9B95;
+  background: #49272A;
 }
 [style*="color: #FFFFFF"], [style*="color: #fff"] { color: var(--text) !important; }
-.btn-primary [style*="color: #FFFFFF"], .btn-primary [style*="color: #fff"] { color: #fff !important; }
+.btn-primary [style*="color: #FFFFFF"], .btn-primary [style*="color: #fff"],
+.btn[style*="color: #fff"], .btn[style*="color:#fff"],
+.btn[style*="color: #FFFFFF"], .btn[style*="color:#FFFFFF"],
+.badge[style*="color: #fff"], .badge[style*="color:#fff"],
+.badge[style*="color: #FFFFFF"], .badge[style*="color:#FFFFFF"] { color: #FFFFFF !important; }
 .site-footer { background: var(--surface); border-top: 1px solid var(--border); }
 .card {
   background: var(--surface-card); border-color: var(--border);

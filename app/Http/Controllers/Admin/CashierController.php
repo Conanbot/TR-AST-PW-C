@@ -21,13 +21,13 @@ class CashierController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
-            'username' => ['required', 'alpha_dash', 'min:3', 'max:40', 'unique:users,username'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
         User::create([
             'name' => $data['name'],
-            'username' => $data['username'],
+            'email' => $data['email'],
             'password' => $data['password'],
             'role' => 'cashier',
         ]);
