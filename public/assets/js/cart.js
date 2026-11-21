@@ -98,7 +98,6 @@ const Cart = {
     }
 
     this.saveItems(items);
-    window.showToast(`${item.name} berhasil ditambahkan ke keranjang!`, 'success');
 
     if (this.getTotalQty() >= 20) {
       window.showToast('Pemesanan ≥ 20 porsi diarahkan untuk negosiasi jadwal melalui chat WA', 'warning');
