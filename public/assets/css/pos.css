@@ -402,6 +402,34 @@ html[data-theme="dark"] .console-nav a:hover, html[data-theme="dark"] .console-n
 .seat-bottom { bottom: 7px; }
 .is-selected .table-seat { background: var(--primary); }
 .is-occupied .table-seat { background: #E1A5A9; }
+html[data-theme="dark"] .table-tile {
+  background: #1C2E24;
+  border-color: #325943;
+  color: #E7F8EE;
+}
+html[data-theme="dark"] .table-tile:hover:not(:disabled) {
+  background: #223B2D;
+  border-color: var(--ok);
+}
+html[data-theme="dark"] .table-tile .table-seat {
+  background: #4E8A68;
+}
+html[data-theme="dark"] .table-tile.is-selected {
+  background: #49272A;
+  border-color: var(--primary);
+  color: #FFF5F5;
+}
+html[data-theme="dark"] .table-tile.is-selected .table-seat {
+  background: var(--primary);
+}
+html[data-theme="dark"] .table-tile.is-occupied {
+  background: #3B2023;
+  border-color: #7D3B42;
+  color: #FFB6B7;
+}
+html[data-theme="dark"] .table-tile.is-occupied .table-seat {
+  background: #9B4C54;
+}
 .table-panel.is-muted { opacity: .48; }
 .table-panel.is-muted .table-tile { pointer-events: none; }
 .menu-panel { margin-top: 20px; }

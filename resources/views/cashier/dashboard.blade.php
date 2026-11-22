@@ -68,7 +68,13 @@
                 @foreach($categories as $category)
                     @foreach($category->menuItems as $item)
                         <article class="cashier-menu-item" data-category="{{ $category->slug }}" data-name="{{ mb_strtolower($item->name) }}">
-                            <div class="menu-item-art" aria-hidden="true"><span>{{ mb_substr($item->name, 0, 1) }}</span></div>
+                            <div class="menu-item-art" style="overflow: hidden; padding: 0; aspect-ratio: 4 / 3;">
+                                @if($item->image_url)
+                                    <img src="{{ $item->image_url }}" alt="{{ $item->name }}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                @else
+                                    <span aria-hidden="true">{{ mb_substr($item->name, 0, 1) }}</span>
+                                @endif
+                            </div>
                             <div class="menu-item-copy">
                                 <span class="menu-item-category">{{ $category->name }}</span>
                                 <h3>{{ $item->name }}</h3>

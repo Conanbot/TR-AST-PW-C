@@ -299,10 +299,6 @@
             </div>
             <div class="admin-sidebar-bottom">
                 <span class="sidebar-note" style="color:var(--text-dim);font-size:0.75rem;line-height:1.5;">Panel pengelola Geprek GLO</span>
-                <a href="{{ route('cashier.dashboard') }}" class="btn btn-secondary btn-sm">
-                    <i class="fa-solid fa-cash-register" aria-hidden="true"></i>
-                    Buka portal kasir
-                </a>
             </div>
         </aside>
 

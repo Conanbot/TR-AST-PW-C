@@ -69,7 +69,53 @@ class MenuItem extends Model
     }
 
     /**
-     * Get the full URL to the image if exists and stored.
+     * Pick the best-matching existing menu image based on item name.
+     */
+    public static function fallbackImageForName(?string $name): string
+    {
+        $n = mb_strtolower(trim((string) $name));
+
+        $rules = [
+            ['keywords' => ['super komplit'], 'file' => 'menu/paket_super_komplit.jpg'],
+            ['keywords' => ['geprek komplit'], 'file' => 'menu/paket_geprek_komplit.jpg'],
+            ['keywords' => ['geprek telur', 'telur'], 'file' => 'menu/paket_geprek_telur.jpg'],
+            ['keywords' => ['pagepin'], 'file' => 'menu/pagepin.jpg'],
+            ['keywords' => ['kombo hebat', 'combo hebat'], 'file' => 'menu/combo_hebat.jpg'],
+            ['keywords' => ['kombo oren', 'combo oren'], 'file' => 'menu/kombo_oren.jpg'],
+            ['keywords' => ['combo choco', 'kombo choco'], 'file' => 'menu/combo_choco.jpg'],
+            ['keywords' => ['geprek bakar'], 'file' => 'menu/ayam_geprek_bakar.jpg'],
+            ['keywords' => ['crispy bakar', 'bakar'], 'file' => 'menu/ayam_crispy_bakar_spesial.jpg'],
+            ['keywords' => ['geprek'], 'file' => 'menu/ayam_geprek_cabai_segar.jpg'],
+            ['keywords' => ['crispy', 'krispi', 'ayam'], 'file' => 'menu/ayam_crispy_original.jpg'],
+            ['keywords' => ['ceker rempah'], 'file' => 'menu/sup_ceker_ayam_rempah.jpg'],
+            ['keywords' => ['ceker'], 'file' => 'menu/sup_ceker_ayam_gurih.jpg'],
+            ['keywords' => ['sayur'], 'file' => 'menu/sup_sayur_hangat.jpg'],
+            ['keywords' => ['sup', 'sop', 'kaldu'], 'file' => 'menu/sup_kaldu_ayam_segar.jpg'],
+            ['keywords' => ['coklat', 'choco', 'glug'], 'file' => 'menu/es_coklat_glug.jpg'],
+            ['keywords' => ['jeruk peras asli'], 'file' => 'menu/es_jeruk_peras_asli.jpg'],
+            ['keywords' => ['jeruk', 'oren', 'orange'], 'file' => 'menu/es_jeruk_peras.jpg'],
+            ['keywords' => ['kampul', 'lemon'], 'file' => 'menu/es_teh_kampul_segar.jpg'],
+            ['keywords' => ['teh hangat', 'hangat'], 'file' => 'menu/teh_hangat_manis.jpg'],
+            ['keywords' => ['teh jumbo', 'jumbo'], 'file' => 'menu/es_teh_jumbo.jpg'],
+            ['keywords' => ['teh'], 'file' => 'menu/es_teh_manis.jpg'],
+            ['keywords' => ['air', 'mineral', 'ades', 'aqua'], 'file' => 'menu/air_mineral_botol.jpg'],
+            ['keywords' => ['minuman', 'es '], 'file' => 'menu/aneka_minuman.jpg'],
+            ['keywords' => ['paket', 'combo', 'kombo'], 'file' => 'menu/combo_hemat.jpg'],
+        ];
+
+        foreach ($rules as $rule) {
+            foreach ($rule['keywords'] as $kw) {
+                if (str_contains($n, $kw) && file_exists(public_path('assets/img/' . $rule['file']))) {
+                    return $rule['file'];
+                }
+            }
+        }
+
+        return 'menu/ayam_geprek_cabai_segar.jpg';
+    }
+
+    /**
+     * Get the full URL to the image if exists and stored, with smart name-based fallback.
      */
     public function getImageUrlAttribute(): ?string
     {
@@ -83,6 +129,11 @@ class MenuItem extends Model
 
         if ($this->image && Storage::disk('public')->exists($this->image)) {
             return asset('storage/' . $this->image);
+        }
+
+        $fallback = self::fallbackImageForName($this->name);
+        if (file_exists(public_path('assets/img/' . $fallback))) {
+            return asset('assets/img/' . $fallback);
         }
 
         return null;

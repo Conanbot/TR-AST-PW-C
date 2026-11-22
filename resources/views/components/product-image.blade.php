@@ -19,6 +19,12 @@
                 $imageUrl = asset($src);
             }
         }
+        if (!$imageUrl) {
+            $fallback = \App\Models\MenuItem::fallbackImageForName($alt);
+            if (file_exists(public_path('assets/img/' . $fallback))) {
+                $imageUrl = asset('assets/img/' . $fallback);
+            }
+        }
     @endphp
 
     @if($imageUrl)
