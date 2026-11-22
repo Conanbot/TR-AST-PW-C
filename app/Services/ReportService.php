@@ -550,4 +550,58 @@ class ReportService
             'period' => $period,
         ];
     }
+
+    /**
+     * Customer Report data.
+     */
+    public function getCustomerReport(array $period, int $perPage = 20): array
+    {
+        $start = $period['start'];
+        $end = $period['end'];
+
+        $totalCustomers = Customer::count();
+        $newCustomersInPeriod = Customer::whereBetween('created_at', [$start, $end])->count();
+        $repeatCustomers = Customer::has('orders', '>=', 2)->count();
+
+        $customerSpendingInPeriod = (int) Order::whereNotNull('customer_id')
+            ->whereBetween('created_at', [$start, $end])
+            ->where('status', '!=', 'cancelled')
+            ->where(function ($q) {
+                $q->where('payment_status', 'paid')
+                    ->orWhere('status', 'completed');
+            })
+            ->sum('total');
+
+        $customers = Customer::withCount([
+                'orders as orders_count' => function ($q) use ($start, $end) {
+                    $q->whereBetween('created_at', [$start, $end]);
+                },
+            ])
+            ->withSum([
+                'orders as total_spent' => function ($q) use ($start, $end) {
+                    $q->whereBetween('created_at', [$start, $end])
+                        ->where('status', '!=', 'cancelled')
+                        ->where(function ($inner) {
+                            $inner->where('payment_status', 'paid')
+                                ->orWhere('status', 'completed');
+                        });
+                },
+            ], 'total')
+            ->orderByDesc('total_spent')
+            ->orderByDesc('orders_count')
+            ->orderBy('name')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return [
+            'summary' => [
+                'total_customers' => $totalCustomers,
+                'new_customers_in_period' => $newCustomersInPeriod,
+                'repeat_customers' => $repeatCustomers,
+                'customer_spending_in_period' => $customerSpendingInPeriod,
+            ],
+            'customers' => $customers,
+            'period' => $period,
+        ];
+    }
 }

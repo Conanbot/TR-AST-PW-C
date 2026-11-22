@@ -7,9 +7,8 @@
 <div class="card" style="padding: var(--space-lg); margin-bottom: var(--space-lg); background: var(--surface-card);">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
         <div>
-            <div class="flex items-center gap-xs" style="margin-bottom: 4px;">
-                <span class="badge badge-promo" style="font-size: 0.75rem;">Dashboard Operasional Terpadu (Phase 4.5)</span>
-                <span class="text-xs text-muted">Pusat Informasi Operasional &amp; Laporan Bisnis Restoran</span>
+            <div class="text-xs text-muted" style="margin-bottom: 4px;">
+                Pusat Informasi Operasional &amp; Laporan Bisnis Restoran
             </div>
             <h2 style="font-size: 1.5rem; margin-bottom: 4px;">Halo, {{ auth()->user()->name }}!</h2>
             <p class="text-sm text-muted">
@@ -39,24 +38,33 @@
 @endif
 
 <!-- Quick Navigation Bar for Operational Dashboard -->
-<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: var(--space-xl); background: var(--surface); padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-    <a href="#ia-sales" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        1. Sales Summary &amp; Analytics
-    </a>
-    <a href="#ia-orders" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        2. Order Status &amp; Active Orders
-    </a>
-    <a href="#ia-customers" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        3. Customer &amp; Payment Overview
-    </a>
-    <a href="#ia-kitchen" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        5. Kitchen (Cooking Queue)
-    </a>
-    <a href="#ia-menu" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-sm);">
-        6. Menu &amp; Add-Ons
-    </a>
-    <a href="{{ route('admin.reports.index') }}" class="btn btn-primary btn-sm" style="border-radius: var(--radius-sm); margin-left: auto;">
-        <i class="fa-solid fa-chart-column" aria-hidden="true"></i> Buka Laporan Bisnis Lengkap &rarr;
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: var(--space-xl); background: var(--surface); padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
+    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+        <a href="#ia-sales" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-chart-line" aria-hidden="true"></i>
+            <span>Penjualan</span>
+        </a>
+        <a href="#ia-orders" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-receipt" aria-hidden="true"></i>
+            <span>Pesanan</span>
+        </a>
+        <a href="#ia-customers" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            <span>Pelanggan</span>
+        </a>
+        <a href="#ia-kitchen" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-fire-burner" aria-hidden="true"></i>
+            <span>Dapur</span>
+        </a>
+        <a href="#ia-menu" class="btn btn-secondary btn-sm">
+            <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+            <span>Menu</span>
+        </a>
+    </div>
+    <a href="{{ route('admin.reports.index') }}" class="btn btn-primary btn-sm">
+        <i class="fa-solid fa-chart-column" aria-hidden="true"></i>
+        <span>Laporan Bisnis</span>
+        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
     </a>
 </div>
 

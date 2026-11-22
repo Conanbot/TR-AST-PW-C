@@ -42,19 +42,14 @@
             @endif
         </nav>
         <div class="console-actions">
-            <span class="user-chip">
-                <img src="{{ asset('assets/img/avatar-placeholder.svg') }}"
-                    alt="Avatar"
-                    class="avatar-img"
-                    width="34" height="34"
-                    style="width:34px;height:34px;border-radius:50%;object-fit:cover;background:#e0e0e0;flex:0 0 34px;">
-                <span>{{ auth()->user()->name }}</span>
-            </span>
             <button class="theme-toggle" type="button" data-theme-toggle
                 aria-label="Ganti tema" title="Ganti tema">
                 <i class="fa-solid fa-moon" data-theme-icon aria-hidden="true"></i>
-                <span class="theme-toggle-label"></span>
             </button>
+            <span class="btn btn-secondary btn-sm account-shortcut" style="cursor: default;">
+                <i class="fa-solid fa-user" aria-hidden="true"></i>
+                <span>{{ auth()->user()->name }}</span>
+            </span>
             <form action="{{ route('cashier.logout') }}" method="POST">
                 @csrf<button class="btn btn-secondary btn-sm" type="submit"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Keluar</button>
             </form>

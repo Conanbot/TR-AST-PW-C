@@ -23,13 +23,16 @@
         <div class="grid grid-cols-1 grid-cols-2 gap-md" style="margin-bottom: var(--space-md);">
             <div class="form-group">
                 <label class="form-label">Status Kedai (Buka / Tutup)</label>
-                <label class="form-check" style="background: var(--surface); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-                    <input type="checkbox" name="is_open" value="1" {{ old('is_open', $settings->is_open) ? 'checked' : '' }}>
-                    <span class="font-semibold {{ $settings->is_open ? 'text-ok' : 'text-off' }}">
-                        {{ $settings->is_open ? 'Kedai BUKA (Menerima Pesanan)' : 'Kedai TUTUP' }}
-                    </span>
-                </label>
-                <span class="text-xs text-dim">Status ini diatur secara manual oleh pengelola, bukan otomatis.</span>
+                <input type="hidden" name="is_open" id="settings-is-open-input" value="{{ old('is_open', $settings->is_open) ? '1' : '0' }}">
+                <button type="button"
+                        id="settings-store-toggle-btn"
+                        class="store-state {{ $settings->is_open ? 'is-open' : 'is-closed' }}"
+                        onclick="toggleStoreFromSettings()"
+                        style="width: 100%; justify-content: center; min-height: 48px; font-size: 0.92rem; cursor: pointer;">
+                    <span class="status-dot"></span>
+                    <span id="settings-store-toggle-text">{{ $settings->is_open ? 'Kedai BUKA (Menerima Pesanan)' : 'Kedai TUTUP' }}</span>
+                </button>
+                <span class="text-xs text-dim" style="display: block; margin-top: 6px;">Klik tombol di atas untuk langsung mengubah status kedai (Buka / Tutup).</span>
             </div>
 
             <div class="form-group">
@@ -92,13 +95,17 @@
         </h3>
 
         <div class="form-group">
-            <label class="form-check" style="background: var(--surface); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
-                <input type="checkbox" name="delivery_enabled" value="1" {{ old('delivery_enabled', $settings->delivery_enabled) ? 'checked' : '' }}>
-                <div>
-                    <span class="font-semibold block">Aktifkan Pilihan Layanan Delivery pada Website</span>
-                    <span class="text-xs text-muted">Sesuai BR-03: default nonaktif. Hanya aktif jika pemilik siap mengantar pesanan.</span>
-                </div>
-            </label>
+            <label class="form-label">Status Layanan Delivery (Pesan Antar)</label>
+            <input type="hidden" name="delivery_enabled" id="settings-delivery-input" value="{{ old('delivery_enabled', $settings->delivery_enabled) ? '1' : '0' }}">
+            <button type="button"
+                    id="settings-delivery-toggle-btn"
+                    class="store-state {{ $settings->delivery_enabled ? 'is-open' : 'is-closed' }}"
+                    onclick="toggleDeliveryFromSettings()"
+                    style="width: 100%; max-width: 360px; justify-content: center; min-height: 48px; font-size: 0.92rem; cursor: pointer;">
+                <span class="status-dot"></span>
+                <span id="settings-delivery-toggle-text">{{ $settings->delivery_enabled ? 'Delivery AKTIF (Pesan Antar Tersedia)' : 'Delivery NONAKTIF' }}</span>
+            </button>
+            <span class="text-xs text-dim" style="display: block; margin-top: 6px;">Klik tombol di atas untuk langsung mengaktifkan atau menonaktifkan layanan pesan antar di website.</span>
         </div>
 
         <div class="form-group" style="max-width: 300px;">
@@ -114,4 +121,71 @@
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+async function toggleStoreFromSettings() {
+    const btn = document.getElementById('settings-store-toggle-btn');
+    const txt = document.getElementById('settings-store-toggle-text');
+    const input = document.getElementById('settings-is-open-input');
+    const headerBtn = document.getElementById('header-store-toggle-btn');
+    const headerTxt = document.getElementById('header-store-text');
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    try {
+        btn.disabled = true;
+        const resp = await fetch('{{ route("admin.store.toggle") }}', {
+            method: 'PATCH',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+        });
+        if (!resp.ok) throw new Error('Gagal memperbarui status.');
+        const data = await resp.json();
+
+        btn.classList.toggle('is-open', data.is_open);
+        btn.classList.toggle('is-closed', !data.is_open);
+        txt.textContent = data.is_open ? 'Kedai BUKA (Menerima Pesanan)' : 'Kedai TUTUP';
+        if (input) input.value = data.is_open ? '1' : '0';
+
+        if (headerBtn && headerTxt) {
+            headerBtn.classList.toggle('is-open', data.is_open);
+            headerBtn.classList.toggle('is-closed', !data.is_open);
+            headerTxt.textContent = `Kedai: ${data.is_open ? 'BUKA' : 'TUTUP'}`;
+        }
+        if (window.showToast) window.showToast(data.message, 'success');
+    } catch (e) {
+        if (window.showToast) window.showToast('Status kedai gagal diperbarui.', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function toggleDeliveryFromSettings() {
+    const btn = document.getElementById('settings-delivery-toggle-btn');
+    const txt = document.getElementById('settings-delivery-toggle-text');
+    const input = document.getElementById('settings-delivery-input');
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
+
+    try {
+        btn.disabled = true;
+        const resp = await fetch('{{ route("admin.settings.toggle-delivery") }}', {
+            method: 'PATCH',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+        });
+        if (!resp.ok) throw new Error('Gagal memperbarui status delivery.');
+        const data = await resp.json();
+
+        btn.classList.toggle('is-open', data.delivery_enabled);
+        btn.classList.toggle('is-closed', !data.delivery_enabled);
+        txt.textContent = data.delivery_enabled ? 'Delivery AKTIF (Pesan Antar Tersedia)' : 'Delivery NONAKTIF';
+        if (input) input.value = data.delivery_enabled ? '1' : '0';
+
+        if (window.showToast) window.showToast(data.message, 'success');
+    } catch (e) {
+        if (window.showToast) window.showToast('Status layanan delivery gagal diperbarui.', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+</script>
+@endpush
 @endsection

@@ -152,6 +152,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Store Settings
         Route::get('/settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])->name('settings.update');
+        Route::patch('/settings/toggle-delivery', [SettingController::class, 'toggleDelivery'])->name('settings.toggle-delivery');
 
         // Change Password
         Route::get('/password', [AuthController::class, 'showChangePassword'])->name('password.edit');
