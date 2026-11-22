@@ -919,7 +919,6 @@ select.fp-select { appearance: auto; cursor: pointer; }
     .fp-field, .fp-field-sm, .fp-field-md, .fp-field-lg { flex: 1 1 100%; }
 }
 
-
 /* Custom Pagination */
 .glo-pagination {
   display: flex;
@@ -982,7 +981,6 @@ a.glo-page-btn:hover {
   color: var(--text-dim);
   font-size: 0.85rem;
 }
-
 
 /* Order Tracking Stepper */
 .order-timeline {

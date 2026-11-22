@@ -1,72 +1,36 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Builder;
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 class ModifierOption extends Model
-
 {
-
     use HasFactory;
-
     protected $fillable = [
-
         'modifier_group_id',
-
         'name',
-
         'price_delta',
-
         'is_available',
-
         'sort_order',
-
     ];
-
     protected $casts = [
-
         'modifier_group_id' => 'integer',
-
         'price_delta' => 'integer',
-
         'is_available' => 'boolean',
-
         'sort_order' => 'integer',
-
     ];
-
     public function recipes(): HasMany
-
     {
-
         return $this->hasMany(ModifierOptionRecipe::class);
-
     }
-
     public function group(): BelongsTo
-
     {
-
         return $this->belongsTo(ModifierGroup::class, 'modifier_group_id');
-
     }
-
     public function scopeAvailable(Builder $query): Builder
-
     {
-
         return $query->where('is_available', true);
-
     }
-
 }
-
