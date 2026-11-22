@@ -442,39 +442,6 @@ class ReportService
         ];
     }
     /**
-     * Inventory Report data.
-     */
-    public function getInventoryReport(array $period, int $perPage = 20): array
-    {
-        $start = $period['start'];
-        $end = $period['end'];
-        $movementsQuery = StockMovement::whereBetween('created_at', [$start, $end]);
-        $byType = (clone $movementsQuery)
-            ->select('movement_type', DB::raw('COUNT(*) as count'), DB::raw('SUM(ABS(quantity_delta)) as total_qty'))
-            ->groupBy('movement_type')
-            ->pluck('total_qty', 'movement_type')
-            ->all();
-        $materials = RawMaterial::withCount('stockMovements')
-            ->orderBy('name')
-            ->get();
-        $paginatedMovements = (clone $movementsQuery)
-            ->with(['rawMaterial', 'user'])
-            ->latest()
-            ->paginate($perPage)
-            ->withQueryString();
-        return [
-            'materials' => $materials,
-            'by_type' => $byType,
-            'summary' => [
-                'total_materials' => $materials->count(),
-                'low_stock_count' => $materials->filter(fn($m) => (float) $m->current_stock <= (float) $m->minimum_stock)->count(),
-                'total_movements' => (clone $movementsQuery)->count(),
-            ],
-            'movements' => $paginatedMovements,
-            'period' => $period,
-        ];
-    }
-    /**
      * Customer Report data.
      */
     public function getCustomerReport(array $period, int $perPage = 20): array
