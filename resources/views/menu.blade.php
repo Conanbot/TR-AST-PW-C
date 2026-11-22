@@ -3,7 +3,6 @@
 @section('title', 'Katalog Menu & Paket Hemat — Geprek GLO Salatiga')
 
 @section('content')
-<!-- Header Page Section -->
 <section class="menu-hero">
     <div class="container text-center">
         <span class="home-kicker">Pesan tanpa antre</span>
@@ -12,9 +11,7 @@
             Pilih menu favorit Anda, tentukan potongan ayam dan minuman paket, lalu kirimkan langsung pesanan Anda ke WhatsApp kedai.
         </p>
 
-        <!-- Search Bar & Category Filter Bar (FR-03, FR-16) -->
         <div style="max-width: 720px; margin: var(--space-lg) auto 0 auto;">
-            <!-- Search Input -->
             <div style="position: relative; margin-bottom: var(--space-md);">
                 <input type="text" id="menu-search-input" class="form-control" placeholder="Cari nama menu (contoh: ayam crispy, sup, es teh)..." style="padding-left: 42px; border-radius: var(--radius-pill);">
                 <svg style="position: absolute; left: 14px; top: 13px; width: 20px; height: 20px; color: var(--text-dim);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -22,7 +19,6 @@
                 </svg>
             </div>
 
-            <!-- Category Filter Tabs -->
             <div class="flex gap-xs justify-center flex-wrap" id="category-tabs">
                 <button type="button" class="btn btn-secondary btn-sm category-tab {{ $activeCategory === 'all' ? 'active' : '' }}" data-category="all" style="border-radius: var(--radius-pill);">
                     Semua Menu
@@ -38,7 +34,6 @@
 </section>
 
 @if(auth()->check() && auth()->user()->role === 'customer')
-    <!-- User Flow Bar (Login -> Home -> Select / Assign Table | Open Existing Order -> Order Type -> Menu Browser) -->
     <div style="background: var(--surface-card); border-bottom: 1px solid var(--border); padding: 12px 0;">
         <div class="container flex flex-wrap justify-between items-center gap-md">
             <div class="flex items-center gap-sm flex-wrap">
@@ -46,7 +41,7 @@
                 <div class="flex items-center gap-xs">
                     <label for="flow-table-select" class="text-xs text-muted" style="margin-right: 4px;">Pilih / Tetapkan Meja (Dine-In):</label>
                     <select id="flow-table-select" class="form-control" style="padding: 4px 10px; font-size: 0.85rem; width: auto; background: var(--surface); color: var(--text);" onchange="updateFlowTable(this.value)">
-                        <option value="">-- Belum Pilih Meja --</option>
+                        <option value="">Belum Pilih Meja</option>
                         <option value="Meja 1">Meja 1 (Depan)</option>
                         <option value="Meja 2">Meja 2 (Depan)</option>
                         <option value="Meja 3">Meja 3 (Tengah)</option>
@@ -67,7 +62,6 @@
         </div>
     </div>
 @else
-    <!-- Guest checkout notice -->
     <div style="background: rgba(215, 38, 61, 0.08); border-bottom: 1px solid rgba(215, 38, 61, 0.2); padding: 12px 0;">
         <div class="container flex flex-wrap justify-between items-center gap-md">
             <div class="flex items-center gap-sm">
@@ -82,10 +76,8 @@
     </div>
 @endif
 
-<!-- Menu Items Grid Section -->
 <section style="padding: var(--space-xl) 0 var(--space-2xl) 0;">
     <div class="container">
-        <!-- Notice if no item matches filter/search -->
         <div id="no-menu-found" style="display: none; text-align: center; padding: 60px 20px; color: var(--text-muted);">
             <svg style="width: 48px; height: 48px; margin: 0 auto 12px auto; opacity: 0.4;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -97,12 +89,11 @@
         <div class="grid grid-cols-1 grid-cols-2 grid-cols-3 gap-lg" id="menu-grid">
             @foreach($categories as $category)
                 @foreach($category->menuItems as $item)
-                <div class="card menu-card flex flex-col justify-between" 
-                     data-category="{{ $category->slug }}" 
+                <div class="card menu-card flex flex-col justify-between"
+                     data-category="{{ $category->slug }}"
                      data-name="{{ strtolower($item->name) }}"
                      style="{{ !$item->is_available ? 'opacity: 0.7;' : '' }}{{ $activeCategory !== 'all' && $activeCategory !== $category->slug ? ' display: none;' : '' }}">
                     <div>
-                        <!-- Product Image Component with 4:3 Neutral Placeholder (Section 5) -->
                         <x-product-image :src="$item->image" :alt="$item->name" />
 
                         <div style="padding: var(--space-md);">
@@ -127,7 +118,7 @@
                                 Stok Habis
                             </button>
                         @else
-                            <button type="button" class="btn btn-primary btn-sm" 
+                            <button type="button" class="btn btn-primary btn-sm"
                                     onclick='openProductModal(@json($item->toArray() + ["image_url" => $item->image_url]), @json($category->slug))'>
                                 {{ $item->is_package || in_array($category->slug, ['paket-hemat', 'aneka-ayam']) ? 'Pilih Varian' : '+ Tambah' }}
                             </button>
@@ -140,7 +131,6 @@
     </div>
 </section>
 
-<!-- Modal Detail & Varian Produk (FR-05, FR-07, FR-08, BR-08) -->
 <div id="product-detail-modal" class="modal-overlay" onclick="handleProductModalClick(event)">
     <div class="modal-content" role="dialog" aria-labelledby="modal-product-name">
         <div class="modal-header">
@@ -149,10 +139,8 @@
         </div>
 
         <div class="modal-body">
-            <!-- Large Image Placeholder -->
             <div id="modal-product-image-container" style="margin-bottom: var(--space-md);"></div>
 
-            <!-- Price & Description -->
             <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
                 <span id="modal-product-price" style="font-size: 1.35rem; font-weight: 800; color: var(--primary);">Rp0</span>
                 <span id="modal-product-badge"></span>
@@ -168,13 +156,11 @@
             <div id="modifier-groups-container" class="form-group" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
             </div>
 
-            <!-- Special Note (Catatan Khusus) -->
             <div class="form-group" style="padding-top: 12px; border-top: 1px solid var(--border);">
                 <label for="modal-item-note" class="form-label">Catatan Khusus (Opsional)</label>
                 <input type="text" id="modal-item-note" class="form-control" placeholder="Contoh: sambal dipisah, cabai 5, nasi sedikit...">
             </div>
 
-            <!-- Quantity Selector -->
             <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border);">
                 <span class="font-semibold" style="font-size: 0.95rem;">Jumlah Pesanan:</span>
                 <div style="display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 4px 10px;">

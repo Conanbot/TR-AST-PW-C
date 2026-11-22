@@ -1,6 +1,5 @@
 /**
  * Geprek GLO Salatiga - Cart & Checkout Engine
- * Sesuai PRD v1.1 Bab 12, FR-09, FR-10, FR-11, FR-14, BR-01, BR-04, BR-05
  */
 
 const Cart = {
@@ -336,7 +335,7 @@ const Cart = {
             <div style="font-weight: 600; font-size: 0.95rem; color: var(--text);">${escapeHtml(item.name)}</div>
             <button type="button" onclick="Cart.removeItem('${item.key}')" style="color: var(--text-dim); padding: 2px 6px;" title="Hapus menu">&times;</button>
           </div>
-          
+
           ${(item.variantName || item.modifiers?.length || item.cut || item.drink) ? `
             <div class="text-xs" style="color: var(--text-muted); display: flex; gap: 8px; flex-wrap: wrap;">
               ${item.variantName ? `<span class="badge" style="background: rgba(255,255,255,0.06); padding: 2px 8px; font-size: 0.75rem; border: 1px solid var(--border);">Varian: ${escapeHtml(item.variantName)}</span>` : ''}
@@ -415,7 +414,7 @@ const Cart = {
       if (!this.settings.isOpen) {
         closedWarningEl.style.display = 'block';
         closedWarningEl.innerHTML = `
-          <strong>Kedai Sedang Tutup:</strong> 
+          <strong>Kedai Sedang Tutup:</strong>
           Saat ini kedai sedang berstatus Tutup. Anda tetap dapat mengirimkan pesan ke WhatsApp untuk menanyakan jadwal buka berikutnya.
         `;
       } else {

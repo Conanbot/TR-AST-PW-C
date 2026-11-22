@@ -3,7 +3,6 @@
 @section('title', 'Profil Usaha & Sejarah — Geprek GLO Salatiga')
 
 @section('content')
-<!-- Header Banner Section -->
 <section style="background: radial-gradient(circle at 50% 10%, rgba(215, 38, 61, 0.15), transparent 75%); padding: var(--space-2xl) 0 var(--space-xl) 0; border-bottom: 1px solid var(--border);">
     <div class="container text-center">
         <span class="badge badge-promo" style="margin-bottom: 10px;">Tentang Geprek GLO</span>
@@ -14,10 +13,8 @@
     </div>
 </section>
 
-<!-- Konten Utama Profil -->
 <section style="padding: var(--space-2xl) 0;">
     <div class="container">
-        <!-- Grid Informasi Pemilik & Kedai -->
         <div class="grid grid-cols-1 grid-cols-2 gap-xl items-center" style="margin-bottom: var(--space-2xl);">
             <div>
                 <span class="badge badge-best-seller" style="margin-bottom: 8px;">Sosok di Balik Rasa</span>
@@ -40,7 +37,6 @@
                 </div>
             </div>
 
-            <!-- Placeholder Foto Kedai / Pemilik (Section 5 Ketentuan Foto) -->
             <div class="card" style="padding: 12px; background: var(--surface-card);">
                 <div class="product-image-box" style="aspect-ratio: 4/3; border-radius: var(--radius-md);">
                     <div class="placeholder-content">
@@ -57,7 +53,6 @@
             </div>
         </div>
 
-        <!-- Kronologi Perjalanan Usaha (FR-02) -->
         <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-2xl);">
             <div class="text-center" style="max-width: 650px; margin: 0 auto var(--space-xl) auto;">
                 <span class="badge badge-promo" style="margin-bottom: 8px;">Perjalanan Waktu</span>
@@ -67,9 +62,7 @@
                 </p>
             </div>
 
-            <!-- Linimasa Kronologi -->
             <div style="display: flex; flex-direction: column; gap: 20px; max-width: 780px; margin: 0 auto; position: relative;">
-                <!-- Step 1: 2022 -->
                 <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--primary); font-size: 1.15rem;">Awal 2022 — Titik Awal di Blotongan</h4>
@@ -80,7 +73,6 @@
                     </p>
                 </div>
 
-                <!-- Step 2: Perpindahan Ngawen -->
                 <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--warning); font-size: 1.15rem;">Periode Ngawen — Menjajaki Pasar Baru</h4>
@@ -91,7 +83,6 @@
                     </p>
                 </div>
 
-                <!-- Step 3: 2024 -->
                 <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--info); font-size: 1.15rem;">Tahun 2024 — Kembali Beroperasi di Blotongan</h4>
@@ -102,7 +93,6 @@
                     </p>
                 </div>
 
-                <!-- Step 4: 2025 -->
                 <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--ok); font-size: 1.15rem;">Tahun 2025 — Kelahiran Brand &amp; Produk Geprek GLO</h4>
@@ -115,7 +105,6 @@
             </div>
         </div>
 
-        <!-- Keunikan Cita Rasa Produk -->
         <div style="margin-bottom: var(--space-2xl);">
             <div class="text-center" style="max-width: 650px; margin: 0 auto var(--space-xl) auto;">
                 <span class="badge badge-promo" style="margin-bottom: 8px;">Ciri Khas Kuliner</span>
@@ -160,7 +149,6 @@
             </div>
         </div>
 
-        <!-- Tombol Ajak Pesan -->
         <div class="text-center">
             <h3 style="margin-bottom: 12px;">Ingin Mencicipi Kelezatannya Hari Ini?</h3>
             <p class="text-muted text-sm" style="margin-bottom: 20px;">

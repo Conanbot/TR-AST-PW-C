@@ -48,7 +48,6 @@
             </div>
         </div>
 
-        <!-- Banner Image & Replacement -->
         <div class="form-group" style="padding: var(--space-md); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
             <label class="form-label">Gambar Banner Saat Ini</label>
             <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">

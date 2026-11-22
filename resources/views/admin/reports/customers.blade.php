@@ -10,7 +10,6 @@
     'period' => $period,
 ])
 
-{{-- KPI Summary --}}
 <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom:var(--space-lg);">
     <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Master Pelanggan</div>
@@ -25,7 +24,7 @@
         <div style="font-size:1.5rem;font-weight:800;color:#2ecc71;margin-top:4px;">
             +{{ number_format($data['summary']['new_customers_in_period'], 0, ',', '.') }} Orang
         </div>
-        <div class="text-xs text-muted" style="margin-top:2px;">Pertama kali terdata dari guest checkout</div>
+        <div class="text-xs text-muted" style="margin-top:2px;">Pelanggan baru terdaftar pada periode ini</div>
     </div>
 
     <div class="card" style="padding:var(--space-md);">
@@ -45,7 +44,6 @@
     </div>
 </div>
 
-{{-- Top Customers Ranking Table --}}
 <section class="card" style="padding:var(--space-md);overflow-x:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <h3>Peringkat Kontribusi Pelanggan</h3>

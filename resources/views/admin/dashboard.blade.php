@@ -3,7 +3,6 @@
 @section('title', 'Dashboard Operasional & Bisnis — Geprek GLO Salatiga')
 
 @section('content')
-<!-- Header & Quick Toggle Bar -->
 <div class="card" style="padding: var(--space-lg); margin-bottom: var(--space-lg); background: var(--surface-card);">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
         <div>
@@ -16,7 +15,6 @@
             </p>
         </div>
 
-        <!-- Big Store Status Toggle Button (FR-18, FR-19, US-11) -->
         <div id="store-status" style="display: flex; align-items: center; gap: 12px; background: var(--surface); padding: 8px 16px; border-radius: var(--radius-md); border: 1px solid var(--border);">
             <div>
                 <span class="text-xs text-muted block">Status Kedai Publik:</span>
@@ -37,7 +35,6 @@
     </div>
 @endif
 
-<!-- Quick Navigation Bar for Operational Dashboard -->
 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: var(--space-xl); background: var(--surface); padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
     <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
         <a href="#ia-sales" class="btn btn-secondary btn-sm">
@@ -68,9 +65,6 @@
     </a>
 </div>
 
-<!-- ==========================================
-     SECTION 1: SALES SUMMARY & ANALYTICS
-     ========================================== -->
 <section id="ia-sales" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
         <div>
@@ -83,7 +77,6 @@
         </div>
     </div>
 
-    <!-- 4 KPI Sales Summary Cards -->
     <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom: var(--space-lg);">
         <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Pendapatan Berhasil (Paid Hari Ini)</div>
@@ -129,7 +122,6 @@
         </div>
     </div>
 
-    <!-- Sales Chart Widget -->
     <div class="card" style="padding: var(--space-md); margin-bottom: var(--space-lg);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
             <div>
@@ -169,12 +161,11 @@
         @endforeach
     </div>
 
-    <!-- Top Selling Products (Snapshot from Order Items) -->
     <div class="card" style="padding: var(--space-md);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <div>
                 <h4 style="font-size: 1.1rem; color: #FFFFFF;">Top Selling Products (Menu Terlaris)</h4>
-                <p class="text-xs text-muted">Berdasarkan unit kuantitas terjual dan line total snapshot transaksi.</p>
+                <p class="text-xs text-muted">Berdasarkan jumlah porsi dan total penjualan.</p>
             </div>
             <a href="{{ route('admin.reports.products') }}" class="btn btn-secondary btn-sm">Lihat Semua Menu &rarr;</a>
         </div>
@@ -224,9 +215,6 @@
     </div>
 </section>
 
-<!-- ==========================================
-     SECTION 2: ORDER STATUS & ACTIVE ORDERS
-     ========================================== -->
 <section id="ia-orders" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
         <div>
@@ -239,7 +227,6 @@
         </div>
     </div>
 
-    <!-- Status Overview Chips -->
     <div class="grid grid-cols-2 grid-cols-6 gap-sm" style="margin-bottom: var(--space-md);">
         <a href="{{ route('admin.orders.index', ['status' => 'pending']) }}" class="card" style="padding: 10px; text-decoration: none; color: inherit; text-align: center;">
             <div class="text-xs text-muted">Pending</div>
@@ -267,7 +254,6 @@
         </a>
     </div>
 
-    <!-- Active Orders Table (Quick Actions) -->
     <div class="card" style="padding: var(--space-md);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <h4 style="font-size: 1.1rem; color: #FFFFFF;">Pesanan Terbaru Masuk</h4>
@@ -379,9 +365,6 @@
     </div>
 </section>
 
-<!-- ==========================================
-     SECTION 3: CUSTOMER, PAYMENT & PROMO OVERVIEWS
-     ========================================== -->
 <section id="ia-customers" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
         <div>
@@ -395,7 +378,6 @@
     </div>
 
     <div class="grid grid-cols-1 grid-cols-3 gap-md">
-        <!-- Customer Overview -->
         <div class="card" style="padding: var(--space-md);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                 <h4 style="font-size:1.05rem;color:#FFFFFF;margin:0;">Pelanggan (Customers)</h4>
@@ -428,7 +410,6 @@
             </div>
         </div>
 
-        <!-- Payment Overview -->
         <div class="card" style="padding: var(--space-md);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                 <h4 style="font-size:1.05rem;color:#FFFFFF;margin:0;">Pembayaran (Payments)</h4>
@@ -451,7 +432,6 @@
             </div>
         </div>
 
-        <!-- Promotion Overview -->
         <div class="card" style="padding: var(--space-md);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                 <h4 style="font-size:1.05rem;color:#FFFFFF;margin:0;">Promosi (Promotions)</h4>
@@ -477,9 +457,6 @@
     </div>
 </section>
 
-<!-- ==========================================
-     IA SECTION 5: KITCHEN (COOKING QUEUE)
-     ========================================== -->
 <section id="ia-kitchen" style="margin-bottom: var(--space-2xl);">
     <div style="margin-bottom: 12px;">
         <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Information Architecture: Kitchen</span>
@@ -488,7 +465,6 @@
     </div>
 
     <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom: var(--space-lg);">
-        <!-- Column 1: Queued -->
         <div class="card" style="padding: var(--space-md);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
                 <h4 style="font-size: 1rem; color: #FFFFFF;">1. Queued (Menunggu)</h4>
@@ -503,7 +479,7 @@
                         <span class="badge" style="font-size: 0.7rem; background: rgba(255,255,255,0.06);">{{ $qOrder->table_number ?: $qOrder->service_method }}</span>
                     </div>
                     <div class="text-xs text-muted" style="margin-bottom: 6px;">{{ $qOrder->customer_name }} &middot; {{ $qOrder->created_at->format('H:i') }}</div>
-                    
+
                     <div class="text-xs" style="margin-bottom: 8px; border-top: 1px dashed var(--border); padding-top: 6px;">
                         @foreach($qOrder->items as $it)
                             <div>&bull; {{ $it->quantity }}x {{ $it->item_name }} @if($it->chicken_cut)({{ $it->chicken_cut }})@endif</div>
@@ -531,7 +507,6 @@
             </div>
         </div>
 
-        <!-- Column 2: Prepared -->
         <div class="card" style="padding: var(--space-md);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
                 <h4 style="font-size: 1rem; color: #FFFFFF;">2. Prepared (Sedang Dimasak)</h4>
@@ -568,7 +543,6 @@
             </div>
         </div>
 
-        <!-- Column 3: Ready -->
         <div class="card" style="padding: var(--space-md);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
                 <h4 style="font-size: 1rem; color: #FFFFFF;">3. Ready (Siap Disajikan)</h4>
@@ -603,9 +577,6 @@
     </div>
 </section>
 
-<!-- ==========================================
-     IA SECTION 6: MENU CATEGORIES & ADD-ONS
-     ========================================== -->
 <section id="ia-menu" style="margin-bottom: var(--space-2xl);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
         <div>
@@ -618,7 +589,6 @@
         </div>
     </div>
 
-    <!-- 4 Metrics for Menu Categories -->
     <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom: var(--space-md);">
         <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Total Menu Items</div>
@@ -642,7 +612,6 @@
         </div>
     </div>
 
-    <!-- Add-Ons Section Table (From IA) -->
     <div class="card" style="padding: var(--space-md); margin-bottom: var(--space-lg);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <div>
@@ -677,9 +646,6 @@
     </div>
 </section>
 
-<!-- ==========================================
-     IA SECTION 7: SUPPORT & NOTES
-     ========================================== -->
 <section id="ia-support" style="margin-bottom: var(--space-2xl);">
     <div style="margin-bottom: 12px;">
         <span class="eyebrow" style="color: var(--primary); font-weight: 700;">Information Architecture: Support / Notes</span>
@@ -687,7 +653,6 @@
     </div>
 
     <div class="grid grid-cols-1 grid-cols-2 gap-md">
-        <!-- Order Notes & Customer Requests -->
         <div class="card" style="padding: var(--space-md);">
             <h4 style="font-size: 1.05rem; margin-bottom: 10px; color: #FFFFFF;">
                 Order Notes &amp; Customer Requests Terbaru
@@ -722,7 +687,6 @@
             </div>
         </div>
 
-        <!-- Staff Messages (Kitchen Delay, Item Unavailable) -->
         <div class="card" style="padding: var(--space-md);">
             <h4 style="font-size: 1.05rem; margin-bottom: 10px; color: #FFFFFF;">
                 Staff Messages &amp; Pengumuman Kedai
@@ -732,7 +696,6 @@
             </p>
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Staff Alert 1: Kitchen Delay -->
                 <div style="background: rgba(243, 156, 18, 0.1); border: 1px solid rgba(243, 156, 18, 0.3); border-radius: var(--radius-md); padding: 12px;">
                     <div class="flex items-center gap-xs" style="margin-bottom: 4px;">
                         <span class="badge" style="background: var(--warning); color: #000; font-weight: 700; font-size: 0.7rem;">Kitchen Delay</span>
@@ -747,7 +710,6 @@
                     </p>
                 </div>
 
-                <!-- Staff Alert 2: Item Unavailable -->
                 <div style="background: {{ $outOfStockMenu > 0 ? 'rgba(215, 38, 61, 0.1)' : 'rgba(39, 174, 96, 0.1)' }}; border: 1px solid {{ $outOfStockMenu > 0 ? 'rgba(215, 38, 61, 0.3)' : 'rgba(39, 174, 96, 0.3)' }}; border-radius: var(--radius-md); padding: 12px;">
                     <div class="flex items-center gap-xs" style="margin-bottom: 4px;">
                         <span class="badge {{ $outOfStockMenu > 0 ? 'badge-closed' : 'badge-open' }}" style="font-size: 0.7rem;">
@@ -770,7 +732,6 @@
     </div>
 </section>
 
-<!-- Potongan Ayam & Minuman Quick Toggles -->
 <div class="grid grid-cols-1 grid-cols-2 gap-lg" style="margin-bottom: var(--space-xl);">
     <div class="card" style="padding: var(--space-lg);">
         <h4 style="margin-bottom: 12px; font-size: 1.05rem;">Status Stok Potongan Ayam</h4>
@@ -778,8 +739,8 @@
             @foreach($chickenCuts as $cut)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                 <span style="font-weight: 500;">{{ $cut->name }}</span>
-                <button type="button" 
-                        class="badge {{ $cut->is_available ? 'badge-open' : 'badge-closed' }}" 
+                <button type="button"
+                        class="badge {{ $cut->is_available ? 'badge-open' : 'badge-closed' }}"
                         onclick="quickToggleCut({{ $cut->id }}, this)"
                         style="cursor: pointer; border: 1px solid currentColor;">
                     {{ $cut->is_available ? 'Tersedia' : 'Habis' }}
@@ -795,8 +756,8 @@
             @foreach($drinkOptions as $drink)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                 <span style="font-weight: 500;">{{ $drink->name }}</span>
-                <button type="button" 
-                        class="badge {{ $drink->is_available ? 'badge-open' : 'badge-closed' }}" 
+                <button type="button"
+                        class="badge {{ $drink->is_available ? 'badge-open' : 'badge-closed' }}"
                         onclick="quickToggleDrink({{ $drink->id }}, this)"
                         style="cursor: pointer; border: 1px solid currentColor;">
                     {{ $drink->is_available ? 'Tersedia' : 'Habis' }}

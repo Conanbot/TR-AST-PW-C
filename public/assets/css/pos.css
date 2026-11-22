@@ -982,3 +982,105 @@ a.glo-page-btn:hover {
   color: var(--text-dim);
   font-size: 0.85rem;
 }
+
+
+/* Order Tracking Stepper */
+.order-timeline {
+  display: flex;
+  flex-direction: column;
+}
+.order-step {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+}
+.order-step-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 34px;
+}
+.order-step-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  flex: 0 0 34px;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.order-step-line {
+  width: 2px;
+  flex: 1 1 22px;
+  min-height: 22px;
+  margin: 4px 0;
+  background: var(--border);
+  border-radius: 2px;
+}
+.order-step-body {
+  flex: 1 1 auto;
+  padding: 4px 0 18px;
+}
+.order-step:last-child .order-step-body {
+  padding-bottom: 2px;
+}
+.order-step-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.order-step-title strong {
+  font-size: 0.96rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.order-step-desc {
+  margin: 3px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+.order-step-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: var(--red-100);
+  color: var(--primary);
+}
+html[data-theme="dark"] .order-step-pill {
+  background: #49272A;
+  color: #FF9B95;
+}
+.order-step.is-done .order-step-dot {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #FFFFFF;
+}
+.order-step.is-done .order-step-line {
+  background: var(--ok);
+}
+.order-step.is-done .order-step-title strong {
+  color: var(--text);
+}
+.order-step.is-current .order-step-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #FFFFFF;
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+.order-step.is-current .order-step-title strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.order-step.is-current .order-step-desc {
+  color: var(--text-muted);
+}

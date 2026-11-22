@@ -10,7 +10,6 @@
     'period' => $period,
 ])
 
-{{-- KPI Summary --}}
 <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom:var(--space-lg);">
     <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Pembayaran Berhasil (Paid)</div>
@@ -45,7 +44,6 @@
     </div>
 </div>
 
-{{-- Method Breakdown Cards --}}
 <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom:var(--space-lg);">
     @forelse($data['by_method'] as $method)
         @php
@@ -79,7 +77,6 @@
     @endforelse
 </div>
 
-{{-- Transaction Table --}}
 <section class="card" style="padding:var(--space-md);overflow-x:auto;">
     <h3 style="margin-bottom:12px;">Riwayat Transaksi Pembayaran</h3>
     <table class="table" style="width:100%;font-size:0.9rem;">

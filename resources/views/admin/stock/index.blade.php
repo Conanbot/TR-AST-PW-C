@@ -10,7 +10,6 @@
     </p>
 </div>
 
-<!-- Potongan Ayam & Minuman Grid -->
 <div class="grid grid-cols-1 grid-cols-2 gap-md" style="margin-bottom: var(--space-xl);">
     <div class="card" style="padding: var(--space-md);">
         <h4 style="margin-bottom: 10px;">Potongan Ayam</h4>
@@ -18,7 +17,7 @@
             @foreach($chickenCuts as $cut)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md);">
                 <span>{{ $cut->name }}</span>
-                <button type="button" 
+                <button type="button"
                         class="badge {{ $cut->is_available ? 'badge-open' : 'badge-closed' }}"
                         onclick="toggleCutStatus({{ $cut->id }}, this)">
                     {{ $cut->is_available ? 'Tersedia' : 'Habis' }}
@@ -34,7 +33,7 @@
             @foreach($drinkOptions as $drink)
             <div style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); padding: 8px 12px; border-radius: var(--radius-md);">
                 <span>{{ $drink->name }}</span>
-                <button type="button" 
+                <button type="button"
                         class="badge {{ $drink->is_available ? 'badge-open' : 'badge-closed' }}"
                         onclick="toggleDrinkStatus({{ $drink->id }}, this)">
                     {{ $drink->is_available ? 'Tersedia' : 'Habis' }}
@@ -45,7 +44,6 @@
     </div>
 </div>
 
-<!-- Daftar Seluruh Menu Items -->
 <div class="card" style="padding: var(--space-md);">
     <h4 style="margin-bottom: 12px;">Daftar Seluruh Menu</h4>
     <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -58,8 +56,8 @@
                 </div>
             </div>
 
-            <button type="button" 
-                    class="badge {{ $item->is_available ? 'badge-open' : 'badge-closed' }}" 
+            <button type="button"
+                    class="badge {{ $item->is_available ? 'badge-open' : 'badge-closed' }}"
                     onclick="toggleItemStatus({{ $item->id }}, this)"
                     style="cursor: pointer; padding: 6px 12px; font-size: 0.8rem;">
                 {{ $item->is_available ? 'Tersedia' : 'Habis' }}

@@ -65,19 +65,60 @@
             @endif
         </div>
         <div class="card" style="padding: var(--space-lg); margin-top: var(--space-lg);">
-            <h2>Perjalanan pesanan</h2>
-            <ol class="stack-sm" style="margin-top: 16px; padding-left: 20px;">
-                @foreach(['pending' => 'Pesanan diterima', 'confirmed' => 'Pesanan dikonfirmasi', 'preparing' => 'Sedang diproses', 'ready' => 'Siap diambil/diantar', 'completed' => 'Pesanan selesai', 'cancelled' => 'Pesanan dibatalkan'] as $status => $label)
-                    @php
-                        $statusRank = ['pending' => 1, 'confirmed' => 2, 'preparing' => 3, 'ready' => 4, 'completed' => 5, 'cancelled' => 99];
-                        $currentRank = $statusRank[$order->status] ?? 0;
-                        $reached = $order->status === 'cancelled'
-                            ? $status === 'cancelled'
-                            : $statusRank[$status] <= $currentRank;
-                    @endphp
-                    <li style="{{ $reached ? 'font-weight: 700; color: var(--primary);' : 'color: var(--text-muted);' }}">{{ $label }}</li>
-                @endforeach
-            </ol>
+            <h2 style="margin-bottom: 18px;">Perjalanan Pesanan</h2>
+
+            @if($order->status === 'cancelled')
+                <div class="alert alert-error" style="display: flex; align-items: center; gap: 12px; margin: 0;">
+                    <i class="fa-solid fa-circle-xmark" style="font-size: 1.35rem;" aria-hidden="true"></i>
+                    <div>
+                        <strong style="display: block;">Pesanan Dibatalkan</strong>
+                        @if($order->cancellation_reason)
+                            <span class="text-sm">{{ $order->cancellation_reason }}</span>
+                        @else
+                            <span class="text-sm">Pesanan ini telah dibatalkan.</span>
+                        @endif
+                    </div>
+                </div>
+            @else
+                @php
+                    $steps = [
+                        'pending'   => ['label' => 'Pesanan Diterima', 'desc' => 'Pesanan Anda telah masuk ke sistem.', 'icon' => 'fa-receipt', 'rank' => 1],
+                        'confirmed' => ['label' => 'Dikonfirmasi', 'desc' => 'Kedai telah mengonfirmasi pesanan Anda.', 'icon' => 'fa-clipboard-check', 'rank' => 2],
+                        'preparing' => ['label' => 'Sedang Diproses', 'desc' => 'Hidangan sedang dimasak di dapur.', 'icon' => 'fa-fire-burner', 'rank' => 3],
+                        'ready'     => ['label' => 'Siap Diambil / Diantar', 'desc' => 'Pesanan sudah siap disajikan atau diantar.', 'icon' => 'fa-bag-shopping', 'rank' => 4],
+                        'completed' => ['label' => 'Pesanan Selesai', 'desc' => 'Terima kasih sudah memesan di Geprek GLO.', 'icon' => 'fa-check', 'rank' => 5],
+                    ];
+                    $currentRank = $steps[$order->status]['rank'] ?? 1;
+                @endphp
+
+                <div class="order-timeline">
+                    @foreach($steps as $key => $step)
+                        @php
+                            $isDone = $step['rank'] < $currentRank || ($order->status === 'completed' && $step['rank'] === 5);
+                            $isCurrent = $step['rank'] === $currentRank && $order->status !== 'completed';
+                        @endphp
+                        <div class="order-step {{ $isDone ? 'is-done' : ($isCurrent ? 'is-current' : 'is-upcoming') }}">
+                            <div class="order-step-marker">
+                                <span class="order-step-dot">
+                                    <i class="fa-solid {{ $isDone ? 'fa-check' : $step['icon'] }}" aria-hidden="true"></i>
+                                </span>
+                                @if(!$loop->last)
+                                    <span class="order-step-line"></span>
+                                @endif
+                            </div>
+                            <div class="order-step-body">
+                                <div class="order-step-title">
+                                    <strong>{{ $step['label'] }}</strong>
+                                    @if($isCurrent)
+                                        <span class="order-step-pill">Saat ini</span>
+                                    @endif
+                                </div>
+                                <p class="order-step-desc">{{ $step['desc'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </div>
 </section>

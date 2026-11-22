@@ -41,10 +41,9 @@
             <textarea id="description" name="description" class="form-control">{{ old('description', $item->description) }}</textarea>
         </div>
 
-        <!-- Foto Produk & Penggantian (Section 5) -->
         <div class="form-group" style="padding: var(--space-md); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);">
             <label class="form-label">Foto Produk Saat Ini</label>
-            
+
             <div style="display: flex; gap: 16px; align-items: center; margin-bottom: 12px;">
                 <div style="width: 100px; aspect-ratio: 4/3; border-radius: var(--radius-sm); overflow: hidden; background: #171719;">
                     @if($item->image_url)
@@ -82,7 +81,6 @@
             </p>
         </div>
 
-        <!-- Checkbox Options -->
         <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-top: var(--space-md); margin-bottom: var(--space-lg);">
             <label class="form-check" style="background: var(--surface); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                 <input type="checkbox" name="is_available" value="1" {{ old('is_available', $item->is_available) ? 'checked' : '' }}>

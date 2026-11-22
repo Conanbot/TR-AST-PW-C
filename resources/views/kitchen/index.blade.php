@@ -33,7 +33,6 @@
 <div id="kds-error" class="alert alert-error" style="display:none;" role="alert"></div>
 
 <div id="kds-board" style="display:grid;gap:14px;">
-    {{-- Filled by JS polling --}}
 </div>
 
 <div id="kds-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted);">

@@ -1,6 +1,5 @@
 /**
  * Geprek GLO Salatiga - Design Tokens & Core Styles
- * Sesuai PRD v1.1 Bab 13 & Ketentuan Desain UI/UX
  */
 
 :root {
@@ -29,7 +28,7 @@
   --primary-glow: rgba(185, 28, 43, 0.14);
   --accent: var(--yellow-500);
   --accent-soft: var(--yellow-100);
-  
+
   /* Status Colors */
   --ok: #187847;
   --ok-glow: rgba(46, 204, 113, 0.2);

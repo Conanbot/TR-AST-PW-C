@@ -15,7 +15,6 @@
         @csrf
         @method('PUT')
 
-        <!-- Status Kedai & WhatsApp -->
         <h3 style="font-size: 1.15rem; margin-bottom: 14px; color: #FFFFFF; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
             1. Status Operasional &amp; Jalur Pemesanan
         </h3>
@@ -51,11 +50,10 @@
             <div class="form-group">
                 <label for="packaging_fee" class="form-label">Biaya Kemasan Takeaway (Rupiah) <span class="text-primary">*</span></label>
                 <input type="number" id="packaging_fee" name="packaging_fee" class="form-control" value="{{ old('packaging_fee', $settings->packaging_fee) }}" min="0" required>
-                <span class="text-xs text-dim">Sesuai aturan bisnis: default Rp1.000 per pesanan bungkus.</span>
+                <span class="text-xs text-dim">Default Rp1.000 per pesanan bungkus.</span>
             </div>
         </div>
 
-        <!-- Alamat & Lokasi Maps -->
         <h3 style="font-size: 1.15rem; margin-bottom: 14px; color: #FFFFFF; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
             2. Lokasi, Alamat &amp; Ulasan Google
         </h3>
@@ -89,7 +87,6 @@
             </div>
         </div>
 
-        <!-- Layanan Delivery (Pesan Antar) -->
         <h3 style="font-size: 1.15rem; margin-bottom: 14px; color: #FFFFFF; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
             3. Pengaturan Layanan Pesan Antar (Delivery)
         </h3>
@@ -111,7 +108,7 @@
         <div class="form-group" style="max-width: 300px;">
             <label for="delivery_radius_m" class="form-label">Batas Radius Maksimal Antar (Meter) <span class="text-primary">*</span></label>
             <input type="number" id="delivery_radius_m" name="delivery_radius_m" class="form-control" value="{{ old('delivery_radius_m', $settings->delivery_radius_m ?? 800) }}" min="100" max="800" required>
-            <span class="text-xs text-dim">Standar PRD: maksimal 800 meter dari kedai Blotongan.</span>
+            <span class="text-xs text-dim">Maksimal 800 meter dari kedai Blotongan.</span>
         </div>
 
         <div class="flex gap-md justify-end" style="margin-top: var(--space-xl); border-top: 1px solid var(--border); padding-top: var(--space-md);">

@@ -3,7 +3,6 @@
 @section('title', 'Lokasi & Kontak Kedai — Geprek GLO Salatiga')
 
 @section('content')
-<!-- Header Page Section -->
 <section style="background: radial-gradient(circle at 50% 10%, rgba(215, 38, 61, 0.12), transparent 75%); padding: var(--space-xl) 0 var(--space-md) 0; border-bottom: 1px solid var(--border);">
     <div class="container text-center">
         <span class="badge badge-promo" style="margin-bottom: 8px;">Informasi Kedai</span>
@@ -14,13 +13,10 @@
     </div>
 </section>
 
-<!-- Content Section -->
 <section style="padding: var(--space-2xl) 0;">
     <div class="container">
         <div class="grid grid-cols-1 grid-cols-2 gap-xl items-start">
-            <!-- Kolom Informasi Kontak & Jam Buka -->
             <div style="display: flex; flex-direction: column; gap: var(--space-md);">
-                <!-- Status Buka Kedai -->
                 @php
                     $isOpen = $settings->is_open ?? true;
                 @endphp
@@ -40,7 +36,6 @@
                     </p>
                 </div>
 
-                <!-- Alamat Lengkap & Petunjuk Arah -->
                 <div class="card" style="padding: var(--space-lg);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                         <i class="fa-solid fa-location-dot" aria-hidden="true" style="font-size: 1.4rem;"></i>
@@ -57,7 +52,6 @@
                     </div>
                 </div>
 
-                <!-- Jam Operasional -->
                 <div class="card" style="padding: var(--space-lg);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                         <i class="fa-solid fa-clock" aria-hidden="true" style="font-size: 1.4rem;"></i>
@@ -71,7 +65,6 @@
                     </span>
                 </div>
 
-                <!-- WhatsApp & Media Sosial (FR-12, FR-13) -->
                 <div class="card" style="padding: var(--space-lg);">
                     <div class="flex items-center gap-sm" style="margin-bottom: 8px;">
                         <i class="fa-solid fa-comment-dots" aria-hidden="true" style="font-size: 1.4rem;"></i>
@@ -93,7 +86,6 @@
                 </div>
             </div>
 
-            <!-- Kolom Google Maps Embed (FR-12) -->
             <div class="card" style="padding: var(--space-md); overflow: hidden;">
                 <div class="flex items-center justify-between" style="margin-bottom: 12px;">
                     <div class="flex items-center gap-sm">
@@ -103,15 +95,14 @@
                     <span class="text-xs text-muted">Salatiga, Jawa Tengah</span>
                 </div>
 
-                <!-- Google Maps Embed Iframe -->
                 <div style="width: 100%; height: 420px; border-radius: var(--radius-md); overflow: hidden; background: #1C1C1F; border: 1px solid var(--border);">
-                    <iframe 
+                    <iframe
                         title="Google Maps Lokasi Geprek GLO Salatiga"
-                        width="100%" 
-                        height="100%" 
-                        style="border:0;" 
-                        loading="lazy" 
-                        allowfullscreen 
+                        width="100%"
+                        height="100%"
+                        style="border:0;"
+                        loading="lazy"
+                        allowfullscreen
                         referrerpolicy="no-referrer-when-downgrade"
                         src="https://maps.google.com/maps?q=-7.3117469,110.4851234&hl=id&z=15&output=embed">
                     </iframe>

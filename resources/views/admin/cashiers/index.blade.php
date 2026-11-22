@@ -34,7 +34,6 @@
                 </div>
                 <span class="role-pill role-pill-cashier">Kasir</span>
 
-                {{-- Reset Password Modal Toggle --}}
                 <details style="position:relative;">
                     <summary class="btn btn-secondary btn-sm" style="cursor:pointer; list-style:none;">
                         <i class="fa-solid fa-key" aria-hidden="true"></i>
@@ -56,7 +55,6 @@
                     </div>
                 </details>
 
-                {{-- Delete --}}
                 <form action="{{ route('admin.cashiers.destroy', $cashier) }}" method="POST" onsubmit="return confirm('Hapus akun kasir {{ addslashes($cashier->name) }}?')" style="margin:0;">
                     @csrf @method('DELETE')
                     <button class="btn btn-secondary btn-sm" type="submit" style="color:#FF5A5F;">

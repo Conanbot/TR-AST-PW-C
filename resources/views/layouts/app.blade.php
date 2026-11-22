@@ -224,14 +224,13 @@
                         </div>
                     </div>
 
-                    <!-- Table Selection for Dine-In (User Flow: Select / Assign Table) -->
                     <div id="table-number-container" class="form-group" style="margin-top: 10px;">
                         <label for="table-number" class="form-label" style="display: flex; justify-content: space-between;">
                             <span>Pilih / Tetapkan Nomor Meja (Dine-In)</span>
                             <span class="text-xs text-muted">Makan di tempat</span>
                         </label>
                         <select id="table-number" class="form-control" style="background: var(--surface); color: var(--text);">
-                            <option value="">-- Pilih Meja Anda --</option>
+                            <option value="">Pilih Meja Anda</option>
                             <option value="Meja 1">Meja 1 (Depan)</option>
                             <option value="Meja 2">Meja 2 (Depan)</option>
                             <option value="Meja 3">Meja 3 (Tengah)</option>
@@ -294,7 +293,6 @@
                         </div>
                     </div>
 
-                    <!-- Information Architecture: Order Notes (Priority Service, Add Cutlery, Birthday Message, Table Change) -->
                     <div class="form-group" style="margin-top: 14px;">
                         <label class="form-label" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;">Catatan Khusus Pesanan (Pilihan Cepat):</label>
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
@@ -463,7 +461,6 @@
         </div>
     </footer>
 
-    <!-- Modal Wajib Login / Daftar untuk Tamu (Gating Pemesanan & Menu) -->
     <div id="auth-required-modal" class="modal-overlay" onclick="handleAuthModalClick(event)">
         <div class="modal-content" role="dialog" aria-labelledby="auth-modal-title" style="max-width: 440px; text-align: center; padding: 28px 24px;">
             <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(215, 38, 61, 0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; color: var(--primary);">

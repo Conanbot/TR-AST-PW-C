@@ -47,7 +47,6 @@
             </div>
         </div>
 
-        <!-- Banner Image Upload with Preview -->
         <div class="form-group" style="padding: var(--space-md); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-md);">
             <label for="image" class="form-label">Gambar Banner Promo (Opsional)</label>
             <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/jpg" style="padding: 6px;" onchange="previewPromoImage(this)">

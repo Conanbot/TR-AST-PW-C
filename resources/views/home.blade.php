@@ -88,7 +88,7 @@
             <div class="card flex flex-col justify-between">
                 <div>
                     <x-product-image :src="$item->image" :alt="$item->name" />
-                    
+
                     <div style="padding: var(--space-md);">
                         <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                             <span class="text-xs text-muted">{{ $item->category->name ?? 'Aneka Ayam' }}</span>

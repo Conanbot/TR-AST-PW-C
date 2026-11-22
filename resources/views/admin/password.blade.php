@@ -15,7 +15,6 @@
         @csrf
         @method('PUT')
 
-        <!-- Password Saat Ini -->
         <div class="form-group">
             <label for="current_password" class="form-label">Password Saat Ini <span class="text-primary">*</span></label>
             <div style="position: relative;">
@@ -26,7 +25,6 @@
             </div>
         </div>
 
-        <!-- Password Baru -->
         <div class="form-group">
             <label for="password" class="form-label">Password Baru <span class="text-primary">*</span></label>
             <div style="position: relative;">
@@ -35,7 +33,6 @@
                     Lihat
                 </button>
             </div>
-            <!-- Indikator Persyaratan Password -->
             <div style="margin-top: 8px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-muted);">
                 <div style="font-weight: 700; margin-bottom: 4px; color: var(--text);">Persyaratan Keamanan Password:</div>
                 <ul style="margin-left: 18px; margin-bottom: 0;">
@@ -46,7 +43,6 @@
             </div>
         </div>
 
-        <!-- Konfirmasi Password Baru -->
         <div class="form-group">
             <label for="password_confirmation" class="form-label">Konfirmasi Password Baru <span class="text-primary">*</span></label>
             <div style="position: relative;">

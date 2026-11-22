@@ -21,7 +21,7 @@
             <div class="form-group">
                 <label for="category_id" class="form-label">Kategori <span class="text-primary">*</span></label>
                 <select id="category_id" name="category_id" class="form-control" required>
-                    <option value="">-- Pilih Kategori --</option>
+                    <option value="">Pilih Kategori</option>
                     @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
                             {{ $cat->name }}
@@ -41,7 +41,6 @@
             <textarea id="description" name="description" class="form-control" placeholder="Tuliskan komposisi atau keistimewaan menu...">{{ old('description') }}</textarea>
         </div>
 
-        <!-- Foto Produk Upload (Section 5) -->
         <div class="form-group" style="padding: var(--space-md); background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-md);">
             <label for="image" class="form-label">Foto Produk (Opsional)</label>
             <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/jpg" style="padding: 6px;" onchange="previewMenuImage(this)">
@@ -54,7 +53,6 @@
             </p>
         </div>
 
-        <!-- Checkbox Options -->
         <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-top: var(--space-md); margin-bottom: var(--space-lg);">
             <label class="form-check" style="background: var(--surface); padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border);">
                 <input type="checkbox" name="is_available" value="1" {{ old('is_available', 1) ? 'checked' : '' }}>

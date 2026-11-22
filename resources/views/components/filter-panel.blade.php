@@ -1,16 +1,3 @@
-{{--
-    Reusable filter panel component.
-    Usage:
-        <x-filter-panel :action="route('admin.orders.index')">
-            ... fields ...
-            <x-slot name="buttons">
-                <button class="fp-btn-primary" type="submit">Filter</button>
-                @if(request()->anyFilled(...))
-                    <a href="..." class="fp-btn-reset">Reset</a>
-                @endif
-            </x-slot>
-        </x-filter-panel>
---}}
 @props(['action' => null])
 
 <form

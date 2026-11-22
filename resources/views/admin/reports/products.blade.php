@@ -5,7 +5,7 @@
 @section('content')
 @include('admin.reports.partials.header', [
     'title' => 'Laporan Penjualan Produk & Menu',
-    'subtitle' => 'Peringkat menu terlaris, unit terjual, dan nilai penjualan berdasarkan snapshot transaksi.',
+    'subtitle' => 'Peringkat menu terlaris, jumlah terjual, dan total penjualan.',
     'type' => 'products',
     'period' => $period,
 ])

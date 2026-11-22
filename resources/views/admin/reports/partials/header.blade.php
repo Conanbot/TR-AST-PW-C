@@ -8,7 +8,6 @@
     </div>
 </div>
 
-{{-- Report Navigation Tabs --}}
 <div class="report-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:var(--space-lg);border-bottom:1px solid var(--border);padding-bottom:12px;">
     @php
         $tabs = [
@@ -27,7 +26,6 @@
     @endforeach
 </div>
 
-{{-- Date Filter Bar --}}
 <section class="card" style="padding:var(--space-md);margin-bottom:var(--space-lg);">
     <form method="GET" action="{{ url()->current() }}" style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;">
         <div style="flex:1 1 180px;">

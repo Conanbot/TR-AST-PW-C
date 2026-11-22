@@ -10,7 +10,6 @@
     'period' => $period,
 ])
 
-{{-- KPI Summary --}}
 <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom:var(--space-lg);">
     <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Bahan Baku Terdaftar</div>
@@ -37,7 +36,6 @@
     </div>
 </div>
 
-{{-- Movement by Type Summary Cards --}}
 <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom:var(--space-lg);">
     <div class="card" style="padding:var(--space-md);">
         <span class="text-xs text-muted">Stok Masuk (Stock In):</span>
@@ -62,7 +60,6 @@
     </div>
 </div>
 
-{{-- Current Stock Status Table --}}
 <section class="card" style="padding:var(--space-md);margin-bottom:var(--space-lg);overflow-x:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <h3>Katalog Stok Bahan Saat Ini</h3>
@@ -112,9 +109,8 @@
     </table>
 </section>
 
-{{-- Stock Movements Ledger --}}
 <section class="card" style="padding:var(--space-md);overflow-x:auto;">
-    <h3 style="margin-bottom:12px;">Buku Besar Mutasi Stok (Ledger)</h3>
+    <h3 style="margin-bottom:12px;">Riwayat Mutasi Stok</h3>
     <table class="table" style="width:100%;font-size:0.9rem;">
         <thead>
             <tr>

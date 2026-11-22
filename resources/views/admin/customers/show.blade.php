@@ -29,7 +29,6 @@
     </div>
 </div>
 
-{{-- Summary KPI Cards --}}
 <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom:var(--space-lg);">
     <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Belanja (Paid)</div>
@@ -67,7 +66,6 @@
 </div>
 
 <div class="grid grid-cols-1 grid-cols-2 gap-lg" style="align-items:start;">
-    {{-- Edit Customer Profile Form --}}
     <section class="card" style="padding:var(--space-lg);">
         <h2 style="font-size:1.2rem;margin-bottom:12px;">Profil & Catatan Pelanggan</h2>
         <form method="POST" action="{{ route('admin.customers.update', $customer) }}" style="display:grid;gap:12px;">
@@ -113,7 +111,6 @@
         </form>
     </section>
 
-    {{-- Transaction History --}}
     <section class="card" style="padding:var(--space-lg);overflow-x:auto;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <h2 style="font-size:1.2rem;margin:0;">Riwayat Transaksi</h2>

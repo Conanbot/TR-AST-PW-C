@@ -10,7 +10,6 @@
     'period' => $period,
 ])
 
-{{-- KPI Summary Cards --}}
 <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom:var(--space-lg);">
     <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Pendapatan Berhasil (Paid)</div>
@@ -64,7 +63,6 @@
     </div>
 </div>
 
-{{-- Detail Orders Table --}}
 <section class="card" style="padding:var(--space-md);overflow-x:auto;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <h3>Rincian Transaksi Pesanan ({{ $data['orders']->total() }})</h3>

@@ -237,7 +237,6 @@
     $storeIsOpen = $storeSettings->is_open;
     @endphp
 
-    {{-- ─── Header ─── --}}
     <header class="console-header admin-header" style="position:sticky;top:0;z-index:30;">
         <div class="admin-brand-area">
             <button type="button" id="admin-menu-toggle"
@@ -277,7 +276,6 @@
         </div>
     </header>
 
-    {{-- ─── Mobile Drawer ─── --}}
     <div id="admin-mobile-drawer" class="admin-mobile-drawer" aria-label="Menu admin">
         <div class="admin-drawer-heading">
             <a href="{{ route('admin.dashboard') }}" style="display: inline-block;">
@@ -290,7 +288,6 @@
         </div>
     </div>
 
-    {{-- ─── Shell: Sidebar + Main ─── --}}
     <div class="admin-shell">
         <aside class="admin-sidebar" aria-label="Navigasi admin">
             <div class="admin-sidebar-inner">

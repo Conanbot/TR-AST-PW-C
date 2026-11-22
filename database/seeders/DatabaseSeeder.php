@@ -334,22 +334,22 @@ class DatabaseSeeder extends Seeder
         // 7. Initial customization data (example values; adjust from admin before launch)
         $customizationGroups = [
             'data-awal-bagian-ayam' => [
-                'name' => '[Data awal] Bagian ayam',
+                'name' => 'Bagian ayam',
                 'required' => true,
                 'options' => ['Dada', 'Paha atas', 'Paha bawah', 'Sayap'],
             ],
             'data-awal-minuman' => [
-                'name' => '[Data awal] Minuman paket',
+                'name' => 'Minuman paket',
                 'required' => true,
                 'options' => ['Air putih', 'Es teh', 'Teh hangat'],
             ],
             'data-awal-sambal' => [
-                'name' => '[Data awal] Sambal',
+                'name' => 'Sambal',
                 'required' => true,
                 'options' => ['Sambal original', 'Sambal bawang', 'Sambal ijo'],
             ],
             'data-awal-topping' => [
-                'name' => '[Data awal] Topping',
+                'name' => 'Topping',
                 'required' => false,
                 'options' => ['Tambah nasi', 'Tambah tahu', 'Tambah tempe', 'Tambah telur'],
             ],

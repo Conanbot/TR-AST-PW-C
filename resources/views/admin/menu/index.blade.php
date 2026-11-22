@@ -14,7 +14,6 @@
     </a>
 </div>
 
-<!-- Filter Bar -->
 <x-filter-panel :action="route('admin.items.index')">
     <div class="fp-field fp-field-lg">
         <label class="fp-label">Cari nama menu</label>
@@ -37,7 +36,6 @@
     </x-slot>
 </x-filter-panel>
 
-<!-- Table of Menu Items -->
 <div class="card" style="padding: var(--space-md); overflow-x: auto;">
     <table class="admin-table">
         <thead>

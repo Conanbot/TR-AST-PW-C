@@ -5,7 +5,6 @@
         </div>
 
         <div class="glo-page-links">
-            {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <span class="glo-page-btn disabled" aria-disabled="true" aria-label="Sebelumnya">
                     <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
@@ -16,7 +15,6 @@
                 </a>
             @endif
 
-            {{-- Pagination Elements --}}
             @foreach ($elements as $element)
                 @if (is_string($element))
                     <span class="glo-page-ellipsis" aria-disabled="true">{{ $element }}</span>
@@ -33,7 +31,6 @@
                 @endif
             @endforeach
 
-            {{-- Next Page Link --}}
             @if ($paginator->hasMorePages())
                 <a class="glo-page-btn" href="{{ $paginator->nextPageUrl() }}" rel="next" aria-label="Berikutnya">
                     <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
