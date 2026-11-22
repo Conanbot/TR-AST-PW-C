@@ -12,7 +12,7 @@
 
 {{-- KPI Summary Cards --}}
 <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom:var(--space-lg);">
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--ok);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Pendapatan Berhasil (Paid)</div>
         <div style="font-size:1.5rem;font-weight:800;color:#2ecc71;margin-top:4px;">
             Rp{{ number_format($data['summary']['paid_revenue'], 0, ',', '.') }}
@@ -20,7 +20,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Uang transaksi yang telah diterima</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--primary);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Net Sales (Semua Order Valid)</div>
         <div style="font-size:1.5rem;font-weight:800;margin-top:4px;">
             Rp{{ number_format($data['summary']['net_sales'], 0, ',', '.') }}
@@ -28,7 +28,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Gross - diskon (non-cancelled)</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--warning);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Diskon Promo</div>
         <div style="font-size:1.5rem;font-weight:800;color:var(--warning);margin-top:4px;">
             -Rp{{ number_format($data['summary']['total_discount'], 0, ',', '.') }}
@@ -36,7 +36,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Gross: Rp{{ number_format($data['summary']['gross_sales'], 0, ',', '.') }}</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid #3498db;">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Average Order Value (AOV)</div>
         <div style="font-size:1.5rem;font-weight:800;margin-top:4px;">
             Rp{{ number_format($data['summary']['aov'], 0, ',', '.') }}

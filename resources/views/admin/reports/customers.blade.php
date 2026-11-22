@@ -12,7 +12,7 @@
 
 {{-- KPI Summary --}}
 <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom:var(--space-lg);">
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--primary);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Master Pelanggan</div>
         <div style="font-size:1.5rem;font-weight:800;margin-top:4px;">
             {{ number_format($data['summary']['total_customers'], 0, ',', '.') }} Orang
@@ -20,7 +20,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Terdaftar di direktori database</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--ok);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Pelanggan Baru (Periode Ini)</div>
         <div style="font-size:1.5rem;font-weight:800;color:#2ecc71;margin-top:4px;">
             +{{ number_format($data['summary']['new_customers_in_period'], 0, ',', '.') }} Orang
@@ -28,7 +28,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Pertama kali terdata dari guest checkout</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid #3498db;">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Repeat Customers (Setia)</div>
         <div style="font-size:1.5rem;font-weight:800;color:#3498db;margin-top:4px;">
             {{ number_format($data['summary']['repeat_customers'], 0, ',', '.') }} Orang
@@ -36,7 +36,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Memiliki 2 pesanan atau lebih</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--warning);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Omset Pelanggan Terdata (Paid)</div>
         <div style="font-size:1.5rem;font-weight:800;color:var(--warning);margin-top:4px;">
             Rp{{ number_format($data['summary']['customer_spending_in_period'], 0, ',', '.') }}

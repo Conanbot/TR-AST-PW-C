@@ -12,7 +12,7 @@
 
 {{-- KPI Summary --}}
 <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom:var(--space-lg);">
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--warning);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Diskon Diberikan</div>
         <div style="font-size:1.6rem;font-weight:800;color:var(--warning);margin-top:4px;">
             Rp{{ number_format($data['summary']['total_discount'], 0, ',', '.') }}
@@ -20,7 +20,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Akumulasi subsidi promo kepada pemesan</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--primary);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Frekuensi Pemakaian Voucher</div>
         <div style="font-size:1.6rem;font-weight:800;margin-top:4px;">
             {{ number_format($data['summary']['total_usages'], 0, ',', '.') }} Kali
@@ -28,7 +28,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Klaim berhasil saat proses checkout</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--ok);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Promo Aktif Digunakan</div>
         <div style="font-size:1.6rem;font-weight:800;color:#2ecc71;margin-top:4px;">
             {{ $data['summary']['promos_used_count'] }} Kode Promo

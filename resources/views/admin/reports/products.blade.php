@@ -11,7 +11,7 @@
 ])
 
 <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom:var(--space-lg);">
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--primary);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Unit Terjual</div>
         <div style="font-size:1.6rem;font-weight:800;margin-top:4px;">
             {{ number_format($data['summary']['total_units'], 0, ',', '.') }} Unit
@@ -19,7 +19,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Dari seluruh pesanan valid (non-cancelled)</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--ok);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Penjualan Produk (Gross Item)</div>
         <div style="font-size:1.6rem;font-weight:800;color:#2ecc71;margin-top:4px;">
             Rp{{ number_format($data['summary']['total_revenue'], 0, ',', '.') }}
@@ -27,7 +27,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Total akumulasi line total item pesanan</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid #3498db;">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Variasi Menu Terjual</div>
         <div style="font-size:1.6rem;font-weight:800;margin-top:4px;">
             {{ $data['summary']['unique_products_sold'] }} Menu / Varian

@@ -52,7 +52,7 @@
 
         <div class="grid grid-cols-1 grid-cols-2 gap-md">
             @foreach($promos as $promo)
-            <div class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; border-left: 4px solid var(--primary);">
+            <div class="card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
                 @if($promo->image)
                     <div style="height: 180px; overflow: hidden; background: var(--surface);">
                         <img src="{{ $promo->image_url }}" alt="{{ $promo->title }}" style="width: 100%; height: 100%; object-fit: cover;">

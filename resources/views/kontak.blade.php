@@ -24,7 +24,7 @@
                 @php
                     $isOpen = $settings->is_open ?? true;
                 @endphp
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid {{ $isOpen ? 'var(--ok)' : 'var(--off)' }};">
+                <div class="card" style="padding: var(--space-md);'var(--ok)' : 'var(--off)' }};">
                     <div class="flex items-center gap-sm">
                         <span class="pulse-dot {{ $isOpen ? '' : 'closed' }}"></span>
                         <h4 style="font-size: 1.1rem; color: #FFFFFF;">

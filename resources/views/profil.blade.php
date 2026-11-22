@@ -70,7 +70,7 @@
             <!-- Linimasa Kronologi -->
             <div style="display: flex; flex-direction: column; gap: 20px; max-width: 780px; margin: 0 auto; position: relative;">
                 <!-- Step 1: 2022 -->
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid var(--primary); background: var(--surface-card);">
+                <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--primary); font-size: 1.15rem;">Awal 2022 — Titik Awal di Blotongan</h4>
                         <span class="badge" style="background: rgba(255,255,255,0.06);">Tahun Rintisan</span>
@@ -81,7 +81,7 @@
                 </div>
 
                 <!-- Step 2: Perpindahan Ngawen -->
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid var(--warning); background: var(--surface-card);">
+                <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--warning); font-size: 1.15rem;">Periode Ngawen — Menjajaki Pasar Baru</h4>
                         <span class="badge" style="background: rgba(255,255,255,0.06);">Pengembangan</span>
@@ -92,7 +92,7 @@
                 </div>
 
                 <!-- Step 3: 2024 -->
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid var(--info); background: var(--surface-card);">
+                <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--info); font-size: 1.15rem;">Tahun 2024 — Kembali Beroperasi di Blotongan</h4>
                         <span class="badge" style="background: rgba(255,255,255,0.06);">Kembali ke Akar</span>
@@ -103,7 +103,7 @@
                 </div>
 
                 <!-- Step 4: 2025 -->
-                <div class="card" style="padding: var(--space-md); border-left: 4px solid var(--ok); background: var(--surface-card);">
+                <div class="card" style="padding: var(--space-md); background: var(--surface-card);">
                     <div class="flex justify-between items-center" style="margin-bottom: 6px;">
                         <h4 style="color: var(--ok); font-size: 1.15rem;">Tahun 2025 — Kelahiran Brand &amp; Produk Geprek GLO</h4>
                         <span class="badge badge-open">Transformasi Modern</span>

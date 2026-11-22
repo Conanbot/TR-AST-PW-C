@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Header & Quick Toggle Bar -->
-<div class="card" style="padding: var(--space-lg); margin-bottom: var(--space-lg); background: var(--surface-card); border-left: 4px solid var(--primary);">
+<div class="card" style="padding: var(--space-lg); margin-bottom: var(--space-lg); background: var(--surface-card);">
     <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px;">
         <div>
             <div class="flex items-center gap-xs" style="margin-bottom: 4px;">
@@ -77,7 +77,7 @@
 
     <!-- 4 KPI Sales Summary Cards -->
     <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom: var(--space-lg);">
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--ok);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Pendapatan Berhasil (Paid Hari Ini)</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: #2ecc71; margin-top: 4px;">
                 Rp{{ number_format($operational['sales_summary']['paid_revenue'], 0, ',', '.') }}
@@ -93,7 +93,7 @@
             </div>
         </div>
 
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--primary);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Volume Order Hari Ini</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF; margin-top: 4px;">
                 {{ $operational['sales_summary']['order_count'] }} Pesanan
@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--warning);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Rata-rata Transaksi (AOV)</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: var(--warning); margin-top: 4px;">
                 Rp{{ number_format($operational['sales_summary']['aov'], 0, ',', '.') }}
@@ -112,7 +112,7 @@
             <div class="text-xs text-dim" style="margin-top: 2px;">Per transaksi terbayar hari ini</div>
         </div>
 
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid #3498db;">
+        <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Net Sales (Valid Orders)</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: #3498db; margin-top: 4px;">
                 Rp{{ number_format($operational['sales_summary']['net_sales'], 0, ',', '.') }}
@@ -481,7 +481,7 @@
 
     <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom: var(--space-lg);">
         <!-- Column 1: Queued -->
-        <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--off);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
                 <h4 style="font-size: 1rem; color: #FFFFFF;">1. Queued (Menunggu)</h4>
                 <span class="badge" style="background: rgba(255,255,255,0.08);">{{ $queuedOrders->count() }}</span>
@@ -524,7 +524,7 @@
         </div>
 
         <!-- Column 2: Prepared -->
-        <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--warning);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
                 <h4 style="font-size: 1rem; color: #FFFFFF;">2. Prepared (Sedang Dimasak)</h4>
                 <span class="badge" style="background: rgba(243,156,18,0.15); color: var(--warning);">{{ $preparedOrders->count() }}</span>
@@ -561,7 +561,7 @@
         </div>
 
         <!-- Column 3: Ready -->
-        <div class="card" style="padding: var(--space-md); border-top: 4px solid var(--ok);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="flex justify-between items-center" style="margin-bottom: 12px;">
                 <h4 style="font-size: 1rem; color: #FFFFFF;">3. Ready (Siap Disajikan)</h4>
                 <span class="badge" style="background: rgba(39, 174, 96, 0.15); color: var(--ok);">{{ $readyOrders->count() }}</span>
@@ -617,17 +617,17 @@
             <div style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF; margin-top: 4px;">{{ $totalMenu }}</div>
             <div class="text-xs text-dim">Semua kategori menu</div>
         </div>
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--primary);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Food Items (Makanan)</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-top: 4px;">{{ $foodItemsCount }}</div>
             <div class="text-xs text-dim">Paket, aneka ayam &amp; sup</div>
         </div>
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid var(--ok);">
+        <div class="card" style="padding: var(--space-md);">
             <div class="text-xs text-muted">Menu Tersedia</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: var(--ok); margin-top: 4px;">{{ $availableMenu }}</div>
             <div class="text-xs text-dim">Dapat dipesan pelanggan</div>
         </div>
-        <div class="card" style="padding: var(--space-md); border-top: 3px solid {{ $outOfStockMenu > 0 ? 'var(--off)' : 'var(--border)' }};">
+        <div class="card" style="padding: var(--space-md);'var(--off)' : 'var(--border)' }};">
             <div class="text-xs text-muted">Menu Habis (Stok Kosong)</div>
             <div style="font-size: 1.6rem; font-weight: 800; color: {{ $outOfStockMenu > 0 ? 'var(--off)' : '#FFFFFF' }}; margin-top: 4px;">{{ $outOfStockMenu }}</div>
             <div class="text-xs text-dim">Dinonaktifkan di web</div>

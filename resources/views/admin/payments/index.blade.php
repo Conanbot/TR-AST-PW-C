@@ -17,15 +17,15 @@
 </div>
 
 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;">
-    <div class="card" style="padding:16px;border-top:3px solid var(--warning);">
+    <div class="card" style="padding:16px;">
         <span class="text-muted text-xs">Belum dibayar</span>
         <div style="font-size:1.8rem;font-weight:800;margin-top:4px;">{{ $counts['unpaid'] }}</div>
     </div>
-    <div class="card" style="padding:16px;border-top:3px solid var(--info);">
+    <div class="card" style="padding:16px;">
         <span class="text-muted text-xs">Menunggu verifikasi QRIS</span>
         <div style="font-size:1.8rem;font-weight:800;margin-top:4px;">{{ $counts['pending'] }}</div>
     </div>
-    <div class="card" style="padding:16px;border-top:3px solid var(--ok);">
+    <div class="card" style="padding:16px;">
         <span class="text-muted text-xs">Sudah dibayar</span>
         <div style="font-size:1.8rem;font-weight:800;margin-top:4px;">{{ $counts['paid'] }}</div>
     </div>

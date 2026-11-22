@@ -12,7 +12,7 @@
 
 {{-- KPI Summary --}}
 <div class="grid grid-cols-1 grid-cols-3 gap-md" style="margin-bottom:var(--space-lg);">
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--primary);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Bahan Baku Terdaftar</div>
         <div style="font-size:1.6rem;font-weight:800;margin-top:4px;">
             {{ $data['summary']['total_materials'] }} Bahan
@@ -20,7 +20,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Katalog raw materials aktif</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid {{ $data['summary']['low_stock_count'] > 0 ? '#e74c3c' : 'var(--ok)' }};">
+    <div class="card" style="padding:var(--space-md);'summary']['low_stock_count'] > 0 ? '#e74c3c' : 'var(--ok)' }};">
         <div class="text-xs text-muted">Bahan Stok Kritis / Rendah</div>
         <div style="font-size:1.6rem;font-weight:800;color:{{ $data['summary']['low_stock_count'] > 0 ? '#e74c3c' : '#2ecc71' }};margin-top:4px;">
             {{ $data['summary']['low_stock_count'] }} Bahan
@@ -28,7 +28,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Stok berada di bawah atau sama dengan batas minimum</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid #3498db;">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Entri Mutasi Stok</div>
         <div style="font-size:1.6rem;font-weight:800;margin-top:4px;">
             {{ $data['summary']['total_movements'] }} Mutasi

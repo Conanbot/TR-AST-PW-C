@@ -133,14 +133,11 @@
             background: var(--red-100);
             color: var(--primary);
             font-weight: 700;
-            border-left: 3px solid var(--primary);
-            padding-left: 7px;
         }
 
         html[data-theme="dark"] .admin-nav-item.active {
             background: #49272A;
             color: #FF9B95;
-            border-left-color: #FF9B95;
         }
 
         /* ── Mobile drawer ─────────────────────────────── */

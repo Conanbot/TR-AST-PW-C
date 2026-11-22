@@ -12,7 +12,7 @@
 
 {{-- KPI Summary --}}
 <div class="grid grid-cols-2 grid-cols-4 gap-md" style="margin-bottom:var(--space-lg);">
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--ok);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Pembayaran Berhasil (Paid)</div>
         <div style="font-size:1.5rem;font-weight:800;color:#2ecc71;margin-top:4px;">
             Rp{{ number_format($data['summary']['total_paid_amount'], 0, ',', '.') }}
@@ -20,7 +20,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">{{ $data['summary']['total_paid_count'] }} transaksi terverifikasi</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--warning);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Menunggu Verifikasi / Pending</div>
         <div style="font-size:1.5rem;font-weight:800;color:var(--warning);margin-top:4px;">
             {{ $data['summary']['total_pending_count'] }} Transaksi
@@ -28,7 +28,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">QRIS pending atau menunggu kasir</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid var(--primary);">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Total Transaksi Masuk</div>
         <div style="font-size:1.5rem;font-weight:800;margin-top:4px;">
             {{ $data['payments']->total() }} Transaksi
@@ -36,7 +36,7 @@
         <div class="text-xs text-muted" style="margin-top:2px;">Keseluruhan percobaan pembayaran</div>
     </div>
 
-    <div class="card" style="padding:var(--space-md);border-top:3px solid #e74c3c;">
+    <div class="card" style="padding:var(--space-md);">
         <div class="text-xs text-muted">Pembayaran Ditolak</div>
         <div style="font-size:1.5rem;font-weight:800;color:#e74c3c;margin-top:4px;">
             {{ $data['summary']['total_rejected_count'] }} Transaksi

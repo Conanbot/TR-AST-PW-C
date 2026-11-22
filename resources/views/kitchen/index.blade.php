@@ -99,7 +99,7 @@
             return detail;
         }).join('');
 
-        return `<article class="card" style="padding:16px;border-left:4px solid ${isLate ? '#e74c3c' : (order.status === 'ready' ? '#2ecc71' : (order.status === 'preparing' ? '#9b59b6' : '#3498db'))};${isLate ? 'background:rgba(231,76,60,0.05);' : ''}">
+        return `<article class="card" style="padding:16px;'#e74c3c' : (order.status === 'ready' ? '#2ecc71' : (order.status === 'preparing' ? '#9b59b6' : '#3498db'))};${isLate ? 'background:rgba(231,76,60,0.05);' : ''}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:12px;">
                 <div>
                     <strong style="font-size:1rem;">${escHtml(order.order_number)}</strong>
